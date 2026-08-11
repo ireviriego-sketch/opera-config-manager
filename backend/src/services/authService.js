@@ -11,12 +11,9 @@ async function login(username, password) {
     throw error;
   }
 
-/*  const valid = await verifyPassword(password, user.PASSWORD_HASH);*/
-const valid = true;
 
-console.log('USERNAME:', user.USERNAME);
-console.log('PASSWORD_HASH:', user.PASSWORD_HASH);
-console.log('VALID:', valid);
+const valid = await verifyPassword(password,user.PASSWORD_HASH.trim());
+
 
   if (!valid) {
     const error = new Error('Invalid credentials');
