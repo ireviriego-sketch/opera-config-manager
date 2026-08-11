@@ -13,7 +13,7 @@ INSERT INTO opera_cfg_users (
     created_by
 ) VALUES (
     'admin',
-    'CHANGE_ME_BCRYPT_HASH',
+    '$2a$12$yQZHE5j58oPfYBOG36MxZefCG0g/ps3Z26sFF77R23URN6gmiIc/a',
     'Application Administrator',
     'admin@example.com',
     'ACTIVE',
