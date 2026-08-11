@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visual Model Canvas | OPERA Config Manager</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main canvas-main">
+    <header class="topbar canvas-topbar">
+      <div>
+        <h1 id="canvasTitle">Visual Model Canvas</h1>
+        <p id="canvasSubtitle">Cajas movibles para explorar dominios, entidades y atributos importados desde el PIW.</p>
+      </div>
+      <div class="actions-right">
+        <button id="backToTemplate" class="secondary">Volver a la plantilla</button>
+        <button id="logoutBtn" class="secondary">Salir</button>
+      </div>
+    </header>
+
+    <section class="canvas-toolbar card">
+      <div class="toolbar-left">
+        <strong id="canvasVersionTitle">Cargando versión...</strong>
+        <span id="canvasStats">Recuperando modelo desde Oracle.</span>
+      </div>
+      <div class="toolbar-right">
+        <select id="domainFilter" class="canvas-select">
+          <option value="ALL">Todos los dominios</option>
+        </select>
+        <input id="canvasSearch" class="search-input" placeholder="Buscar entidad o atributo..." />
+        <button id="collapseAllBoxes" class="secondary">Colapsar</button>
+        <button id="expandAllBoxes" class="secondary">Expandir</button>
+        <button id="resetLayout" class="secondary">Reiniciar layout</button>
+        <button id="exportCanvasJson" class="secondary">Exportar JSON</button>
+      </div>
+    </section>
+
+    <section class="canvas-shell card">
+      <svg id="canvasLinks" class="canvas-links"></svg>
+      <div id="canvasGrid" class="canvas-grid"></div>
+      <div id="canvasHint" class="canvas-hint">
+        Arrastra cajas para moverlas. Click en el botón +/- para expandir o colapsar. Doble click en una caja para abrir el detalle de entidad.
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/model-canvas.js"></script>
+</body>
+</html>

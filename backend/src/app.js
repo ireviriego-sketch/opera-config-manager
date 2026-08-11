@@ -12,6 +12,7 @@ const templateVersionRoutes = require('./routes/templateVersionRoutes');
 const domainRoutes = require('./routes/domainRoutes');
 const entityRoutes = require('./routes/entityRoutes');
 const attributeRoutes = require('./routes/attributeRoutes');
+const relationshipRoutes = require('./routes/relationshipRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 function createApp() {
@@ -30,6 +31,7 @@ function createApp() {
   app.use('/api/domains', domainRoutes);
   app.use('/api/entities', entityRoutes);
   app.use('/api/attributes', attributeRoutes);
+  app.use('/api/relationships', relationshipRoutes);
 
   app.use(express.static(path.resolve(__dirname, '../../frontend')));
 

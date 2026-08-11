@@ -1,72 +1,8 @@
 const attributeRepository = require('../repositories/attributeRepository');
-
-async function listByEntity(req, res, next) {
-  try {
-    const entityId = Number(req.query.entityId);
-
-    if (!entityId) {
-      return res.status(400).json({ error: 'ENTITY_ID_REQUIRED' });
-    }
-
-    const attributes = await attributeRepository.findByEntityId(entityId);
-    return res.json({ attributes });
-  } catch (error) {
-    return next(error);
-  }
-}
-
-async function create(req, res, next) {
-  try {
-    const {
-      entityId,
-      code,
-      name,
-      description,
-      dataTypeCode,
-      isRequired,
-      maxLength,
-      defaultValue,
-      isKeyAttribute,
-      displayOrder
-    } = req.body || {};
-
-    const numericEntityId = Number(entityId);
-
-    if (!numericEntityId) {
-      return res.status(400).json({ error: 'ENTITY_ID_REQUIRED' });
-    }
-
-    if (!code || !name || !dataTypeCode) {
-      return res.status(400).json({ error: 'CODE_NAME_AND_TYPE_REQUIRED' });
-    }
-
-    const attributeId = await attributeRepository.createAttribute({
-      entityId: numericEntityId,
-      code,
-      name,
-      description: description || null,
-      dataTypeCode,
-      isRequired: isRequired === 'Y' ? 'Y' : 'N',
-      maxLength: maxLength ? Number(maxLength) : null,
-      defaultValue: defaultValue || null,
-      isKeyAttribute: isKeyAttribute === 'Y' ? 'Y' : 'N',
-      displayOrder: Number(displayOrder || 0),
-      createdBy: req.user?.username || 'admin'
-    });
-
-    return res.status(201).json({ attributeId });
-  } catch (error) {
-    return next(error);
-  }
-}
-
-async function listDataTypes(req, res, next) {
-  try {
-    const dataTypes = await attributeRepository.findDataTypes();
-    return res.json({ dataTypes });
-  } catch (error) {
-    return next(error);
-  }
-}
-
-module.exports = { listByEntity, create, listDataTypes };
+function yn(v){ return v === 'Y' ? 'Y' : 'N'; }
+function num(v){ return v === null || v === undefined || v === '' ? null : Number(v); }
+async function listByEntity(req,res,next){try{const entityId=Number(req.query.entityId);if(!entityId)return res.status(400).json({error:'ENTITY_ID_REQUIRED'});res.json({attributes:await attributeRepository.findByEntityId(entityId)});}catch(e){next(e)}}
+async function create(req,res,next){try{const b=req.body||{},entityId=Number(b.entityId);if(!entityId)return res.status(400).json({error:'ENTITY_ID_REQUIRED'});if(!b.code||!b.name||!b.dataTypeCode)return res.status(400).json({error:'CODE_NAME_AND_TYPE_REQUIRED'});const attributeId=await attributeRepository.createAttribute({entityId,code:b.code,name:b.name,description:b.description||null,dataTypeCode:b.dataTypeCode,isRequired:yn(b.isRequired),maxLength:num(b.maxLength),defaultValue:b.defaultValue||null,isKeyAttribute:yn(b.isKeyAttribute),displayOrder:Number(b.displayOrder||0),createdBy:req.user?.username||'admin'});res.status(201).json({attributeId});}catch(e){next(e)}}
+async function update(req,res,next){try{const attributeId=Number(req.params.id),b=req.body||{};if(!attributeId)return res.status(400).json({error:'ATTRIBUTE_ID_REQUIRED'});if(!b.code||!b.name||!b.dataTypeCode)return res.status(400).json({error:'CODE_NAME_AND_TYPE_REQUIRED'});const rowsAffected=await attributeRepository.updateAttribute(attributeId,{code:b.code,name:b.name,description:b.description||null,dataTypeCode:b.dataTypeCode,isRequired:yn(b.isRequired),maxLength:num(b.maxLength),defaultValue:b.defaultValue||null,isKeyAttribute:yn(b.isKeyAttribute),displayOrder:Number(b.displayOrder||0),updatedBy:req.user?.username||'admin'});if(!rowsAffected)return res.status(404).json({error:'ATTRIBUTE_NOT_FOUND'});res.json({updated:true});}catch(e){next(e)}}
+async function listDataTypes(req,res,next){try{res.json({dataTypes:await attributeRepository.findDataTypes()});}catch(e){next(e)}}
+module.exports={listByEntity,create,update,listDataTypes};

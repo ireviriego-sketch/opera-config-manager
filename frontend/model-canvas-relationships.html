@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Canvas relaciones | OPERA Config Manager</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/model-canvas-2.css" />
+  <link rel="stylesheet" href="assets/css/model-canvas-relationships.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">OC</div><div><h2>OPERA CFG</h2><span>Configuration Manager</span></div></div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main canvas2-main">
+    <header class="topbar canvas2-topbar">
+      <div><h1>Canvas relaciones</h1><p id="canvasSubtitle">Editor visual de relaciones reales entre atributos.</p></div>
+      <div class="actions-right"><button id="backToTemplate" class="secondary">Volver a la plantilla</button><button id="logoutBtn" class="secondary">Salir</button></div>
+    </header>
+
+    <section class="canvas2-toolbar">
+      <div class="canvas2-version"><strong id="versionTitle">Cargando versión...</strong><span id="versionStats">Recuperando modelo desde Oracle.</span></div>
+      <div class="canvas2-controls">
+        <select id="domainFilter" class="canvas2-select"><option value="ALL">Todos los dominios</option></select>
+        <input id="canvasSearch" class="canvas2-search" placeholder="Buscar entidad o atributo..." />
+        <button id="btnManualRelationship" class="secondary">+ Relación manual</button>
+        <button id="btnCollapse" class="secondary">Colapsar</button>
+        <button id="btnExpand" class="secondary">Expandir</button>
+        <button id="btnReset" class="secondary">Reset</button>
+      </div>
+    </section>
+
+    <section class="canvas2-shell">
+      <div class="canvas2-stage-wrap">
+        <svg id="connectionLayer" class="connection-layer"></svg>
+        <svg id="draftLayer" class="connection-layer draft-layer"></svg>
+        <div id="canvasStage" class="canvas2-stage"></div>
+      </div>
+
+      <aside id="inspector" class="inspector-panel relationship-inspector editable-inspector">
+        <header>
+          <div><h2 id="inspectorTitle">Selecciona una entidad</h2><p id="inspectorSubtitle">Arrastra desde el punto de un atributo hacia otro atributo.</p></div>
+          <button id="closeInspector" class="icon-button">×</button>
+        </header>
+        <section id="inspectorBody" class="inspector-body">
+          <div class="empty-state">Abre una caja con + y arrastra el punto de un atributo hacia otro atributo para crear una relación real. También puedes editar atributos desde este panel.</div>
+        </section>
+      </aside>
+
+      <div class="canvas2-help">Relaciones reales: arrastra desde el punto de un atributo origen y suelta sobre un atributo destino. Click en una caja: inspector. Editar atributo: botón Editar.</div>
+    </section>
+  </main>
+
+  <div id="relationshipModal" class="modal-backdrop hidden">
+    <section class="modal relationship-modal">
+      <header class="modal-header"><div><h2>Crear relación</h2><p id="relationshipPreview">Confirma la relación entre atributos.</p></div><button id="closeRelationshipModal" class="icon-button">×</button></header>
+      <div class="modal-body">
+        <label for="relationshipType">Tipo de relación</label>
+        <select id="relationshipType"><option value="REFERENCE">Reference</option><option value="LOOKUP">Lookup</option><option value="PARENT_CHILD">Parent-child</option><option value="DEPENDENCY">Dependency</option><option value="VALIDATION">Validation</option></select>
+        <label for="relationshipLabel">Etiqueta</label><input id="relationshipLabel" placeholder="Ej. Room Type" />
+        <div id="relationshipMessage" class="message"></div>
+      </div>
+      <footer class="modal-footer"><button id="cancelRelationship" class="secondary">Cancelar</button><button id="saveRelationship">Guardar relación</button></footer>
+    </section>
+  </div>
+
+  <div id="manualRelationshipModal" class="modal-backdrop hidden">
+    <section class="modal relationship-modal">
+      <header class="modal-header"><div><h2>Nueva relación manual</h2><p>Crea una relación sin arrastrar en el canvas.</p></div><button id="closeManualRelationshipModal" class="icon-button">×</button></header>
+      <div class="modal-body">
+        <label for="manualSourceAttribute">Atributo origen</label><select id="manualSourceAttribute"></select>
+        <label for="manualTargetAttribute">Atributo destino</label><select id="manualTargetAttribute"></select>
+        <label for="manualRelationshipType">Tipo</label><select id="manualRelationshipType"><option value="REFERENCE">Reference</option><option value="LOOKUP">Lookup</option><option value="PARENT_CHILD">Parent-child</option><option value="DEPENDENCY">Dependency</option><option value="VALIDATION">Validation</option></select>
+        <label for="manualRelationshipLabel">Etiqueta</label><input id="manualRelationshipLabel" />
+        <div id="manualRelationshipMessage" class="message"></div>
+      </div>
+      <footer class="modal-footer"><button id="cancelManualRelationship" class="secondary">Cancelar</button><button id="saveManualRelationship">Guardar relación</button></footer>
+    </section>
+  </div>
+
+  <div id="attributeEditModal" class="modal-backdrop hidden">
+    <section class="modal attribute-edit-modal">
+      <header class="modal-header"><div><h2>Editar atributo</h2><p id="attributeEditSubtitle">Actualiza la definición del atributo seleccionado.</p></div><button id="closeAttributeEditModal" class="icon-button">×</button></header>
+      <div class="modal-body">
+        <input id="editAttributeId" type="hidden" />
+        <label for="editAttributeCode">Código</label><input id="editAttributeCode" />
+        <label for="editAttributeName">Nombre</label><input id="editAttributeName" />
+        <label for="editAttributeDescription">Descripción</label><textarea id="editAttributeDescription" rows="3"></textarea>
+        <label for="editDataTypeCode">Tipo de dato</label><select id="editDataTypeCode"></select>
+        <label for="editMaxLength">Longitud máxima</label><input id="editMaxLength" type="number" />
+        <label for="editDefaultValue">Valor por defecto</label><input id="editDefaultValue" />
+        <label><input id="editIsRequired" type="checkbox" /> Obligatorio</label>
+        <label><input id="editIsKeyAttribute" type="checkbox" /> Atributo clave</label>
+        <label for="editAttributeOrder">Orden</label><input id="editAttributeOrder" type="number" />
+        <div id="attributeEditMessage" class="message"></div>
+      </div>
+      <footer class="modal-footer"><button id="cancelAttributeEdit" class="secondary">Cancelar</button><button id="saveAttributeEdit">Guardar cambios</button></footer>
+    </section>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/model-canvas-relationships.js"></script>
+</body>
+</html>
