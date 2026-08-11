@@ -45,7 +45,6 @@
           <p>Datos principales de la plantilla seleccionada.</p>
         </div>
       </div>
-
       <div class="detail-grid">
         <div class="detail-item"><span>ID</span><strong id="detailId">-</strong></div>
         <div class="detail-item"><span>Código</span><strong id="detailCode">-</strong></div>
@@ -62,7 +61,6 @@
         </div>
         <button id="btnNewVersion">+ Nueva versión</button>
       </div>
-
       <div class="table-wrap">
         <table id="versionsTable" class="data-table">
           <thead>
@@ -73,15 +71,13 @@
               <th>Activa</th>
               <th>Creada por</th>
               <th>Fecha creación</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
-
-      <div id="versionsEmptyState" class="empty-state hidden">
-        Todavía no hay versiones para esta plantilla.
-      </div>
+      <div id="versionsEmptyState" class="empty-state hidden">Todavía no hay versiones para esta plantilla.</div>
     </section>
 
     <section class="card">
@@ -91,7 +87,6 @@
           <p>Próximos módulos funcionales del modelo de configuración.</p>
         </div>
       </div>
-
       <div class="module-grid">
         <article class="module-card"><h4>Dominios funcionales</h4><p>Agrupaciones lógicas de entidades de configuración.</p></article>
         <article class="module-card"><h4>Entidades</h4><p>Objetos de configuración, atributos y relaciones.</p></article>
@@ -100,9 +95,7 @@
       </div>
     </section>
 
-    <section id="detailError" class="card hidden">
-      <div class="empty-state">No se ha podido cargar el detalle de la plantilla.</div>
-    </section>
+    <section id="detailError" class="card hidden"><div class="empty-state">No se ha podido cargar el detalle de la plantilla.</div></section>
   </main>
 
   <div id="versionModal" class="modal-backdrop hidden">
@@ -114,13 +107,11 @@
         </div>
         <button id="closeVersionModal" class="icon-button">×</button>
       </header>
-
       <div class="modal-body">
         <label for="versionLabel">Etiqueta de versión</label>
         <input id="versionLabel" placeholder="Ej. PMS v1.1 Draft" />
         <div id="versionFormMessage" class="message"></div>
       </div>
-
       <footer class="modal-footer">
         <button id="cancelVersion" class="secondary">Cancelar</button>
         <button id="saveVersion">Crear versión</button>

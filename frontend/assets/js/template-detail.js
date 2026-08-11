@@ -60,6 +60,7 @@ function renderVersions(versions) {
       <td>${yesNoBadge(v.IS_ACTIVE)}</td>
       <td>${v.CREATED_BY || ''}</td>
       <td>${v.CREATED_AT || ''}</td>
+      <td><button class="table-action view-version" data-version-id="${v.VERSION_ID}">Ver</button></td>
     `;
     tbody.appendChild(row);
   });
@@ -128,6 +129,14 @@ async function saveVersion() {
   }
 }
 
+function setupVersionRowActions() {
+  document.getElementById('versionsTable').addEventListener('click', (event) => {
+    const button = event.target.closest('.view-version');
+    if (!button) return;
+    window.location.href = `version-detail.html?id=${encodeURIComponent(button.dataset.versionId)}&templateId=${encodeURIComponent(currentTemplateId)}`;
+  });
+}
+
 function setupTemplateDetailPage() {
   document.getElementById('backToTemplates').addEventListener('click', () => {
     window.location.href = 'templates.html';
@@ -137,6 +146,7 @@ function setupTemplateDetailPage() {
   document.getElementById('closeVersionModal').addEventListener('click', closeVersionModal);
   document.getElementById('cancelVersion').addEventListener('click', closeVersionModal);
   document.getElementById('saveVersion').addEventListener('click', saveVersion);
+  setupVersionRowActions();
 
   loadTemplateDetail();
 }

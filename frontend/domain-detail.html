@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Detalle de dominio | OPERA Config Manager</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="domainTitle">Detalle de dominio</h1>
+        <p id="domainSubtitle">Entidades de configuración del dominio funcional.</p>
+      </div>
+      <div class="actions-right">
+        <button id="backToVersion" class="secondary">Volver a la versión</button>
+        <button id="logoutBtn" class="secondary">Salir</button>
+      </div>
+    </header>
+
+    <section class="page-actions">
+      <div>
+        <h2 id="domainCode">Cargando dominio...</h2>
+        <p id="domainDescription">Recuperando información desde Oracle.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h3>Entidades</h3>
+          <p id="entitiesCount">Cargando entidades...</p>
+        </div>
+        <button id="btnNewEntity">+ Nueva entidad</button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="entitiesTable" class="data-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Sección origen</th>
+              <th>Orden</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="entitiesEmptyState" class="empty-state hidden">Todavía no hay entidades para este dominio funcional.</div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h3>Siguiente nivel</h3>
+          <p>Después de crear entidades, el siguiente paso será definir atributos y relaciones.</p>
+        </div>
+      </div>
+      <div class="module-grid">
+        <article class="module-card"><h4>Atributos</h4><p>Campos de cada entidad, tipos de dato y obligatoriedad.</p></article>
+        <article class="module-card"><h4>Relaciones</h4><p>Dependencias entre entidades y atributos.</p></article>
+        <article class="module-card"><h4>Visual Designer</h4><p>Representación visual del modelo con entidades y relaciones.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <div id="entityModal" class="modal-backdrop hidden">
+    <section class="modal">
+      <header class="modal-header">
+        <div>
+          <h2>Nueva entidad</h2>
+          <p>Crea una entidad de configuración dentro del dominio funcional.</p>
+        </div>
+        <button id="closeEntityModal" class="icon-button">×</button>
+      </header>
+      <div class="modal-body">
+        <label for="entityCode">Código</label>
+        <input id="entityCode" placeholder="Ej. PMS_RESERVATION_TYPES" />
+        <label for="entityName">Nombre</label>
+        <input id="entityName" placeholder="Ej. Tipos de reserva" />
+        <label for="entityDescription">Descripción</label>
+        <textarea id="entityDescription" rows="3" placeholder="Descripción funcional de la entidad"></textarea>
+        <label for="sourceSectionName">Sección origen Excel</label>
+        <input id="sourceSectionName" placeholder="Ej. Reservation Types" />
+        <label for="entityOrder">Orden</label>
+        <input id="entityOrder" type="number" value="0" />
+        <div id="entityFormMessage" class="message"></div>
+      </div>
+      <footer class="modal-footer">
+        <button id="cancelEntity" class="secondary">Cancelar</button>
+        <button id="saveEntity">Guardar entidad</button>
+      </footer>
+    </section>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/domain-detail.js"></script>
+</body>
+</html>
