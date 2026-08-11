@@ -57,15 +57,45 @@
     <section class="card">
       <div class="card-header">
         <div>
+          <h3>Versiones</h3>
+          <p id="versionsCount">Cargando versiones...</p>
+        </div>
+        <button id="btnNewVersion">+ Nueva versión</button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="versionsTable" class="data-table">
+          <thead>
+            <tr>
+              <th>Versión</th>
+              <th>Etiqueta</th>
+              <th>Estado</th>
+              <th>Activa</th>
+              <th>Creada por</th>
+              <th>Fecha creación</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="versionsEmptyState" class="empty-state hidden">
+        Todavía no hay versiones para esta plantilla.
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
           <h3>Estructura de la plantilla</h3>
           <p>Próximos módulos funcionales del modelo de configuración.</p>
         </div>
       </div>
 
       <div class="module-grid">
-        <article class="module-card"><h4>Versiones</h4><p>Histórico, versión activa y borradores de la plantilla.</p></article>
         <article class="module-card"><h4>Dominios funcionales</h4><p>Agrupaciones lógicas de entidades de configuración.</p></article>
         <article class="module-card"><h4>Entidades</h4><p>Objetos de configuración, atributos y relaciones.</p></article>
+        <article class="module-card"><h4>Atributos</h4><p>Campos, tipos de dato, obligatoriedad y referencias.</p></article>
         <article class="module-card"><h4>Despliegues</h4><p>Validaciones, simulaciones y exportación hacia OPERA Cloud.</p></article>
       </div>
     </section>
@@ -74,6 +104,29 @@
       <div class="empty-state">No se ha podido cargar el detalle de la plantilla.</div>
     </section>
   </main>
+
+  <div id="versionModal" class="modal-backdrop hidden">
+    <section class="modal">
+      <header class="modal-header">
+        <div>
+          <h2>Nueva versión</h2>
+          <p>Crea un borrador para evolucionar la plantilla.</p>
+        </div>
+        <button id="closeVersionModal" class="icon-button">×</button>
+      </header>
+
+      <div class="modal-body">
+        <label for="versionLabel">Etiqueta de versión</label>
+        <input id="versionLabel" placeholder="Ej. PMS v1.1 Draft" />
+        <div id="versionFormMessage" class="message"></div>
+      </div>
+
+      <footer class="modal-footer">
+        <button id="cancelVersion" class="secondary">Cancelar</button>
+        <button id="saveVersion">Crear versión</button>
+      </footer>
+    </section>
+  </div>
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/layout.js"></script>

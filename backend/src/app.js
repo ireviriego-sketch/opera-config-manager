@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 const navigationRoutes = require('./routes/navigationRoutes');
 const templateRoutes = require('./routes/templateRoutes');
+const templateVersionRoutes = require('./routes/templateVersionRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 function createApp() {
@@ -22,6 +23,7 @@ function createApp() {
   app.use('/api/auth', authRoutes);
   app.use('/api/navigation', navigationRoutes);
   app.use('/api/templates', templateRoutes);
+  app.use('/api/template-versions', templateVersionRoutes);
 
   app.use(express.static(path.resolve(__dirname, '../../frontend')));
 
