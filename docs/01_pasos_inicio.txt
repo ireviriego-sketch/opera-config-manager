@@ -1,0 +1,55 @@
+PASOS PARA EMPEZAR SIN LIARNOS
+
+Contexto actual:
+- La BD ya está creada.
+- El esquema OPERA_CFG_APP ya existe.
+- El script inicial ya creó las 30 tablas.
+- El usuario OPERA_CFG_APP ya puede entrar por ORDS.
+
+Paso 1
+Descarga y descomprime este ZIP en tu equipo.
+
+Paso 2
+Copia la carpeta completa a la VM, por ejemplo en:
+/opt/opera-config-manager
+
+Paso 3
+Entra en la carpeta del backend:
+cd /opt/opera-config-manager/backend
+
+Paso 4
+Copia el archivo de entorno:
+cp .env.example .env
+
+Paso 5
+Edita .env y cambia:
+DB_PASSWORD
+DB_CONNECT_STRING
+DB_WALLET_DIR
+JWT_SECRET
+
+Paso 6
+Copia el wallet real de la ADB dentro de:
+/opt/opera-config-manager/wallet
+
+Paso 7
+Instala dependencias:
+npm install
+
+Paso 8
+Prueba conexión a BD:
+npm run check:db
+
+Resultado esperado:
+Connected to Oracle as: OPERA_CFG_APP
+
+Paso 9
+Arranca la API:
+npm start
+
+Paso 10
+Abre:
+http://IP_DE_LA_VM:4000/login.html
+
+Si algo falla, el primer punto a revisar es siempre:
+npm run check:db

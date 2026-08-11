@@ -1,0 +1,16 @@
+[Unit]
+Description=OPERA Config Manager API
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/opera-config-manager/backend
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+User=opc
+Group=opc
+
+[Install]
+WantedBy=multi-user.target

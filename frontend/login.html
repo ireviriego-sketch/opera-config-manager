@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERA Config Manager - Login</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body class="login-page">
+  <main class="login-card">
+    <h1>OPERA Config Manager</h1>
+    <p>Acceso a la plataforma de configuración OPERA Cloud</p>
+    <form id="loginForm">
+      <label>Usuario</label>
+      <input id="username" autocomplete="username" required />
+      <label>Contraseña</label>
+      <input id="password" type="password" autocomplete="current-password" required />
+      <button type="submit">Entrar</button>
+      <div id="loginMessage" class="message"></div>
+    </form>
+  </main>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/login.js"></script>
+</body>
+</html>
