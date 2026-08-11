@@ -19,11 +19,13 @@ async function apiFetch(path, options = {}) {
 
   const res = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { headers }));
   const data = await res.json().catch(() => ({}));
+
   if (!res.ok) {
     const error = new Error(data.message || data.error || 'API error');
     error.status = res.status;
     error.data = data;
     throw error;
   }
+
   return data;
 }

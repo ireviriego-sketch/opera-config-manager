@@ -8,9 +8,16 @@
 </head>
 <body>
   <aside class="sidebar">
-    <h2>OPERA CFG</h2>
-    <nav id="sideMenu"></nav>
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
   </aside>
+
   <main class="main">
     <header class="topbar">
       <div>
@@ -19,9 +26,12 @@
       </div>
       <button id="logoutBtn" class="secondary">Salir</button>
     </header>
-    <section id="tiles" class="tiles"></section>
+
+    <section class="dashboard-grid" id="tiles"></section>
   </main>
+
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
   <script src="assets/js/home.js"></script>
 </body>
 </html>

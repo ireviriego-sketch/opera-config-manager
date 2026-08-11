@@ -1,35 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<title>Plantillas</title>
-<link rel="stylesheet" href<body>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Plantillas | OPERA Config Manager</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
 
-<div class="main">
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1>Plantillas</h1>
+        <p>Gestión de modelos de configuración OPERA Cloud</p>
+      </div>
+      <button id="logoutBtn" class="secondary">Salir</button>
+    </header>
 
-<h1>Plantillas</h1>
+    <section class="page-actions">
+      <div>
+        <h2>Modelos de configuración</h2>
+        <p>Consulta y crea plantillas base para cadenas y hoteles.</p>
+      </div>
+      <div class="actions-right">
+        <input id="templateSearch" class="search-input" placeholder="Buscar plantilla..." />
+        <button id="btnNewTemplate">+ Nueva plantilla</button>
+      </div>
+    </section>
 
-<button id="btnNew">Nueva plantilla</button>
-<div id="newTemplateForm">
-  <input id="code" placeholder="Código">
-  <input id="name" placeholder="Nombre">
-  <input id="description" placeholder="Descripción">
- <button id="saveTemplate">Guardar</button>
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h3>Plantillas disponibles</h3>
+          <p id="templateCount">Cargando...</p>
+        </div>
+      </div>
 
-<table id="templatesTable" border="1" cellpadding="8">
-<thead>
-<tr>
-<th>ID</th>
-<th>Código</th>
-<th>Nombre</th>
-<th>Estado</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+      <div class="table-wrap">
+        <table id="templatesTable" class="data-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-</div>
-<script src="assets/js/templates.js"></script>
+      <div id="emptyState" class="empty-state hidden">
+        No hay plantillas que coincidan con la búsqueda.
+      </div>
+    </section>
+  </main>
+
+  <div id="templateModal" class="modal-backdrop hidden">
+    <section class="modal">
+      <header class="modal-header">
+        <div>
+          <h2>Nueva plantilla</h2>
+          <p>Crea un nuevo modelo de configuración OPERA Cloud.</p>
+        </div>
+        <button id="closeTemplateModal" class="icon-button">×</button>
+      </header>
+
+      <div class="modal-body">
+        <label for="code">Código</label>
+        <input id="code" placeholder="Ej. PMS_STANDARD" />
+
+        <label for="name">Nombre</label>
+        <input id="name" placeholder="Ej. OPERA PMS Standard Template" />
+
+        <label for="description">Descripción</label>
+        <textarea id="description" rows="3" placeholder="Descripción funcional de la plantilla"></textarea>
+
+        <div id="templateFormMessage" class="message"></div>
+      </div>
+
+      <footer class="modal-footer">
+        <button id="cancelTemplate" class="secondary">Cancelar</button>
+        <button id="saveTemplate">Guardar plantilla</button>
+      </footer>
+    </section>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/templates.js"></script>
 </body>
 </html>

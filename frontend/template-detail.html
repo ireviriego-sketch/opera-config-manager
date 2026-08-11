@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Detalle de plantilla | OPERA Config Manager</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="templateTitle">Detalle de plantilla</h1>
+        <p id="templateSubtitle">Información general del modelo de configuración.</p>
+      </div>
+      <div class="actions-right">
+        <button id="backToTemplates" class="secondary">Volver a Plantillas</button>
+        <button id="logoutBtn" class="secondary">Salir</button>
+      </div>
+    </header>
+
+    <section class="page-actions">
+      <div>
+        <h2 id="templateCode">Cargando plantilla...</h2>
+        <p id="templateDescription">Recuperando información desde Oracle.</p>
+      </div>
+      <div id="templateStatus"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h3>Información general</h3>
+          <p>Datos principales de la plantilla seleccionada.</p>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-item"><span>ID</span><strong id="detailId">-</strong></div>
+        <div class="detail-item"><span>Código</span><strong id="detailCode">-</strong></div>
+        <div class="detail-item"><span>Nombre</span><strong id="detailName">-</strong></div>
+        <div class="detail-item"><span>Estado</span><strong id="detailStatus">-</strong></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h3>Estructura de la plantilla</h3>
+          <p>Próximos módulos funcionales del modelo de configuración.</p>
+        </div>
+      </div>
+
+      <div class="module-grid">
+        <article class="module-card"><h4>Versiones</h4><p>Histórico, versión activa y borradores de la plantilla.</p></article>
+        <article class="module-card"><h4>Dominios funcionales</h4><p>Agrupaciones lógicas de entidades de configuración.</p></article>
+        <article class="module-card"><h4>Entidades</h4><p>Objetos de configuración, atributos y relaciones.</p></article>
+        <article class="module-card"><h4>Despliegues</h4><p>Validaciones, simulaciones y exportación hacia OPERA Cloud.</p></article>
+      </div>
+    </section>
+
+    <section id="detailError" class="card hidden">
+      <div class="empty-state">No se ha podido cargar el detalle de la plantilla.</div>
+    </section>
+  </main>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/template-detail.js"></script>
+</body>
+</html>
