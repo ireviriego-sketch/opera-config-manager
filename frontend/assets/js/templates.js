@@ -24,4 +24,38 @@ templates.forEach(t => {
 
 }
 
-loadTemplates();
+
+document.getElementById('saveTemplate')
+  .addEventListener('click', async () => {
+
+    const code =
+      document.getElementById('code').value;
+
+    const name =
+      document.getElementById('name').value;
+
+    const description =
+      document.getElementById('description').value;
+
+    const response = await fetch(
+      '/api/templates',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify({
+          code,
+          name,
+          description
+        })
+      }
+    );
+
+console.log('STATUS', response.status);
+console.log('OK', response.ok);
+
+if(response.ok){
+   await loadTemplates();
+}
+  });
