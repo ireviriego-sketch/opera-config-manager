@@ -148,43 +148,47 @@ async function getHotels(chainId) {
   return result.rows;
 }
 
-async function cleanupCopiedStructure(connection, chainDeploymentId) {
-  await connection.execute(
-    `DELETE FROM opera_cfg_chain_deployment_records
+async function cleanupCopiedStructure(chainDeploymentId) {
+  await execute(
+    `DELETE /*+ NO_PARALLEL */ FROM opera_cfg_chain_deployment_records
       WHERE chain_deployment_id = :id`,
-    { id: Number(chainDeploymentId) }
+    { id: Number(chainDeploymentId) },
+    { autoCommit: true }
   );
-  await connection.execute(
-    `DELETE FROM opera_cfg_chain_deployment_attributes
+  await execute(
+    `DELETE /*+ NO_PARALLEL */ FROM opera_cfg_chain_deployment_attributes
       WHERE chain_deployment_id = :id`,
-    { id: Number(chainDeploymentId) }
+    { id: Number(chainDeploymentId) },
+    { autoCommit: true }
   );
-  await connection.execute(
-    `DELETE FROM opera_cfg_chain_deployment_entities
+  await execute(
+    `DELETE /*+ NO_PARALLEL */ FROM opera_cfg_chain_deployment_entities
       WHERE chain_deployment_id = :id`,
-    { id: Number(chainDeploymentId) }
+    { id: Number(chainDeploymentId) },
+    { autoCommit: true }
   );
-  await connection.execute(
-    `DELETE FROM opera_cfg_chain_deployment_domains
+  await execute(
+    `DELETE /*+ NO_PARALLEL */ FROM opera_cfg_chain_deployment_domains
       WHERE chain_deployment_id = :id`,
-    { id: Number(chainDeploymentId) }
+    { id: Number(chainDeploymentId) },
+    { autoCommit: true }
   );
 }
 
-async function copyTemplateStructure(connection, chainDeploymentId, sourceTemplateVersionId, userName) {
+async function copyTemplateStructure(chainDeploymentId, sourceTemplateVersionId, userName) {
   if (!sourceTemplateVersionId) {
-    await cleanupCopiedStructure(connection, chainDeploymentId);
+    await cleanupCopiedStructure(chainDeploymentId);
     return { domains: 0, entities: 0, attributes: 0, note: 'No source template version selected.' };
   }
 
-  await cleanupCopiedStructure(connection, chainDeploymentId);
+  await cleanupCopiedStructure(chainDeploymentId);
 
   const versionId = Number(sourceTemplateVersionId);
   const summary = { domains: 0, entities: 0, attributes: 0 };
   const domainIdMap = new Map();
   const entityIdMap = new Map();
 
-  const domainResult = await connection.execute(
+  const domainResult = await execute(
     `SELECT domain_id,
             version_id,
             domain_code,
@@ -193,13 +197,12 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
             display_order
        FROM opera_cfg_domains
       WHERE version_id = :versionId
-        AND NVL(is_active, 'Y') = 'Y'
       ORDER BY display_order, domain_id`,
     { versionId }
   );
 
   for (const row of domainResult.rows) {
-    const insertResult = await connection.execute(
+    const insertResult = await execute(
       `INSERT INTO opera_cfg_chain_deployment_domains
          (chain_deployment_id, source_domain_id, domain_code, domain_name, status, sort_order, created_by)
        VALUES
@@ -213,7 +216,8 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
         sortOrder: row.DISPLAY_ORDER,
         createdBy: userName || null,
         deploymentDomainId: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
-      }
+      },
+      { autoCommit: true }
     );
 
     domainIdMap.set(Number(row.DOMAIN_ID), insertResult.outBinds.deploymentDomainId[0]);
@@ -226,7 +230,7 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
   const domainBindNames = domainIdList.map((_, index) => `:domain${index}`);
   const domainBinds = Object.fromEntries(domainIdList.map((id, index) => [`domain${index}`, id]));
 
-  const entityResult = await connection.execute(
+  const entityResult = await execute(
     `SELECT de.domain_id,
             de.entity_id,
             de.display_order AS domain_entity_display_order,
@@ -249,7 +253,7 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
     const deploymentDomainId = domainIdMap.get(Number(row.DOMAIN_ID));
     if (!deploymentDomainId) continue;
 
-    const insertResult = await connection.execute(
+    const insertResult = await execute(
       `INSERT INTO opera_cfg_chain_deployment_entities
          (chain_deployment_id, deployment_domain_id, source_entity_id, entity_code, entity_name, status, sort_order, created_by)
        VALUES
@@ -264,7 +268,8 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
         sortOrder: row.DOMAIN_ENTITY_DISPLAY_ORDER || row.ENTITY_DISPLAY_ORDER,
         createdBy: userName || null,
         deploymentEntityId: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
-      }
+      },
+      { autoCommit: true }
     );
 
     entityIdMap.set(Number(row.ENTITY_ID), insertResult.outBinds.deploymentEntityId[0]);
@@ -277,7 +282,7 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
   const entityBindNames = entityIdList.map((_, index) => `:entity${index}`);
   const entityBinds = Object.fromEntries(entityIdList.map((id, index) => [`entity${index}`, id]));
 
-  const attributeResult = await connection.execute(
+  const attributeResult = await execute(
     `SELECT attribute_id,
             entity_id,
             attribute_code,
@@ -299,7 +304,7 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
     const deploymentEntityId = entityIdMap.get(Number(row.ENTITY_ID));
     if (!deploymentEntityId) continue;
 
-    await connection.execute(
+    await execute(
       `INSERT INTO opera_cfg_chain_deployment_attributes
          (chain_deployment_id, deployment_entity_id, source_attribute_id, attribute_code, attribute_name, data_type, is_required, default_value, status, sort_order, created_by)
        VALUES
@@ -315,7 +320,8 @@ async function copyTemplateStructure(connection, chainDeploymentId, sourceTempla
         defaultValue: row.DEFAULT_VALUE,
         sortOrder: row.DISPLAY_ORDER,
         createdBy: userName || null
-      }
+      },
+      { autoCommit: true }
     );
 
     summary.attributes += 1;
@@ -461,7 +467,8 @@ async function regenerateContent(connection, chainDeploymentId, userName) {
 }
 
 async function createDeployment(chainId, payload, userName) {
-  return executeTransaction(async connection => {
+  // Paso 1: crear el registro del despliegue
+  const chainDeploymentId = await executeTransaction(async connection => {
     const result = await connection.execute(
       `INSERT INTO opera_cfg_chain_deployments
          (chain_id, deployment_name, status, source_template_version_id, comments, created_by)
@@ -477,12 +484,18 @@ async function createDeployment(chainId, payload, userName) {
         chainDeploymentId: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
       }
     );
+    return result.outBinds.chainDeploymentId[0];
+  });
 
-    const chainDeploymentId = result.outBinds.chainDeploymentId[0];
-    await copyTemplateStructure(connection, chainDeploymentId, payload.sourceTemplateVersionId, userName);
+  // Paso 2: copiar estructura con commits por operación
+  await copyTemplateStructure(chainDeploymentId, payload.sourceTemplateVersionId, userName);
+
+  // Paso 3: regenerar contenido
+  await executeTransaction(async connection => {
     await regenerateContent(connection, chainDeploymentId, userName);
-    return chainDeploymentId;
-  }).then(findById);
+  });
+
+  return findById(chainDeploymentId);
 }
 
 async function updateDeployment(chainDeploymentId, payload, userName) {
@@ -494,6 +507,7 @@ async function updateDeployment(chainDeploymentId, payload, userName) {
     throw error;
   }
 
+  // Paso 1: actualizar el registro
   await executeTransaction(async connection => {
     await connection.execute(
       `UPDATE opera_cfg_chain_deployments
@@ -513,8 +527,13 @@ async function updateDeployment(chainDeploymentId, payload, userName) {
         updatedBy: userName || null
       }
     );
+  });
 
-    await copyTemplateStructure(connection, chainDeploymentId, payload.sourceTemplateVersionId, userName);
+  // Paso 2: copiar estructura con commits por operación
+  await copyTemplateStructure(chainDeploymentId, payload.sourceTemplateVersionId, userName);
+
+  // Paso 3: regenerar contenido
+  await executeTransaction(async connection => {
     await regenerateContent(connection, chainDeploymentId, userName);
   });
 
@@ -543,7 +562,7 @@ async function copyDeployment(chainDeploymentId, userName) {
     );
 
     const newChainDeploymentId = result.outBinds.newChainDeploymentId[0];
-    await copyTemplateStructure(connection, newChainDeploymentId, source.sourceTemplateVersionId, userName);
+    await copyTemplateStructure(newChainDeploymentId, source.sourceTemplateVersionId, userName);
     await regenerateContent(connection, newChainDeploymentId, userName);
     return newChainDeploymentId;
   }).then(findById);

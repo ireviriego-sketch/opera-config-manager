@@ -100,14 +100,23 @@
 
   function renderDeployments() {
     if (!state.deployments.length) { $('deploymentsContainer').innerHTML = '<p class="muted">No hay despliegues OPERA para esta cadena.</p>'; return; }
-    $('deploymentsContainer').innerHTML = `<table><thead><tr><th>CHAIN_DEPLOYMENT_ID</th><th>DEPLOYMENT_NAME</th><th>VERSION ORIGEN</th><th>STATUS</th><th>CREATED_AT</th><th>COMMENTS</th><th></th></tr></thead><tbody>${state.deployments.map(dep => `<tr><td>${dep.deploymentId}</td><td>${escapeHtml(dep.deploymentName)}</td><td>${escapeHtml(dep.sourceTemplateVersionId || '')}</td><td>${badge(dep.status)}</td><td>${escapeHtml(dep.createdAt || '')}</td><td>${escapeHtml(dep.comments || '')}</td><td class="row-actions"><button class="secondary small" data-view-deployment="${dep.deploymentId}">Ver contenido</button><button class="secondary small" data-export-deployment="${dep.deploymentId}">Exportar JSON</button><button class="secondary small" data-edit-deployment="${dep.deploymentId}" ${dep.locked ? 'disabled' : ''}>Editar</button><button class="secondary small" data-copy-deployment="${dep.deploymentId}">Copiar</button></td></tr>`).join('')}</tbody></table>`;
-    document.querySelectorAll('[data-view-deployment]').forEach(b => b.onclick = () => viewContent(Number(b.dataset.viewDeployment)));
-    document.querySelectorAll('[data-export-deployment]').forEach(b => b.onclick = () => exportJson(Number(b.dataset.exportDeployment)));
+    $('deploymentsContainer').innerHTML = `<table><thead><tr><th>CHAIN_DEPLOYMENT_ID</th><th>DEPLOYMENT_NAME</th><th>VERSION ORIGEN</th><th>STATUS</th><th>CREATED_AT</th><th>COMMENTS</th><th></th></tr></thead><tbody>${state.deployments.map(dep => `<tr><td>${dep.deploymentId}</td><td>${escapeHtml(dep.deploymentName)}</td><td>${escapeHtml(dep.sourceTemplateVersionId || '')}</td><td>${badge(dep.status)}</td><td>${escapeHtml(dep.createdAt || '')}</td><td>${escapeHtml(dep.comments || '')}</td><td class="row-actions"><button class="secondary small" data-edit-deployment="${dep.deploymentId}" ${dep.locked ? 'disabled' : ''}>Editar</button><button class="secondary small" data-copy-deployment="${dep.deploymentId}">Copiar</button></td></tr>`).join('')}</tbody></table>`;
     document.querySelectorAll('[data-edit-deployment]').forEach(b => b.onclick = () => editDeployment(Number(b.dataset.editDeployment)));
     document.querySelectorAll('[data-copy-deployment]').forEach(b => b.onclick = () => copyDeployment(Number(b.dataset.copyDeployment)));
   }
 
-  function newDeployment() { $('deploymentModalTitle').textContent='Nuevo despliegue OPERA'; $('deploymentIdInput').value=''; $('deploymentNameInput').value=`Despliegue OPERA ${state.chain.chainCode}`; $('deploymentStatusInput').value='DRAFT'; $('deploymentStatusInput').disabled=true; $('sourceTemplateVersionInput').value=''; $('deploymentCommentsInput').value=''; openGenericModal('deploymentModal'); }
+  function newDeployment() {
+    $('deploymentModalTitle').textContent='Nuevo despliegue OPERA';
+    $('deploymentIdInput').value='';
+    $('deploymentNameInput').value=`Despliegue OPERA ${state.chain.chainCode}`;
+    $('deploymentStatusInput').value='DRAFT';
+    $('deploymentStatusInput').disabled=true;
+    $('deploymentCommentsInput').value='';
+    // Preseleccionar la versión activa de la plantilla automáticamente
+    const activeVersion = state.templateVersions.find(v => v.status === 'ACTIVE');
+    $('sourceTemplateVersionInput').value = activeVersion ? activeVersion.templateVersionId : '';
+    openGenericModal('deploymentModal');
+  }
   function editDeployment(id) { const dep=state.deployments.find(d => d.deploymentId === id); if (!dep) return; $('deploymentModalTitle').textContent='Editar despliegue OPERA'; $('deploymentIdInput').value=dep.deploymentId; $('deploymentNameInput').value=dep.deploymentName; $('deploymentStatusInput').value=dep.status; $('deploymentStatusInput').disabled=false; $('sourceTemplateVersionInput').value=dep.sourceTemplateVersionId || ''; $('deploymentCommentsInput').value=dep.comments || ''; openGenericModal('deploymentModal'); }
 
   async function saveDeployment(event) {
