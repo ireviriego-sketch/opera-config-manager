@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERA CFG - Deployment Designer</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/deployment-designer.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main designer-main">
+    <header class="topbar designer-topbar">
+      <div>
+        <p class="kicker">Deployment Designer</p>
+        <h1 id="designerTitle">Despliegue OPERA</h1>
+        <p id="designerSubtitle">Copia visual de la plantilla para cargar datos funcionales.</p>
+      </div>
+      <div class="page-actions">
+        <button id="backBtn" class="secondary" type="button">Volver</button>
+        <button id="refreshBtn" class="secondary" type="button">Actualizar</button>
+        <button id="exportAllBtn" class="secondary" type="button">Exportar JSON</button>
+      </div>
+    </header>
+
+    <section class="designer-layout">
+      <aside class="designer-left-panel">
+        <div class="panel-title-row">
+          <h2>Dominios</h2>
+          <span id="domainCountBadge" class="count-badge">0</span>
+        </div>
+        <div id="domainList" class="domain-list"></div>
+      </aside>
+
+      <section class="designer-canvas-panel">
+        <div class="canvas-toolbar">
+          <div>
+            <h2 id="canvasTitle">Vista visual</h2>
+            <p id="canvasHint" class="muted">Doble click en una entidad para cargar datos.</p>
+          </div>
+          <div class="page-actions">
+            <button id="fitCanvasBtn" class="secondary small" type="button">Reordenar</button>
+          </div>
+        </div>
+        <div id="canvasWrapper" class="canvas-wrapper">
+          <svg id="relationshipLayer" class="relationship-layer"></svg>
+          <div id="canvas" class="deployment-canvas"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <aside id="entityDrawer" class="entity-drawer hidden">
+    <div class="drawer-header">
+      <div>
+        <p id="drawerDomain" class="kicker">Dominio</p>
+        <h2 id="drawerTitle">Entidad</h2>
+        <p id="drawerSubtitle" class="muted">Atributos y registros del despliegue.</p>
+      </div>
+      <button id="closeDrawerBtn" class="link-button" type="button">Cerrar</button>
+    </div>
+
+    <section class="drawer-section">
+      <div class="section-title-row">
+        <h3>Atributos</h3>
+        <span id="attributeCountBadge" class="count-badge">0</span>
+      </div>
+      <div id="attributeList" class="attribute-list"></div>
+    </section>
+
+    <section class="drawer-section">
+      <div class="section-title-row">
+        <h3>Registros</h3>
+        <div class="page-actions">
+          <button id="newRecordBtn" class="primary small" type="button">Nuevo</button>
+          <button id="importExcelBtn" class="secondary small" type="button">Importar Excel</button>
+          <button id="exportExcelBtn" class="secondary small" type="button">Exportar Excel</button>
+        </div>
+      </div>
+      <div id="recordsContainer" class="records-container"></div>
+    </section>
+  </aside>
+
+  <div id="recordModal" class="modal hidden">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h2 id="recordModalTitle">Nuevo registro</h2>
+        <button id="closeRecordModalBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <form id="recordForm" class="record-form" novalidate></form>
+    </div>
+  </div>
+
+  <div id="messageModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="messageTitle">Aviso</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <div id="messageBody"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/deployment-designer-api.js"></script>
+  <script src="assets/js/deployment-designer.js"></script>
+</body>
+</html>

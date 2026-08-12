@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERA CFG - Contenido despliegue</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/deployment-content.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">OC</div><div><h2>OPERA CFG</h2><span>Configuration Manager</span></div></div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div><h1>Contenido del despliegue</h1><p id="pageSubtitle">Dominios, entidades y registros que se desplegarán.</p></div>
+      <div class="page-actions"><button id="backBtn" class="secondary" type="button">Volver</button><button id="refreshBtn" class="secondary" type="button">Actualizar</button></div>
+    </header>
+
+    <section class="deployment-workbench">
+      <aside class="structure-panel">
+        <div class="panel-header"><h2>Dominios y entidades</h2></div>
+        <div id="structureContainer" class="structure-tree"></div>
+      </aside>
+
+      <section class="records-panel">
+        <div class="panel-header">
+          <div><h2 id="entityTitle">Selecciona una entidad</h2><p id="entitySubtitle" class="muted">Los atributos y registros aparecerán aquí.</p></div>
+          <div class="page-actions"><button id="newRecordBtn" class="primary hidden" type="button">Nuevo registro</button></div>
+        </div>
+
+        <div id="attributesContainer" class="attributes-bar"></div>
+        <div id="recordsContainer" class="table-wrap"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="recordModal" class="modal hidden">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header"><h2 id="recordModalTitle">Nuevo registro</h2><button id="closeRecordModalBtn" class="link-button" type="button">Cerrar</button></div>
+      <form id="recordForm" class="record-form" novalidate></form>
+    </div>
+  </div>
+
+  <div id="messageModal" class="modal hidden"><div class="modal-card"><div class="modal-header"><h2 id="messageTitle">Aviso</h2><button id="closeMessageBtn" class="link-button" type="button">Cerrar</button></div><div id="messageBody"></div></div></div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/deployment-content-api.js"></script>
+  <script src="assets/js/deployment-content.js"></script>
+</body>
+</html>

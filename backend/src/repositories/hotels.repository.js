@@ -5,6 +5,8 @@ function mapHotel(row) {
   return {
     hotelId: row.HOTEL_ID,
     chainId: row.CHAIN_ID,
+    chainCode: row.CHAIN_CODE,
+    chainName: row.CHAIN_NAME,
     hotelCode: row.HOTEL_CODE,
     hotelName: row.HOTEL_NAME,
     status: row.STATUS,
@@ -15,20 +17,64 @@ function mapHotel(row) {
   };
 }
 
+async function findAll(filters = {}) {
+  const search = String(filters.search || '').trim().toUpperCase();
+  const binds = {};
+  let where = '1 = 1';
+
+  if (search) {
+    binds.search = `%${search}%`;
+    where += `
+      AND (
+        UPPER(h.hotel_code) LIKE :search
+        OR UPPER(h.hotel_name) LIKE :search
+        OR UPPER(c.chain_code) LIKE :search
+        OR UPPER(c.chain_name) LIKE :search
+        OR UPPER(h.status) LIKE :search
+      )`;
+  }
+
+  const result = await execute(
+    `SELECT h.hotel_id,
+            h.chain_id,
+            c.chain_code,
+            c.chain_name,
+            h.hotel_code,
+            h.hotel_name,
+            h.status,
+            h.created_at,
+            h.created_by,
+            h.updated_at,
+            h.updated_by
+       FROM opera_cfg_hotels h
+       JOIN opera_cfg_chains c
+         ON c.chain_id = h.chain_id
+      WHERE ${where}
+      ORDER BY UPPER(h.hotel_name), UPPER(c.chain_name)`,
+    binds
+  );
+
+  return result.rows.map(mapHotel);
+}
+
 async function findByChainId(chainId) {
   const result = await execute(
-    `SELECT hotel_id,
-            chain_id,
-            hotel_code,
-            hotel_name,
-            status,
-            created_at,
-            created_by,
-            updated_at,
-            updated_by
-       FROM opera_cfg_hotels
-      WHERE chain_id = :chainId
-      ORDER BY UPPER(hotel_name)`,
+    `SELECT h.hotel_id,
+            h.chain_id,
+            c.chain_code,
+            c.chain_name,
+            h.hotel_code,
+            h.hotel_name,
+            h.status,
+            h.created_at,
+            h.created_by,
+            h.updated_at,
+            h.updated_by
+       FROM opera_cfg_hotels h
+       JOIN opera_cfg_chains c
+         ON c.chain_id = h.chain_id
+      WHERE h.chain_id = :chainId
+      ORDER BY UPPER(h.hotel_name)`,
     { chainId: Number(chainId) }
   );
   return result.rows.map(mapHotel);
@@ -36,17 +82,21 @@ async function findByChainId(chainId) {
 
 async function findById(hotelId) {
   const result = await execute(
-    `SELECT hotel_id,
-            chain_id,
-            hotel_code,
-            hotel_name,
-            status,
-            created_at,
-            created_by,
-            updated_at,
-            updated_by
-       FROM opera_cfg_hotels
-      WHERE hotel_id = :hotelId`,
+    `SELECT h.hotel_id,
+            h.chain_id,
+            c.chain_code,
+            c.chain_name,
+            h.hotel_code,
+            h.hotel_name,
+            h.status,
+            h.created_at,
+            h.created_by,
+            h.updated_at,
+            h.updated_by
+       FROM opera_cfg_hotels h
+       JOIN opera_cfg_chains c
+         ON c.chain_id = h.chain_id
+      WHERE h.hotel_id = :hotelId`,
     { hotelId: Number(hotelId) }
   );
   return result.rows[0] ? mapHotel(result.rows[0]) : null;
@@ -99,6 +149,7 @@ async function updateHotel(chainId, hotelId, { hotelCode, hotelName, status, upd
 }
 
 module.exports = {
+  findAll,
   findByChainId,
   findById,
   createHotel,

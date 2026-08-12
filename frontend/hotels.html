@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERA CFG - Hoteles</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/hotels.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1>Hoteles</h1>
+        <p>Busca hoteles por código, nombre, cadena o estado.</p>
+      </div>
+      <div class="page-actions">
+        <button id="refreshBtn" class="secondary" type="button">Actualizar</button>
+      </div>
+    </header>
+
+    <section class="content-card">
+      <div class="toolbar hotels-toolbar">
+        <input id="hotelSearchInput" class="input" placeholder="Buscar hotel, código, cadena o estado" />
+        <button id="clearSearchBtn" class="secondary" type="button">Limpiar</button>
+      </div>
+
+      <p id="hotelsSummary" class="muted"></p>
+      <div id="hotelsContainer" class="table-wrap"></div>
+    </section>
+  </main>
+
+  <div id="messageModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="messageTitle">Aviso</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <div id="messageBody"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/hotels-api.js"></script>
+  <script src="assets/js/hotels.js"></script>
+</body>
+</html>
