@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OPERA CFG - Detalle cadena</title>
+  <link rel="stylesheet" href="assets/css/chain-detail.css">
+</head>
+<body>
+  <header class="page-header">
+    <div><p class="kicker">OPERA CFG</p><h1 id="pageTitle">Detalle de cadena</h1><p id="pageSubtitle" class="muted"></p></div>
+    <div class="header-actions"><a class="btn secondary" href="chains.html">Volver</a><button id="saveChainBtn" class="btn primary">Guardar cadena</button></div>
+  </header>
+  <main class="page-shell">
+    <section class="card"><h2>Datos de la cadena</h2><form id="chainForm" class="form" novalidate><input id="chainIdInput" type="hidden"><label>CHAIN_CODE *<input id="chainCodeInput" class="input" maxlength="50"></label><label>CHAIN_NAME *<input id="chainNameInput" class="input" maxlength="200"></label><label>STATUS *<select id="chainStatusInput" class="input"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label></form></section>
+    <section class="card"><div class="tabs"><button class="tab active" data-tab="hotelsPanel">Hoteles</button><button class="tab" data-tab="deploymentsPanel">Despliegues OPERA</button></div><section id="hotelsPanel" class="tab-panel"><div class="section-header"><div><h2>Hoteles</h2><p class="muted">Cada hotel pertenece a esta cadena.</p></div><div class="actions"><button id="importHotelsBtn" class="btn secondary">Importar desde Accenture Hospitality</button><button id="newHotelBtn" class="btn primary">Nuevo hotel</button></div></div><form id="hotelForm" class="form hidden" novalidate><input id="hotelIdInput" type="hidden"><label>HOTEL_CODE *<input id="hotelCodeInput" class="input" maxlength="50"></label><label>HOTEL_NAME *<input id="hotelNameInput" class="input" maxlength="200"></label><label>STATUS *<select id="hotelStatusInput" class="input"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label><div class="form-actions"><button class="btn primary" type="submit">Guardar hotel</button><button id="cancelHotelBtn" class="btn ghost" type="button">Cancelar</button></div></form><div id="hotelsContainer" class="table-wrap"></div></section><section id="deploymentsPanel" class="tab-panel hidden"><h2>Despliegues OPERA</h2><p class="muted">Reservado para el siguiente desarrollo de despliegues desde plantilla activa.</p></section></section>
+  </main>
+  <div id="messageModal" class="modal hidden"><div class="modal-card"><div class="modal-header"><h2 id="messageTitle">Aviso</h2><button id="closeMessageBtn" class="btn ghost">Cerrar</button></div><div id="messageBody"></div></div></div>
+  <script src="assets/js/chains-api.js"></script><script src="assets/js/chain-detail.js"></script>
+</body>
+</html>

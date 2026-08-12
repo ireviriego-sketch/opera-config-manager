@@ -3,16 +3,22 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
+
 const { env } = require('./config/env');
+
 const authRoutes = require('./routes/authRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 const navigationRoutes = require('./routes/navigationRoutes');
+
 const templateRoutes = require('./routes/templateRoutes');
 const templateVersionRoutes = require('./routes/templateVersionRoutes');
+
 const domainRoutes = require('./routes/domainRoutes');
 const entityRoutes = require('./routes/entityRoutes');
 const attributeRoutes = require('./routes/attributeRoutes');
 const relationshipRoutes = require('./routes/relationshipRoutes');
+const chainsRoutes = require('./routes/chains.routes');
+
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
 function createApp() {
@@ -26,12 +32,15 @@ function createApp() {
   app.use('/api/health', healthRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/navigation', navigationRoutes);
+
   app.use('/api/templates', templateRoutes);
   app.use('/api/template-versions', templateVersionRoutes);
+
   app.use('/api/domains', domainRoutes);
   app.use('/api/entities', entityRoutes);
   app.use('/api/attributes', attributeRoutes);
   app.use('/api/relationships', relationshipRoutes);
+  app.use('/api/opera-config/chains', chainsRoutes);
 
   app.use(express.static(path.resolve(__dirname, '../../frontend')));
 

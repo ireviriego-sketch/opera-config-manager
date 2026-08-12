@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OPERA CFG - Cadenas</title>
+  <link rel="stylesheet" href="assets/css/chains.css">
+</head>
+<body>
+  <header class="page-header">
+    <div><p class="kicker">OPERA CFG</p><h1>Cadenas hoteleras</h1></div>
+    <div class="header-actions"><button id="refreshBtn" class="btn secondary">Actualizar</button><button id="newChainBtn" class="btn primary">Nueva cadena</button></div>
+  </header>
+  <main class="page-shell"><section class="card"><div class="toolbar"><input id="searchInput" class="input" placeholder="Buscar por código o nombre"></div><div id="chainsContainer" class="chains-grid"></div></section></main>
+  <div id="chainModal" class="modal hidden"><div class="modal-card"><div class="modal-header"><h2>Nueva cadena</h2><button id="closeModalBtn" class="btn ghost">Cerrar</button></div><form id="chainForm" class="form" novalidate><label>CHAIN_CODE *<input id="chainCodeInput" class="input" maxlength="50"></label><label>CHAIN_NAME *<input id="chainNameInput" class="input" maxlength="200"></label><label>STATUS *<select id="chainStatusInput" class="input"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label><div class="form-actions"><button class="btn primary" type="submit">Guardar</button></div></form></div></div>
+  <div id="messageModal" class="modal hidden"><div class="modal-card"><div class="modal-header"><h2 id="messageTitle">Aviso</h2><button id="closeMessageBtn" class="btn ghost">Cerrar</button></div><div id="messageBody"></div></div></div>
+  <script src="assets/js/chains-api.js"></script><script src="assets/js/chains.js"></script>
+</body>
+</html>
