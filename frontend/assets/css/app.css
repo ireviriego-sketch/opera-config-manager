@@ -21,6 +21,9 @@ button { border: 0; border-radius: 10px; padding: 10px 14px; font-weight: 700; c
 button:hover { background: var(--primary-dark); }
 button.secondary { background: #e5e7eb; color: var(--text); }
 button.secondary:hover { background: #d1d5db; }
+a.button-link { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: inherit; padding: 10px 14px; border: 1px solid transparent; line-height: normal; }
+a.button-link.secondary { background: #e5e7eb; color: var(--text); border-color: #d1d5db; }
+a.button-link.secondary:hover { background: #d1d5db; }
 input, textarea { width: 100%; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; background: white; color: var(--text); }
 label { display: block; font-size: 13px; font-weight: 750; color: #334155; margin: 14px 0 6px; }
 .hidden { display: none !important; }

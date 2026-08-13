@@ -17,3 +17,7 @@ router.put('/:deploymentId/records/:recordId', asyncHandler(controller.updateRec
 router.delete('/:deploymentId/records/:recordId', asyncHandler(controller.deleteRecord));
 
 module.exports = router;
+
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+router.post('/:deploymentId/domains/:domainId/import', upload.single('file'), asyncHandler(controller.importDomainExcel));

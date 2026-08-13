@@ -7,4 +7,8 @@ async function createRecord(deploymentId, entityId, body, userName) { return rep
 async function updateRecord(deploymentId, recordId, body, userName) { return repository.updateRecord(deploymentId, recordId, body.record || {}, userName || null); }
 async function deleteRecord(deploymentId, recordId) { return repository.deleteRecord(deploymentId, recordId); }
 
-module.exports = { getStructure, getEntityAttributes, listRecords, createRecord, updateRecord, deleteRecord };
+async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
+  return repository.importDomainExcel(deploymentId, domainId, fileBuffer, userName);
+}
+
+module.exports = { getStructure, getEntityAttributes, listRecords, createRecord, updateRecord, deleteRecord, importDomainExcel };

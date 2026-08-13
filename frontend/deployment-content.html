@@ -28,7 +28,7 @@
       <section class="records-panel">
         <div class="panel-header">
           <div><h2 id="entityTitle">Selecciona una entidad</h2><p id="entitySubtitle" class="muted">Los atributos y registros aparecerán aquí.</p></div>
-          <div class="page-actions"><button id="newRecordBtn" class="primary hidden" type="button">Nuevo registro</button></div>
+          <div id="newRecordActions" class="page-actions"></div>
         </div>
 
         <div id="attributesContainer" class="attributes-bar"></div>
@@ -45,6 +45,28 @@
   </div>
 
   <div id="messageModal" class="modal hidden"><div class="modal-card"><div class="modal-header"><h2 id="messageTitle">Aviso</h2><button id="closeMessageBtn" class="link-button" type="button">Cerrar</button></div><div id="messageBody"></div></div></div>
+
+  <!-- Modal importar Excel por dominio -->
+  <div id="importModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="importModalTitle">Importar Excel</h2>
+        <button id="closeImportModalBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <p class="muted" style="margin:12px 0 8px">Selecciona un archivo Excel (.xlsx). Cada hoja debe tener el nombre de la entidad y las columnas deben coincidir con los atributos definidos.</p>
+      <form id="importForm" novalidate>
+        <label style="display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:13px;margin-bottom:14px">
+          Archivo Excel (.xlsx)
+          <input id="importFileInput" type="file" accept=".xlsx" class="input" required />
+        </label>
+        <div class="form-actions" style="display:flex;gap:10px;align-items:center">
+          <button id="importSubmitBtn" class="primary" type="submit">Importar</button>
+          <span id="importStatus" style="font-size:13px"></span>
+        </div>
+      </form>
+      <div id="importPreview"></div>
+    </div>
+  </div>
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/layout.js"></script>
