@@ -1,0 +1,176 @@
+/* Canvas Relationships 1.3 UX Fix
+   - Modal always above canvas boxes.
+   - Expanded boxes appear above neighbouring boxes.
+   - Real relationship arrows stay visible above normal boxes.
+*/
+
+.modal-backdrop {
+  z-index: 5000 !important;
+}
+
+.modal {
+  z-index: 5001 !important;
+}
+
+.connection-layer {
+  z-index: 60 !important;
+  pointer-events: none;
+}
+
+.draft-layer {
+  z-index: 90 !important;
+  pointer-events: none;
+}
+
+.canvas2-box {
+  z-index: 20 !important;
+}
+
+.canvas2-box.expanded {
+  z-index: 45 !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, .24) !important;
+}
+
+.canvas2-box.selected {
+  z-index: 55 !important;
+}
+
+.canvas2-box.dragging {
+  z-index: 80 !important;
+}
+
+.canvas2-box.expanded .canvas2-card-body {
+  display: grid;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.attribute-port {
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: #2563eb;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #bfdbfe;
+  cursor: crosshair;
+  flex: 0 0 auto;
+}
+
+.attribute-port:hover {
+  transform: scale(1.15);
+  background: #1d4ed8;
+}
+
+.canvas2-attribute-mini {
+  grid-template-columns: 16px minmax(0, 1fr) auto !important;
+  cursor: default;
+}
+
+.canvas2-attribute-mini.drop-target,
+.inspector-attr-row.drop-target {
+  outline: 2px solid #2563eb;
+  background: #eff6ff;
+}
+
+.relationship-path {
+  fill: none;
+  stroke: #2563eb;
+  stroke-width: 3.2;
+  opacity: .95;
+  cursor: pointer;
+  pointer-events: stroke;
+  filter: drop-shadow(0 1px 3px rgba(37,99,235,.25));
+}
+
+.relationship-path:hover {
+  stroke: #1d4ed8;
+  stroke-width: 4;
+}
+
+.relationship-path.selected {
+  stroke: #ea580c;
+  stroke-width: 4.2;
+  filter: drop-shadow(0 2px 5px rgba(234,88,12,.32));
+}
+
+.relationship-label {
+  font-size: 12px;
+  font-weight: 800;
+  fill: #0f172a;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 5px;
+  pointer-events: none;
+}
+
+.draft-path {
+  fill: none;
+  stroke: #ea580c;
+  stroke-width: 3.2;
+  stroke-dasharray: 7 5;
+  opacity: .95;
+  marker-end: url(#arrowhead-draft);
+}
+
+.relationship-inspector .inspector-attr-row,
+.editable-inspector .inspector-attr-row {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.inspector-attr-row span {
+  display: block;
+  margin-top: 3px;
+}
+
+.attribute-edit-button {
+  padding: 7px 10px;
+  background: #eef2ff;
+  color: #3730a3;
+  border-radius: 9px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.attribute-edit-button:hover {
+  background: #e0e7ff;
+}
+
+.attribute-edit-modal {
+  width: min(680px, calc(100vw - 48px));
+}
+
+.relationship-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px;
+  background: #f8fafc;
+  display: grid;
+  gap: 6px;
+}
+
+.relationship-item strong {
+  display: block;
+}
+
+.relationship-item small {
+  color: var(--muted);
+}
+
+.relationship-delete-button {
+  padding: 7px 10px;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 10px;
+}
+
+.relationship-modal select,
+.attribute-edit-modal select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: white;
+}

@@ -4,6 +4,8 @@ async function execute(sql, binds = {}, options = {}) {
   let connection;
   try {
     connection = await getConnection();
+    await connection.execute('ALTER SESSION DISABLE PARALLEL DML');
+    await connection.execute('ALTER SESSION DISABLE PARALLEL QUERY');
     const result = await connection.execute(sql, binds, options);
     return result;
   } finally {
@@ -15,6 +17,8 @@ async function executeTransaction(work) {
   let connection;
   try {
     connection = await getConnection();
+    await connection.execute('ALTER SESSION DISABLE PARALLEL DML');
+    await connection.execute('ALTER SESSION DISABLE PARALLEL QUERY');
     const result = await work(connection);
     await connection.commit();
     return result;

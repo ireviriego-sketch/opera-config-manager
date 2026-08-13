@@ -1,0 +1,50 @@
+/* Add these styles to the end of frontend/assets/css/app.css */
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  padding: 20px 22px;
+}
+
+.detail-item {
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.detail-item span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.detail-item strong {
+  font-size: 15px;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  padding: 20px 22px;
+}
+
+.module-card {
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.module-card h4 {
+  margin: 0 0 8px;
+}
+
+.module-card p {
+  margin: 0;
+  color: var(--muted);
+}

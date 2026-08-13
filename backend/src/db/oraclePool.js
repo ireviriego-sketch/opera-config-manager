@@ -14,11 +14,14 @@ async function initOraclePool() {
     password: env.db.password,
     connectString: env.db.connectString,
     walletLocation: env.db.walletDir,
-	configDir: env.db.walletDir,
-	walletPassword: process.env.DB_WALLET_PASSWORD,
+    configDir: env.db.walletDir,
+    walletPassword: process.env.DB_WALLET_PASSWORD,
     poolMin: env.db.poolMin,
     poolMax: env.db.poolMax,
-    poolIncrement: env.db.poolIncrement
+    poolIncrement: env.db.poolIncrement,
+    queueTimeout: 300000,
+    poolTimeout: 120,
+    poolPingInterval: 60
   });
 
   return pool;

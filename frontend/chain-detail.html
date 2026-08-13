@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERA CFG - Detalle cadena</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/chain-detail.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="pageTitle">Detalle de cadena</h1>
+        <p id="pageSubtitle">Cargando...</p>
+      </div>
+      <div class="page-actions">
+        <a class="secondary button-link" href="chains.html">Volver</a>
+        <button id="saveChainBtn" class="primary" type="button">Guardar cadena</button>
+      </div>
+    </header>
+
+    <section class="content-card">
+      <h2>Datos de la cadena</h2>
+      <form id="chainForm" class="form-grid" novalidate>
+        <input id="chainIdInput" type="hidden" />
+        <label>CHAIN_CODE *<input id="chainCodeInput" class="input" maxlength="50" /></label>
+        <label>CHAIN_NAME *<input id="chainNameInput" class="input" maxlength="200" /></label>
+        <label>STATUS *
+          <select id="chainStatusInput" class="input">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="INACTIVE">INACTIVE</option>
+          </select>
+        </label>
+      </form>
+    </section>
+
+    <section class="content-card">
+      <div class="tabs">
+        <button class="tab active" data-tab="hotelsPanel" type="button">Hoteles</button>
+        <button class="tab" data-tab="deploymentsPanel" type="button">Despliegues OPERA</button>
+      </div>
+
+      <section id="hotelsPanel" class="tab-panel">
+        <div class="section-header">
+          <div>
+            <h2>Hoteles</h2>
+            <p class="muted">Cada hotel pertenece a esta cadena.</p>
+          </div>
+          <div class="page-actions">
+            <button id="importHotelsBtn" class="secondary" type="button">Importar desde Accenture Hospitality</button>
+            <button id="newHotelBtn" class="primary" type="button">Nuevo hotel</button>
+          </div>
+        </div>
+
+        <form id="hotelForm" class="form-grid hidden" novalidate>
+          <input id="hotelIdInput" type="hidden" />
+          <label>HOTEL_CODE *<input id="hotelCodeInput" class="input" maxlength="50" /></label>
+          <label>HOTEL_NAME *<input id="hotelNameInput" class="input" maxlength="200" /></label>
+          <label>STATUS *
+            <select id="hotelStatusInput" class="input">
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="INACTIVE">INACTIVE</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button class="primary" type="submit">Guardar hotel</button>
+            <button id="cancelHotelBtn" class="link-button" type="button">Cancelar</button>
+          </div>
+        </form>
+
+        <div id="hotelsContainer" class="table-wrap"></div>
+      </section>
+
+      <section id="deploymentsPanel" class="tab-panel hidden">
+        <div class="section-header">
+          <div>
+            <h2>Despliegues OPERA</h2>
+            <p class="muted">Despliegues de configuración OPERA asociados a esta cadena.</p>
+          </div>
+          <button id="newDeploymentBtn" class="primary" type="button">Nuevo despliegue OPERA</button>
+        </div>
+        <div id="deploymentsContainer" class="table-wrap"></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="deploymentModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="deploymentModalTitle">Nuevo despliegue OPERA</h2>
+        <button id="closeDeploymentModalBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <form id="deploymentForm" class="form-grid" novalidate>
+        <input id="deploymentIdInput" type="hidden" />
+        <label>DEPLOYMENT_NAME *<input id="deploymentNameInput" class="input" maxlength="200" /></label>
+        <label>STATUS *
+          <select id="deploymentStatusInput" class="input">
+            <option value="DRAFT">DRAFT</option>
+            <option value="READY">READY</option>
+            <option value="SENT_OK">SENT_OK</option>
+            <option value="SENT_ERROR">SENT_ERROR</option>
+            <option value="CANCELLED">CANCELLED</option>
+          </select>
+        </label>
+        <label class="span-2">Versión plantilla origen
+          <select id="sourceTemplateVersionInput" class="input">
+            <option value="">Sin versión origen</option>
+          </select>
+        </label>
+        <label class="span-2">COMMENTS<textarea id="deploymentCommentsInput" class="input" rows="3" maxlength="1000"></textarea></label>
+        <div class="form-actions">
+          <button class="primary" type="submit">Guardar despliegue</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="contentModal" class="modal hidden">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h2>Contenido del despliegue</h2>
+        <button id="closeContentModalBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <div class="content-actions">
+        <button id="downloadContentBtn" class="secondary" type="button">Exportar JSON</button>
+      </div>
+      <pre id="deploymentContentPre" class="json-preview"></pre>
+    </div>
+  </div>
+
+  <div id="messageModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="messageTitle">Aviso</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <div id="messageBody"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/chains-api.js"></script>
+  <script src="assets/js/deployments-api.js"></script>
+  <script src="assets/js/chain-detail.js"></script>
+  <script src="assets/js/deployment-content-link.js"></script>
+</body>
+</html>

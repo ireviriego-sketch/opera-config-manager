@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Model Canvas 2 | OPERA Config Manager</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/model-canvas-2.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">OC</div>
+      <div>
+        <h2>OPERA CFG</h2>
+        <span>Configuration Manager</span>
+      </div>
+    </div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main canvas2-main">
+    <header class="topbar canvas2-topbar">
+      <div>
+        <h1>Model Canvas</h1>
+        <p id="canvasSubtitle">Mapa visual compacto del modelo importado desde el PIW.</p>
+      </div>
+      <div class="actions-right">
+        <button id="backToTemplate" class="secondary">Volver a la plantilla</button>
+        <button id="logoutBtn" class="secondary">Salir</button>
+      </div>
+    </header>
+
+    <section class="canvas2-toolbar">
+      <div class="canvas2-version">
+        <strong id="versionTitle">Cargando versión...</strong>
+        <span id="versionStats">Recuperando modelo desde Oracle.</span>
+      </div>
+      <div class="canvas2-controls">
+        <select id="domainFilter" class="canvas2-select">
+          <option value="ALL">Todos los dominios</option>
+        </select>
+        <input id="canvasSearch" class="canvas2-search" placeholder="Buscar entidad o atributo..." />
+        <button id="btnFit" class="secondary">Reordenar</button>
+        <button id="btnCollapse" class="secondary">Colapsar</button>
+        <button id="btnExpand" class="secondary">Expandir</button>
+        <button id="btnReset" class="secondary">Reset</button>
+      </div>
+    </section>
+
+    <section class="canvas2-shell">
+      <div class="canvas2-stage-wrap">
+        <svg id="connectionLayer" class="connection-layer"></svg>
+        <div id="canvasStage" class="canvas2-stage"></div>
+      </div>
+
+      <aside id="inspector" class="inspector-panel">
+        <header>
+          <div>
+            <h2 id="inspectorTitle">Selecciona una entidad</h2>
+            <p id="inspectorSubtitle">Verás sus atributos y metadatos aquí.</p>
+          </div>
+          <button id="closeInspector" class="icon-button">×</button>
+        </header>
+        <section id="inspectorBody" class="inspector-body">
+          <div class="empty-state">Haz click en una caja para ver sus atributos. Doble click para abrir el detalle de entidad.</div>
+        </section>
+      </aside>
+
+      <div class="canvas2-help">
+        Arrastra cajas. Click: inspector. Click en +/-: expandir contenido. Doble click: detalle de entidad.
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/model-canvas-2.js"></script>
+</body>
+</html>
