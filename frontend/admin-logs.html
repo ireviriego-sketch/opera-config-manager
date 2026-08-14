@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logs - OPERA CFG</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/sidebar-collapsible.css">
+  <link rel="stylesheet" href="assets/css/admin-logs.css">
+</head>
+<body>
+  <div class="app-shell app-layout app-container">
+    <aside class="sidebar">
+      <div class="brand app-brand">
+        <div class="brand-logo app-logo">OC</div>
+        <div class="brand-text">
+          <strong>OPERA CFG</strong>
+          <span>Configuration Manager</span>
+        </div>
+      </div>
+      <nav id="sideMenu" class="side-menu"></nav>
+    </aside>
+
+    <main class="main-content page-main logs-page">
+      <header class="page-header hero-card logs-hero">
+        <div>
+          <h1>Logs de aplicación</h1>
+          <p>Configura el nivel de trazas y revisa eventos técnicos, warnings y errores relevantes.</p>
+        </div>
+        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Salir</button>
+      </header>
+
+      <section class="card page-card logs-config-card">
+        <div class="section-header card-header logs-card-header">
+          <div>
+            <h2>Nivel de trazas</h2>
+            <p>El nivel controla qué eventos se escriben en consola y en la tabla de logs.</p>
+          </div>
+        </div>
+
+        <div class="log-level-panel">
+          <label class="log-level-selector">Nivel actual
+            <select id="logLevelSelect" class="form-control"></select>
+          </label>
+          <div id="logLevelHelp" class="log-level-help">Cargando configuración...</div>
+          <button id="saveLogLevelBtn" type="button" class="btn btn-primary logs-save-btn">Guardar nivel</button>
+        </div>
+      </section>
+
+      <section class="card page-card logs-events-card">
+        <div class="section-header card-header logs-card-header">
+          <div>
+            <h2>Eventos registrados</h2>
+            <p>Filtra por texto, nivel, origen, código de evento, usuario o fecha.</p>
+          </div>
+          <button id="refreshLogsBtn" type="button" class="btn btn-primary">Actualizar</button>
+        </div>
+
+        <div class="logs-filters">
+          <label>Buscar
+            <input id="logsSearch" class="form-control" type="search" placeholder="Mensaje, source, evento, usuario...">
+          </label>
+          <label>Nivel
+            <select id="logsLevelFilter" class="form-control"><option value="">Todos</option></select>
+          </label>
+          <label>Source
+            <input id="logsSourceFilter" class="form-control" type="text" placeholder="AUTH, APP, DB...">
+          </label>
+          <label>Evento
+            <input id="logsEventFilter" class="form-control" type="text" placeholder="LOGIN_SUCCESS...">
+          </label>
+          <label>Desde
+            <input id="logsFromDate" class="form-control" type="date">
+          </label>
+          <label>Hasta
+            <input id="logsToDate" class="form-control" type="date">
+          </label>
+        </div>
+
+        <div class="table-wrapper logs-table-wrapper">
+          <table class="table data-table logs-table">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Nivel</th>
+                <th>Source</th>
+                <th>Evento</th>
+                <th>Mensaje</th>
+                <th>Usuario</th>
+                <th>Detalle</th>
+              </tr>
+            </thead>
+            <tbody id="logsBody">
+              <tr><td colspan="7">Cargando logs...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="logDetailModal" class="logs-modal" hidden>
+    <div class="logs-modal-card">
+      <div class="logs-modal-header">
+        <h2>Detalle de log</h2>
+        <button id="closeLogModalBtn" type="button" class="btn btn-secondary">Cerrar</button>
+      </div>
+      <div id="logDetailContent" class="log-detail-content"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/admin-logs.js"></script>
+</body>
+</html>
