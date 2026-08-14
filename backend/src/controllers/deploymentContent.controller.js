@@ -36,6 +36,11 @@ async function deleteRecord(req, res) {
   res.json({ ok: true });
 }
 
+async function deleteEntityRecords(req, res) {
+  const deleted = await service.deleteEntityRecords(req.params.deploymentId, req.params.entityId);
+  res.json({ ok: true, deleted });
+}
+
 async function importDomainExcel(req, res) {
   if (!req.file) return res.status(400).json({ ok: false, error: 'No se recibió ningún archivo.' });
   const result = await service.importDomainExcel(
@@ -47,4 +52,4 @@ async function importDomainExcel(req, res) {
   res.json({ ok: true, ...result });
 }
 
-module.exports = { getStructure, getEntityAttributes, listRecords, createRecord, updateRecord, deleteRecord, importDomainExcel };
+module.exports = { getStructure, getEntityAttributes, listRecords, createRecord, updateRecord, deleteRecord, deleteEntityRecords, importDomainExcel };

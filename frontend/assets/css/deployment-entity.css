@@ -1,7 +1,5 @@
 /* ── Layout general ── */
-.entity-page {
-  padding: 18px;
-}
+.entity-page { padding: 18px; }
 
 /* ── Barra de atributos ── */
 .attributes-bar {
@@ -20,43 +18,175 @@
   font-size: 12px;
 }
 
-/* ── Tabla de registros ── */
-.table-wrap {
-  overflow: auto;
+/* ── Buscador de registros ── */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 2px solid #6b46c1;
+  border-radius: 16px;
+  padding: 13px 18px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 16px rgba(107,70,193,0.15);
+}
+
+.search-bar:focus-within {
+  border-color: #4f32a0;
+  box-shadow: 0 0 0 4px rgba(107,70,193,0.18);
+}
+
+.search-icon { font-size: 18px; flex-shrink: 0; }
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  background: transparent;
+}
+
+.search-input::placeholder { color: #a78bfa; font-weight: 500; }
+
+.search-clear {
+  border: none;
+  background: #ede9fe;
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #6b46c1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  font-weight: 800;
+}
+
+.search-clear:hover { background: #c4b5fd; color: #3b1fa8; }
+
+/* ── Resumen de registros ── */
+.records-summary {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+/* ── Resaltado de búsqueda ── */
+mark {
+  background: #fef08a;
+  color: #713f12;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* ── Grid de tarjetas ── */
+.records-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.record-card {
   background: #fff;
   border: 1px solid #d9e0ea;
-  border-radius: 18px;
-  box-shadow: 0 4px 16px rgba(16,24,40,.07);
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(16,24,40,.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
+.record-card-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0;
+  padding: 0;
 }
 
-th, td {
-  border-bottom: 1px solid #d9e0ea;
+.record-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   padding: 10px 14px;
-  text-align: left;
-  font-size: 13px;
+  border-bottom: 1px solid #f3f4f6;
+  border-right: 1px solid #f3f4f6;
 }
 
-th {
-  background: #f8fafc;
-  color: #344054;
+.record-field-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.record-field-value {
+  font-size: 14px;
+  color: #111827;
   font-weight: 700;
+  word-break: break-word;
+  line-height: 1.3;
 }
 
-tr:last-child td {
-  border-bottom: none;
-}
-
-.row-actions {
+.record-card-actions {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  padding: 12px 14px;
+  background: #f8fafc;
+  border-top: 1px solid #e5e7eb;
+  margin-top: auto;
 }
+
+/* ── Paginación ── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding: 16px 0;
+}
+
+.pag-pages {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pag-btn {
+  border: 1px solid #d9e0ea;
+  background: #fff;
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #344054;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pag-btn:hover:not(:disabled) {
+  background: #f5f3ff;
+  border-color: #c4b5fd;
+  color: #3b1fa8;
+}
+
+.pag-btn.active {
+  background: #6b46c1;
+  border-color: #6b46c1;
+  color: #fff;
+}
+
+.pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ── Modales ── */
 .modal {
@@ -82,9 +212,7 @@ tr:last-child td {
   padding: 18px;
 }
 
-.modal-card-wide {
-  width: min(1100px, 94vw);
-}
+.modal-card-wide { width: min(1100px, 94vw); }
 
 .modal-header {
   display: flex;
@@ -129,5 +257,6 @@ body.modal-open { overflow: hidden; }
 
 /* ── Responsive ── */
 @media (max-width: 700px) {
+  .records-grid { grid-template-columns: 1fr; }
   .record-form { grid-template-columns: 1fr; }
 }

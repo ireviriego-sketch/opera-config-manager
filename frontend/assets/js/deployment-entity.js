@@ -1,12 +1,16 @@
 (() => {
   const api = window.DeploymentContentApi;
+  const PAGE_SIZE = 50;
   const state = {
     deploymentId: null,
     entityId: null,
     entity: null,
     attributes: [],
     records: [],
-    editingRecord: null
+    filteredRecords: [],
+    editingRecord: null,
+    currentPage: 1,
+    searchTerm: ''
   };
   const $ = id => document.getElementById(id);
   const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":"&#39;", '"':'&quot;' }[c]));
@@ -41,7 +45,6 @@
 
   async function loadEntity() {
     try {
-      // Cargamos la estructura completa para encontrar el nombre de la entidad y dominio
       const data = await api.getStructure(state.deploymentId);
       const structure = data.structure || [];
 
@@ -62,8 +65,11 @@
 
       state.attributes = (await api.getAttributes(state.deploymentId, state.entityId)).rows || [];
       state.records = (await api.listRecords(state.deploymentId, state.entityId)).rows || [];
+      state.filteredRecords = state.records;
+      state.currentPage = 1;
 
-      renderAttributes();
+      
+      renderSearchBar();
       renderRecords();
     } catch (err) { error(err); }
   }
@@ -82,34 +88,124 @@
       : '<p class="muted">Esta entidad no tiene atributos copiados.</p>';
   }
 
+  function renderSearchBar() {
+    const container = $('searchContainer');
+    if (!container) return;
+    container.innerHTML = `
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input
+          id="searchInput"
+          class="search-input"
+          type="text"
+          placeholder="Buscar en cualquier campo..."
+          value="${escapeHtml(state.searchTerm)}"
+          autocomplete="off"
+        />
+        <button id="searchClearBtn" class="search-clear ${state.searchTerm ? '' : 'hidden'}" type="button">✕</button>
+      </div>
+    `;
+
+    $('searchInput').oninput = (e) => {
+      state.searchTerm = e.target.value.trim().toLowerCase();
+      state.currentPage = 1;
+      applyFilter();
+    };
+
+    $('searchClearBtn').onclick = () => {
+      state.searchTerm = '';
+      state.currentPage = 1;
+      applyFilter();
+      renderSearchBar();
+      $('searchInput').focus();
+    };
+  }
+
+  function applyFilter() {
+    if (!state.searchTerm) {
+      state.filteredRecords = state.records;
+    } else {
+      state.filteredRecords = state.records.filter(record => {
+        return Object.values(record.record || {}).some(val =>
+          String(val ?? '').toLowerCase().includes(state.searchTerm)
+        );
+      });
+    }
+    // Mostrar/ocultar botón limpiar
+    const clearBtn = $('searchClearBtn');
+    if (clearBtn) clearBtn.classList.toggle('hidden', !state.searchTerm);
+    renderRecords();
+  }
+
   function renderRecords() {
-    if (!state.records.length) {
-      $('recordsContainer').innerHTML = '<p class="muted">No hay registros para esta entidad. Pulsa Nuevo registro.</p>';
+    const records = state.filteredRecords;
+
+    if (!records.length) {
+      $('recordsContainer').innerHTML = state.searchTerm
+        ? `<p class="muted">No se encontraron registros para "<strong>${escapeHtml(state.searchTerm)}</strong>".</p>`
+        : '<p class="muted">No hay registros para esta entidad. Pulsa Nuevo registro.</p>';
       return;
     }
 
+    const totalPages = Math.ceil(records.length / PAGE_SIZE);
+    const start = (state.currentPage - 1) * PAGE_SIZE;
+    const pageRecords = records.slice(start, start + PAGE_SIZE);
     const columns = state.attributes.map(attributeKey);
-    $('recordsContainer').innerHTML = `
-      <table>
-        <thead>
-          <tr>
-            ${columns.map(col => `<th>${escapeHtml(col)}</th>`).join('')}
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${state.records.map(record => `
-            <tr>
-              ${columns.map(col => `<td>${escapeHtml(record.record?.[col] || '')}</td>`).join('')}
-              <td class="row-actions">
-                <button class="secondary small" data-edit-record="${record.deploymentRecordId}">Editar</button>
-                <button class="secondary small danger" data-delete-record="${record.deploymentRecordId}">Borrar</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>`;
 
+    const cardsHtml = pageRecords.map(record => {
+      const fields = columns.map(col => {
+        const val = record.record?.[col] || '';
+        if (!val) return '';
+        // Resaltar coincidencia de búsqueda en el valor
+        const displayVal = state.searchTerm
+          ? escapeHtml(val).replace(new RegExp(`(${escapeHtml(state.searchTerm)})`, 'gi'), '<mark>$1</mark>')
+          : escapeHtml(val);
+        return `<div class="record-field">
+          <span class="record-field-label">${escapeHtml(col)}</span>
+          <span class="record-field-value">${displayVal}</span>
+        </div>`;
+      }).filter(Boolean).join('');
+
+      return `<div class="record-card">
+        <div class="record-card-fields">${fields}</div>
+        <div class="record-card-actions">
+          <button class="secondary small" data-edit-record="${record.deploymentRecordId}">Editar</button>
+          <button class="secondary small danger" data-delete-record="${record.deploymentRecordId}">Borrar</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    const totalLabel = state.searchTerm
+      ? `${records.length} resultado${records.length !== 1 ? 's' : ''} para "<strong>${escapeHtml(state.searchTerm)}</strong>" · ${state.records.length} totales`
+      : `${state.records.length} registros totales`;
+
+    const paginationHtml = totalPages > 1 ? `
+      <div class="pagination">
+        <button class="pag-btn" id="pagPrev" ${state.currentPage === 1 ? 'disabled' : ''}>← Anterior</button>
+        <div class="pag-pages">
+          ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+            <button class="pag-btn pag-num ${p === state.currentPage ? 'active' : ''}" data-page="${p}">${p}</button>
+          `).join('')}
+        </div>
+        <button class="pag-btn" id="pagNext" ${state.currentPage === totalPages ? 'disabled' : ''}>Siguiente →</button>
+      </div>` : '';
+
+    $('recordsContainer').innerHTML = `
+      <div class="records-summary">${totalLabel}${totalPages > 1 ? ` · Página ${state.currentPage} de ${totalPages}` : ''}</div>
+      <div class="records-grid">${cardsHtml}</div>
+      ${paginationHtml}
+    `;
+
+    // Eventos paginación
+    document.querySelectorAll('[data-page]').forEach(btn =>
+      btn.onclick = () => { state.currentPage = Number(btn.dataset.page); renderRecords(); window.scrollTo(0, 0); }
+    );
+    const prev = $('pagPrev');
+    const next = $('pagNext');
+    if (prev) prev.onclick = () => { state.currentPage--; renderRecords(); window.scrollTo(0, 0); };
+    if (next) next.onclick = () => { state.currentPage++; renderRecords(); window.scrollTo(0, 0); };
+
+    // Eventos editar/borrar
     document.querySelectorAll('[data-edit-record]').forEach(btn =>
       btn.onclick = () => editRecord(Number(btn.dataset.editRecord))
     );
@@ -158,7 +254,7 @@
       }
       closeModal('recordModal');
       state.records = (await api.listRecords(state.deploymentId, state.entityId)).rows || [];
-      renderRecords();
+      applyFilter();
     } catch (err) { error(err); }
   }
 
@@ -167,7 +263,7 @@
     try {
       await api.deleteRecord(state.deploymentId, recordId);
       state.records = (await api.listRecords(state.deploymentId, state.entityId)).rows || [];
-      renderRecords();
+      applyFilter();
     } catch (err) { error(err); }
   }
 
