@@ -1,10 +1,11 @@
 const express = require('express');
 const templateVersionController = require('../controllers/templateVersionController');
-const { requireAuth } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', requireAuth, templateVersionController.listByTemplate);
-router.post('/', requireAuth, templateVersionController.create);
+router.get('/', templateVersionController.listByTemplate);
+router.post('/', templateVersionController.create);
+router.put('/:versionId', templateVersionController.update);
+router.post('/:versionId/activate', templateVersionController.activate);
 
 module.exports = router;

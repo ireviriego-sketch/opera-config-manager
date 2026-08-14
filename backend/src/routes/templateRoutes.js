@@ -1,11 +1,10 @@
 const express = require('express');
 const templateController = require('../controllers/templateController');
-const { requireAuth } = require('../middleware/authMiddleware');
 
 const router = express.Router();
-/*router.get('/', requireAuth, templateController.list);*/
-/*router.get('/', templateController.list);
-router.post('/', requireAuth, templateController.create);*/
+
 router.get('/', templateController.list);
 router.post('/', templateController.create);
+router.put('/:templateId', templateController.update);
+
 module.exports = router;

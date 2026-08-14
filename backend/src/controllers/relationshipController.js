@@ -1,4 +1,5 @@
 const relationshipRepository = require('../repositories/relationshipRepository');
+const auditService = require('../services/audit.service');
 
 function normalizeCode(value) {
   return String(value || '')
@@ -8,14 +9,31 @@ function normalizeCode(value) {
     .slice(0, 80);
 }
 
+function currentUser(req) {
+  return req.user?.username || req.user?.USERNAME || req.headers['x-user'] || req.headers['x-username'] || 'admin';
+}
+
+async function auditSafely(req, entry) {
+  try {
+    await auditService.logFromRequest(req, entry);
+  } catch (error) {
+    console.error('Audit log failed:', error.message);
+  }
+}
+
+function relationshipDisplayName(relationship) {
+  return relationship?.RELATIONSHIP_LABEL
+    || relationship?.RELATIONSHIP_NAME
+    || relationship?.RELATIONSHIP_CODE
+    || `Relación ${relationship?.RELATIONSHIP_ID || ''}`.trim();
+}
+
 async function listByVersion(req, res, next) {
   try {
     const versionId = Number(req.query.versionId);
-
     if (!versionId) {
       return res.status(400).json({ error: 'VERSION_ID_REQUIRED' });
     }
-
     const relationships = await relationshipRepository.findByVersionId(versionId);
     return res.json({ relationships });
   } catch (error) {
@@ -49,6 +67,12 @@ async function create(req, res, next) {
       return res.status(400).json({ error: 'SOURCE_AND_TARGET_MUST_DIFFER' });
     }
 
+    const before = await relationshipRepository.findByNaturalKey({
+      versionId: numericVersionId,
+      sourceAttributeId: numericSourceAttributeId,
+      targetAttributeId: numericTargetAttributeId
+    });
+
     const safeType = relationshipType || 'REFERENCE';
     const safeLabel = relationshipLabel || `REL ${numericSourceAttributeId} TO ${numericTargetAttributeId}`;
     const relationshipCode = normalizeCode(`REL_${numericSourceAttributeId}_TO_${numericTargetAttributeId}`);
@@ -64,7 +88,34 @@ async function create(req, res, next) {
       relationshipCode,
       relationshipName,
       relationshipLabel: safeLabel,
-      createdBy: req.user?.username || 'admin'
+      createdBy: currentUser(req)
+    });
+
+    const after = await relationshipRepository.findByNaturalKey({
+      versionId: numericVersionId,
+      sourceAttributeId: numericSourceAttributeId,
+      targetAttributeId: numericTargetAttributeId
+    });
+
+    await auditSafely(req, {
+      username: currentUser(req),
+      action: before ? 'UPDATE_RELATIONSHIP' : 'CREATE_RELATIONSHIP',
+      actionCode: before ? 'UPDATE_RELATIONSHIP' : 'CREATE_RELATIONSHIP',
+      resultStatus: 'SUCCESS',
+      entityType: 'RELATIONSHIP',
+      entityId: after?.RELATIONSHIP_ID || null,
+      entityName: relationshipDisplayName(after),
+      summary: `${before ? 'Relación actualizada' : 'Relación creada'}: ${relationshipDisplayName(after)}`,
+      oldValues: before,
+      newValues: after,
+      details: {
+        versionId: numericVersionId,
+        sourceEntityId: numericSourceEntityId,
+        sourceAttributeId: numericSourceAttributeId,
+        targetEntityId: numericTargetEntityId,
+        targetAttributeId: numericTargetAttributeId,
+        relationshipType: safeType
+      }
     });
 
     return res.status(201).json({ saved: true, rowsAffected });
@@ -76,19 +127,32 @@ async function create(req, res, next) {
 async function remove(req, res, next) {
   try {
     const relationshipId = Number(req.params.id);
-
     if (!relationshipId) {
       return res.status(400).json({ error: 'RELATIONSHIP_ID_REQUIRED' });
     }
 
+    const before = await relationshipRepository.findById(relationshipId);
     const rowsAffected = await relationshipRepository.deleteRelationship(
       relationshipId,
-      req.user?.username || 'admin'
+      currentUser(req)
     );
 
     if (!rowsAffected) {
       return res.status(404).json({ error: 'RELATIONSHIP_NOT_FOUND' });
     }
+
+    await auditSafely(req, {
+      username: currentUser(req),
+      action: 'DELETE_RELATIONSHIP',
+      actionCode: 'DELETE_RELATIONSHIP',
+      resultStatus: 'SUCCESS',
+      entityType: 'RELATIONSHIP',
+      entityId: relationshipId,
+      entityName: relationshipDisplayName(before),
+      summary: `Relación eliminada: ${relationshipDisplayName(before)}`,
+      oldValues: before,
+      newValues: { deleted: true, RELATIONSHIP_ID: relationshipId }
+    });
 
     return res.json({ deleted: true });
   } catch (error) {

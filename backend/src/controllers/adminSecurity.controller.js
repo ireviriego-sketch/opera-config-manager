@@ -53,14 +53,12 @@ function userSnapshot(user) {
   };
 }
 
-async function auditStrict(req, entry) {
-  console.log('[AUDIT_SECURITY] attempting:', entry.actionCode || entry.action, entry.entityType, entry.entityId, entry.entityName);
-  const auditId = await auditService.logFromRequest(req, {
-    resultStatus: 'SUCCESS',
-    ...entry
-  });
-  console.log('[AUDIT_SECURITY] inserted auditId:', auditId);
-  return auditId;
+async function auditSafely(req, entry) {
+  try {
+    await auditService.logFromRequest(req, entry);
+  } catch (error) {
+    console.error('Audit log failed:', error.message);
+  }
 }
 
 async function listUsers(req, res, next) {
@@ -89,11 +87,12 @@ async function createUser(req, res, next) {
     const token = await repository.createPasswordResetToken(item.userId, currentUser(req));
     const resetUrl = `${buildBaseUrl(req)}/set-password.html?token=${encodeURIComponent(token)}`;
 
-    await auditStrict(req, {
+    await auditSafely(req, {
       userId: currentUserId(req),
       username: currentUser(req),
       action: 'CREATE_USER',
       actionCode: 'CREATE_USER',
+      resultStatus: 'SUCCESS',
       entityType: 'USER',
       entityId: item.userId,
       entityName: item.username,
@@ -108,10 +107,7 @@ async function createUser(req, res, next) {
     });
 
     res.status(201).json({ item, resetUrl });
-  } catch (error) {
-    console.error('[AUDIT_SECURITY] createUser failed:', error);
-    next(error);
-  }
+  } catch (error) { next(error); }
 }
 
 async function listRoles(req, res, next) {
@@ -133,11 +129,12 @@ async function updateUserRoles(req, res, next) {
     await repository.replaceUserRoles(userId, req.body.roleIds || [], currentUser(req));
     const after = await repository.findUserById(userId);
 
-    await auditStrict(req, {
+    await auditSafely(req, {
       userId: currentUserId(req),
       username: currentUser(req),
       action: 'ASSIGN_ROLE',
       actionCode: 'ASSIGN_ROLE',
+      resultStatus: 'SUCCESS',
       entityType: 'USER',
       entityId: userId,
       entityName: after?.username || before?.username || String(userId),
@@ -148,17 +145,13 @@ async function updateUserRoles(req, res, next) {
     });
 
     res.json({ ok: true });
-  } catch (error) {
-    console.error('[AUDIT_SECURITY] updateUserRoles failed:', error);
-    next(error);
-  }
+  } catch (error) { next(error); }
 }
 
 async function replaceChainPermissions(req, res, next) {
   try {
     const userId = Number(req.params.userId);
     const before = await repository.findUserById(userId);
-
     await repository.replaceScopePermissions({
       userId,
       roleId: Number(req.body.roleId),
@@ -167,40 +160,31 @@ async function replaceChainPermissions(req, res, next) {
       isReadOnly: req.body.isReadOnly || 'N',
       createdBy: currentUser(req)
     });
-
     const after = await repository.findUserById(userId);
 
-    await auditStrict(req, {
+    await auditSafely(req, {
       userId: currentUserId(req),
       username: currentUser(req),
       action: 'ASSIGN_SCOPE',
       actionCode: 'ASSIGN_SCOPE',
+      resultStatus: 'SUCCESS',
       entityType: 'USER_PERMISSION',
       entityId: userId,
       entityName: after?.username || before?.username || String(userId),
       summary: `Permisos de cadena actualizados para ${after?.username || before?.username || userId}`,
       oldValues: { chainPermissions: permissionSnapshot(before, 'CHAIN') },
       newValues: { chainPermissions: permissionSnapshot(after, 'CHAIN') },
-      details: {
-        scopeType: 'CHAIN',
-        roleId: Number(req.body.roleId),
-        chainIds: req.body.chainIds || [],
-        isReadOnly: req.body.isReadOnly || 'N'
-      }
+      details: { scopeType: 'CHAIN', roleId: Number(req.body.roleId), chainIds: req.body.chainIds || [], isReadOnly: req.body.isReadOnly || 'N' }
     });
 
     res.json({ ok: true });
-  } catch (error) {
-    console.error('[AUDIT_SECURITY] replaceChainPermissions failed:', error);
-    next(error);
-  }
+  } catch (error) { next(error); }
 }
 
 async function replaceHotelPermissions(req, res, next) {
   try {
     const userId = Number(req.params.userId);
     const before = await repository.findUserById(userId);
-
     await repository.replaceScopePermissions({
       userId,
       roleId: Number(req.body.roleId),
@@ -209,68 +193,53 @@ async function replaceHotelPermissions(req, res, next) {
       isReadOnly: req.body.isReadOnly || 'N',
       createdBy: currentUser(req)
     });
-
     const after = await repository.findUserById(userId);
 
-    await auditStrict(req, {
+    await auditSafely(req, {
       userId: currentUserId(req),
       username: currentUser(req),
       action: 'ASSIGN_SCOPE',
       actionCode: 'ASSIGN_SCOPE',
+      resultStatus: 'SUCCESS',
       entityType: 'USER_PERMISSION',
       entityId: userId,
       entityName: after?.username || before?.username || String(userId),
       summary: `Permisos de hotel actualizados para ${after?.username || before?.username || userId}`,
       oldValues: { hotelPermissions: permissionSnapshot(before, 'HOTEL') },
       newValues: { hotelPermissions: permissionSnapshot(after, 'HOTEL') },
-      details: {
-        scopeType: 'HOTEL',
-        roleId: Number(req.body.roleId),
-        hotelIds: req.body.hotelIds || [],
-        isReadOnly: req.body.isReadOnly || 'N'
-      }
+      details: { scopeType: 'HOTEL', roleId: Number(req.body.roleId), hotelIds: req.body.hotelIds || [], isReadOnly: req.body.isReadOnly || 'N' }
     });
 
     res.json({ ok: true });
-  } catch (error) {
-    console.error('[AUDIT_SECURITY] replaceHotelPermissions failed:', error);
-    next(error);
-  }
+  } catch (error) { next(error); }
 }
 
 async function generatePasswordReset(req, res, next) {
   try {
     const userId = Number(req.params.userId);
-    console.log('[AUDIT_SECURITY] password-reset route entered, target userId:', userId);
-
     const item = await repository.findUserById(userId);
     if (!item) return res.status(404).json({ message: 'Usuario no encontrado' });
 
     const token = await repository.createPasswordResetToken(userId, currentUser(req));
     const resetUrl = `${buildBaseUrl(req)}/set-password.html?token=${encodeURIComponent(token)}`;
 
-    await auditStrict(req, {
+    await auditSafely(req, {
       userId: currentUserId(req),
       username: currentUser(req),
       action: 'RESET_PASSWORD',
       actionCode: 'RESET_PASSWORD',
+      resultStatus: 'SUCCESS',
       entityType: 'USER',
       entityId: userId,
       entityName: item.username,
       summary: `Reset password generado para ${item.username}`,
       oldValues: null,
       newValues: null,
-      details: {
-        targetUsername: item.username,
-        resetLinkGenerated: true
-      }
+      details: { targetUsername: item.username, resetLinkGenerated: true }
     });
 
     res.json({ ok: true, resetUrl });
-  } catch (error) {
-    console.error('[AUDIT_SECURITY] generatePasswordReset failed:', error);
-    next(error);
-  }
+  } catch (error) { next(error); }
 }
 
 module.exports = {
