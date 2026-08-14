@@ -9,7 +9,6 @@
   const error = err => message('Error', `<ul class="error-list"><li>${escapeHtml(err.message || err)}</li></ul>`);
 
   document.addEventListener('DOMContentLoaded', init);
-
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.delete-dropdown-wrap')) {
       document.querySelectorAll('.delete-dropdown').forEach(d => d.classList.add('hidden'));
@@ -48,14 +47,9 @@
     container.innerHTML = `
       <div class="global-search-bar">
         <span class="search-icon">🔍</span>
-        <input
-          id="globalSearchInput"
-          class="global-search-input"
-          type="text"
+        <input id="globalSearchInput" class="global-search-input" type="text"
           placeholder="Buscar entidad en todos los dominios..."
-          value="${escapeHtml(state.searchTerm)}"
-          autocomplete="off"
-        />
+          value="${escapeHtml(state.searchTerm)}" autocomplete="off" />
         <button id="globalSearchClear" class="search-clear ${state.searchTerm ? '' : 'hidden'}" type="button">✕</button>
       </div>
     `;
@@ -73,22 +67,35 @@
     };
   }
 
+  // Determina la clase de color del botón de entidad según importStatus
+  function entityButtonClass(entity) {
+    const count = Number(entity.recordCount || 0);
+    if (count === 0) return '';
+    if (entity.importStatus === 'full') return 'entity-button--imported';
+    if (entity.importStatus === 'partial') return 'entity-button--partial';
+    return 'entity-button--pending';
+  }
+
+  // Tag de conteo con color según importStatus
+  function entityCountTag(entity) {
+    const count = Number(entity.recordCount || 0);
+    if (count === 0) return `<small class="count-empty">0 registros</small>`;
+    if (entity.importStatus === 'full') return `<small class="count-imported">${count} registros</small>`;
+    if (entity.importStatus === 'partial') return `<small class="count-partial">${entity.importedCount}/${count} importados</small>`;
+    return `<small class="count-pending">${count} registros</small>`;
+  }
+
   function renderStructure() {
     const term = state.searchTerm;
-
-    // Filtrar entidades por término de búsqueda
     let domains = state.structure.map(domain => {
       const filteredEntities = term
         ? (domain.entities || []).filter(e => e.entityName.toLowerCase().includes(term))
         : (domain.entities || []);
       return { ...domain, filteredEntities };
     });
-
-    // Si hay búsqueda, ocultar dominios sin resultados
     if (term) domains = domains.filter(d => d.filteredEntities.length > 0);
 
     const totalResults = term ? domains.reduce((sum, d) => sum + d.filteredEntities.length, 0) : null;
-
     $('searchResultsLabel').textContent = term && totalResults !== null
       ? `${totalResults} entidad${totalResults !== 1 ? 'es' : ''} encontrada${totalResults !== 1 ? 's' : ''} en ${domains.length} dominio${domains.length !== 1 ? 's' : ''}`
       : '';
@@ -117,9 +124,7 @@
                 ${(domain.entities || []).filter(e => Number(e.recordCount) > 0).length === 0
                   ? '<p class="dropdown-empty">No hay registros que borrar</p>'
                   : `<div class="dropdown-divider"></div>
-                     <button class="dropdown-item dropdown-item-all" data-domain-id="${domain.deploymentDomainId}" data-domain-name="${escapeHtml(domain.domainName)}">
-                       Borrar todos
-                     </button>`
+                     <button class="dropdown-item dropdown-item-all" data-domain-id="${domain.deploymentDomainId}" data-domain-name="${escapeHtml(domain.domainName)}">Borrar todos</button>`
                 }
               </div>
             </div>
@@ -127,82 +132,62 @@
         </div>
         <div class="entity-list">
           ${domain.filteredEntities.map(entity => {
-            const count = Number(entity.recordCount || 0);
             const nameHtml = term
               ? escapeHtml(entity.entityName).replace(new RegExp(`(${escapeHtml(term)})`, 'gi'), '<mark>$1</mark>')
               : escapeHtml(entity.entityName);
             return `
-            <button class="entity-button" data-entity-id="${entity.deploymentEntityId}">
+            <button class="entity-button ${entityButtonClass(entity)}" data-entity-id="${entity.deploymentEntityId}">
               <span>${nameHtml}</span>
-              <small class="${count > 0 ? 'count-ok' : 'count-empty'}">${count} registros</small>
+              ${entityCountTag(entity)}
             </button>`;
           }).join('')}
         </div>
       </div>
     `).join('') : '<p class="muted">No hay dominios copiados para este despliegue.</p>';
 
-    // Navegar a entidad
     document.querySelectorAll('.entity-button[data-entity-id]').forEach(button =>
       button.onclick = () => {
         const entityId = button.dataset.entityId;
         if (entityId) window.location.href = `deployment-entity.html?deploymentId=${state.deploymentId}&entityId=${entityId}`;
       }
     );
-
-    // Importar
     document.querySelectorAll('.import-domain-btn').forEach(button =>
       button.onclick = (e) => { e.stopPropagation(); openImportModal(Number(button.dataset.domainId), button.dataset.domainName); }
     );
-
-    // Abrir/cerrar desplegable borrar
     document.querySelectorAll('.delete-domain-btn').forEach(button =>
       button.onclick = (e) => {
         e.stopPropagation();
-        const domainId = button.dataset.domainId;
-        const dropdown = $(`dropdown-${domainId}`);
+        const dropdown = $(`dropdown-${button.dataset.domainId}`);
         document.querySelectorAll('.delete-dropdown').forEach(d => { if (d !== dropdown) d.classList.add('hidden'); });
         dropdown.classList.toggle('hidden');
       }
     );
-
-    // Borrar entidad concreta
     document.querySelectorAll('.dropdown-item[data-entity-id]').forEach(button =>
       button.onclick = async (e) => {
         e.stopPropagation();
-        const entityId = button.dataset.entityId;
-        const entityName = button.dataset.entityName;
-        const count = button.dataset.recordCount;
-        if (!confirm(`¿Borrar los ${count} registros de "${entityName}"? Esta acción no se puede deshacer.`)) return;
-        await deleteEntityRecords(entityId, entityName);
+        if (!confirm(`¿Borrar los ${button.dataset.recordCount} registros de "${button.dataset.entityName}"?`)) return;
+        await deleteEntityRecords(button.dataset.entityId, button.dataset.entityName);
       }
     );
-
-    // Borrar todos del dominio
     document.querySelectorAll('.dropdown-item-all').forEach(button =>
       button.onclick = async (e) => {
         e.stopPropagation();
-        const domainId = button.dataset.domainId;
-        const domainName = button.dataset.domainName;
-        const domain = state.structure.find(d => String(d.deploymentDomainId) === String(domainId));
+        const domain = state.structure.find(d => String(d.deploymentDomainId) === String(button.dataset.domainId));
         if (!domain) return;
         const entitiesWithRecords = (domain.entities || []).filter(e => Number(e.recordCount) > 0);
         if (!entitiesWithRecords.length) return;
         const total = entitiesWithRecords.reduce((sum, e) => sum + Number(e.recordCount), 0);
-        if (!confirm(`¿Borrar TODOS los registros del dominio "${domainName}" (${total} registros en total)? Esta acción no se puede deshacer.`)) return;
-        for (const entity of entitiesWithRecords) {
-          await deleteEntityRecords(entity.deploymentEntityId, entity.entityName, true);
-        }
+        if (!confirm(`¿Borrar TODOS los registros del dominio "${button.dataset.domainName}" (${total} en total)?`)) return;
+        for (const entity of entitiesWithRecords) await deleteEntityRecords(entity.deploymentEntityId, entity.entityName, true);
         await loadStructure();
-        message('Completado', `<p>Se han borrado todos los registros del dominio <strong>${escapeHtml(domainName)}</strong>.</p>`);
+        message('Completado', `<p>Se han borrado todos los registros del dominio <strong>${escapeHtml(button.dataset.domainName)}</strong>.</p>`);
       }
     );
   }
 
   async function deleteEntityRecords(entityId, entityName, silent = false) {
     try {
-      const response = await fetch(`/api/opera-config/deployment-content/${state.deploymentId}/entities/${entityId}/records`, {
-        method: 'DELETE'
-      });
+      const response = await fetch(`/api/opera-config/deployment-content/${state.deploymentId}/entities/${entityId}/records`, { method: 'DELETE' });
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body.ok === false) throw new Error(body.error || `HTTP ${response.status}`);
       if (!silent) {
@@ -232,19 +217,13 @@
     $('importSubmitBtn').disabled = true;
     $('importPreview').innerHTML = '';
     try {
-      const response = await fetch(`/api/opera-config/deployment-content/${state.deploymentId}/domains/${state.importDomainId}/import`, {
-        method: 'POST', body: formData
-      });
+      const response = await fetch(`/api/opera-config/deployment-content/${state.deploymentId}/domains/${state.importDomainId}/import`, { method: 'POST', body: formData });
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body.ok === false) throw new Error(body.error || `HTTP ${response.status}`);
       $('importStatus').innerHTML = `<span style="color:#027a48">✅ ${body.inserted} registros insertados, ${body.skipped} omitidos.</span>`;
       let preview = '';
-      if (body.processedSheets?.length) {
-        preview += `<p style="margin-top:12px;font-size:13px;font-weight:700">Entidades importadas:</p><ul style="font-size:13px;margin:4px 0 0 16px">${body.processedSheets.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
-      }
-      if (body.errors?.length) {
-        preview += `<p style="margin-top:10px;font-size:13px;font-weight:700;color:#b54708">Avisos (${body.errors.length}):</p><ul style="font-size:12px;margin:4px 0 0 16px;color:#b54708">${body.errors.slice(0, 10).map(e => `<li>${escapeHtml(e)}</li>`).join('')}${body.errors.length > 10 ? `<li>...y ${body.errors.length - 10} más</li>` : ''}</ul>`;
-      }
+      if (body.processedSheets?.length) preview += `<p style="margin-top:12px;font-size:13px;font-weight:700">Entidades importadas:</p><ul style="font-size:13px;margin:4px 0 0 16px">${body.processedSheets.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
+      if (body.errors?.length) preview += `<p style="margin-top:10px;font-size:13px;font-weight:700;color:#b54708">Avisos (${body.errors.length}):</p><ul style="font-size:12px;margin:4px 0 0 16px;color:#b54708">${body.errors.slice(0, 10).map(e => `<li>${escapeHtml(e)}</li>`).join('')}${body.errors.length > 10 ? `<li>...y ${body.errors.length - 10} más</li>` : ''}</ul>`;
       $('importPreview').innerHTML = preview;
       await loadStructure();
     } catch (err) {

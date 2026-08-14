@@ -26,30 +26,15 @@
   gap: 8px;
 }
 
-.domain-card-header h3 {
-  margin: 0;
-  font-size: 14px;
-  color: #1e1b4b;
-  flex: 1;
-  min-width: 0;
-}
-
-.domain-card-actions {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-shrink: 0;
-}
+.domain-card-header h3 { margin: 0; font-size: 14px; color: #1e1b4b; flex: 1; min-width: 0; }
+.domain-card-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
 
 /* ── Lista de entidades ── */
-.entity-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+.entity-list { display: flex; flex-direction: column; gap: 8px; }
 
+/* Base: sin registros — caja morada */
 .entity-button {
-  border: 1px solid #c4b5fd;
+  border: 1.5px solid #c4b5fd;
   background: #f5f3ff;
   border-radius: 12px;
   padding: 10px;
@@ -64,229 +49,102 @@
   width: 100%;
   transition: background 0.15s, border-color 0.15s;
 }
+.entity-button:hover { border-color: #6b46c1; background: #ede9fe; }
 
-.entity-button:hover {
-  border-color: #6b46c1;
-  background: #ede9fe;
+/* Verde: todos importados correctamente */
+.entity-button--imported {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
 }
+.entity-button--imported:hover { border-color: #4ade80; background: #dcfce7; }
 
+/* Amarillo: importación parcial */
+.entity-button--partial {
+  border-color: #fde047;
+  background: #fefce8;
+  color: #854d0e;
+}
+.entity-button--partial:hover { border-color: #facc15; background: #fef9c3; }
+
+/* Rojo tenue: tiene registros pero ninguno importado */
+.entity-button--pending {
+  border-color: #fca5a5;
+  background: #fff5f5;
+  color: #991b1b;
+}
+.entity-button--pending:hover { border-color: #f87171; background: #fee2e2; }
+
+/* ── Tags de conteo ── siempre verde si hay registros, rojo si 0 */
 .entity-button small {
   font-weight: 700;
   border-radius: 999px;
   padding: 2px 8px;
   font-size: 11px;
   white-space: nowrap;
-}
-
-/* ── Tags de conteo ── */
-.count-ok {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.count-empty {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-/* ── Botón importar ── */
-.import-domain-btn {
-  font-size: 0.75rem;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #e0e7ff;
-  color: #3730a3;
-  border: 1px solid #c7d2fe;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.import-domain-btn:hover { background: #c7d2fe; }
-
-/* ── Botón borrar con desplegable ── */
-.delete-dropdown-wrap { position: relative; }
-
-.delete-domain-btn {
-  font-size: 0.75rem;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.delete-domain-btn:hover { background: #fca5a5; }
-
-.delete-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  background: #fff;
-  border: 1px solid #d9e0ea;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(16,24,40,.14);
-  min-width: 220px;
-  z-index: 100;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.dropdown-title {
-  font-size: 11px;
-  font-weight: 800;
-  color: #9ca3af;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 4px 8px 6px;
-  margin: 0;
-}
-
-.dropdown-empty {
-  font-size: 12px;
-  color: #9ca3af;
-  padding: 6px 8px;
-  margin: 0;
-}
-
-.dropdown-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  transition: background 0.1s;
-}
-
-.dropdown-item:hover { background: #fee2e2; color: #991b1b; }
-
-.dropdown-count {
-  background: #fee2e2;
-  color: #991b1b;
-  border-radius: 999px;
-  padding: 1px 7px;
-  font-size: 11px;
-  font-weight: 700;
   flex-shrink: 0;
 }
 
-.dropdown-divider { height: 1px; background: #e5e7eb; margin: 4px 0; }
+/* Sin registros → rojo */
+.count-empty   { background: #fee2e2; color: #991b1b; }
 
+/* Con registros → siempre verde, independientemente del estado de importación */
+.count-pending  { background: #dcfce7; color: #166534; }
+.count-partial  { background: #dcfce7; color: #166534; }
+.count-imported { background: #dcfce7; color: #166534; }
+
+/* ── Botón importar ── */
+.import-domain-btn {
+  font-size: 0.75rem; padding: 4px 10px; border-radius: 999px;
+  background: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;
+  font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.import-domain-btn:hover { background: #c7d2fe; }
+
+/* ── Botón borrar ── */
+.delete-dropdown-wrap { position: relative; }
+.delete-domain-btn {
+  font-size: 0.75rem; padding: 4px 10px; border-radius: 999px;
+  background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;
+  font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.delete-domain-btn:hover { background: #fca5a5; }
+
+.delete-dropdown {
+  position: absolute; top: calc(100% + 6px); right: 0;
+  background: #fff; border: 1px solid #d9e0ea; border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(16,24,40,.14); min-width: 220px;
+  z-index: 100; padding: 8px; display: flex; flex-direction: column; gap: 2px;
+}
+.dropdown-title { font-size: 11px; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px 6px; margin: 0; }
+.dropdown-empty { font-size: 12px; color: #9ca3af; padding: 6px 8px; margin: 0; }
+.dropdown-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; border: none; background: transparent; font-size: 13px; font-weight: 600; color: #374151; cursor: pointer; text-align: left; width: 100%; transition: background 0.1s; }
+.dropdown-item:hover { background: #fee2e2; color: #991b1b; }
+.dropdown-count { background: #fee2e2; color: #991b1b; border-radius: 999px; padding: 1px 7px; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.dropdown-divider { height: 1px; background: #e5e7eb; margin: 4px 0; }
 .dropdown-item-all { color: #991b1b; font-weight: 800; }
 .dropdown-item-all:hover { background: #fee2e2; }
 
 /* ── Buscador global ── */
 .global-search-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #fff;
-  border: 2px solid #6b46c1;
-  border-radius: 16px;
-  padding: 13px 18px;
-  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+  background: #fff; border: 2px solid #6b46c1; border-radius: 16px;
+  padding: 13px 18px; margin-bottom: 10px;
   box-shadow: 0 4px 16px rgba(107,70,193,0.15);
 }
-
-.global-search-bar:focus-within {
-  border-color: #4f32a0;
-  box-shadow: 0 0 0 4px rgba(107,70,193,0.18);
-}
-
+.global-search-bar:focus-within { border-color: #4f32a0; box-shadow: 0 0 0 4px rgba(107,70,193,0.18); }
 .search-icon { font-size: 18px; flex-shrink: 0; }
-
-.global-search-input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  font-weight: 600;
-  color: #111827;
-  background: transparent;
-}
-
+.global-search-input { flex: 1; border: none; outline: none; font-size: 15px; font-weight: 600; color: #111827; background: transparent; }
 .global-search-input::placeholder { color: #a78bfa; font-weight: 500; }
-
-.search-clear {
-  border: none;
-  background: #ede9fe;
-  border-radius: 999px;
-  width: 26px;
-  height: 26px;
-  font-size: 12px;
-  cursor: pointer;
-  color: #6b46c1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 0;
-  font-weight: 800;
-}
-
+.search-clear { border: none; background: #ede9fe; border-radius: 999px; width: 26px; height: 26px; font-size: 12px; cursor: pointer; color: #6b46c1; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; font-weight: 800; }
 .search-clear:hover { background: #c4b5fd; color: #3b1fa8; }
-
-.search-results-label {
-  font-size: 13px;
-  color: #6b7280;
-  font-weight: 600;
-  margin: 0 0 14px;
-  min-height: 18px;
-}
-
-mark {
-  background: #fef08a;
-  color: #713f12;
-  border-radius: 3px;
-  padding: 0 2px;
-}
+.search-results-label { font-size: 13px; color: #6b7280; font-weight: 600; margin: 0 0 14px; min-height: 18px; }
+mark { background: #fef08a; color: #713f12; border-radius: 3px; padding: 0 2px; }
 
 /* ── Modales ── */
-.modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(15,23,42,.55);
-  z-index: 9999;
-}
-
-.modal-card {
-  width: min(900px, 92vw);
-  max-height: 85vh;
-  margin: 0 auto;
-  overflow-y: auto;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 14px 35px rgba(16,24,40,.18);
-  padding: 18px;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  border-bottom: 1px solid #d9e0ea;
-  padding-bottom: 12px;
-}
+.modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(15,23,42,.55); z-index: 9999; }
+.modal-card { width: min(900px, 92vw); max-height: 85vh; margin: 0 auto; overflow-y: auto; background: #fff; border-radius: 18px; box-shadow: 0 14px 35px rgba(16,24,40,.18); padding: 18px; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; border-bottom: 1px solid #d9e0ea; padding-bottom: 12px; }
 
 /* ── Utilidades ── */
 .page-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -297,7 +155,4 @@ mark {
 .error-list { margin: 0; padding-left: 20px; color: #b42318; }
 body.modal-open { overflow: hidden; }
 
-/* ── Responsive ── */
-@media (max-width: 600px) {
-  .structure-grid { grid-template-columns: 1fr; }
-}
+@media (max-width: 600px) { .structure-grid { grid-template-columns: 1fr; } }
