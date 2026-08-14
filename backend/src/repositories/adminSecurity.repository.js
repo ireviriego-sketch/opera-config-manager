@@ -1,12 +1,14 @@
+const crypto = require('crypto');
+let bcrypt;
+try { bcrypt = require('bcryptjs'); } catch (error) { bcrypt = require('bcrypt'); }
+
 let db;
 try { db = require('../config/database'); } catch { db = require('../db/oraclePool'); }
 
 async function run(sql, binds = {}, options = {}) {
   if (typeof db.execute === 'function') return db.execute(sql, binds, options);
   if (typeof db.query === 'function') return db.query(sql, binds, options);
-  const connection = typeof db.getConnection === 'function'
-    ? await db.getConnection()
-    : await db.getPool().getConnection();
+  const connection = typeof db.getConnection === 'function' ? await db.getConnection() : await db.getPool().getConnection();
   try {
     const result = await connection.execute(sql, binds, options);
     if (/^\s*(insert|update|delete|merge)/i.test(sql)) await connection.commit();
@@ -17,15 +19,12 @@ async function run(sql, binds = {}, options = {}) {
 }
 
 const rows = (result) => result?.rows || result || [];
+const tokenHash = (token) => crypto.createHash('sha256').update(token).digest('hex');
 
 async function findUsers() {
   const result = await run(`
     SELECT
-      u.USER_ID AS "userId",
-      u.USERNAME AS "username",
-      u.FULL_NAME AS "fullName",
-      u.EMAIL AS "email",
-      u.STATUS AS "status",
+      u.USER_ID AS "userId", u.USERNAME AS "username", u.FULL_NAME AS "fullName", u.EMAIL AS "email", u.STATUS AS "status",
       TO_CHAR(u.LAST_LOGIN_AT, 'YYYY-MM-DD HH24:MI') AS "lastLoginAt",
       LISTAGG(DISTINCT r.ROLE_CODE, ', ') WITHIN GROUP (ORDER BY r.ROLE_CODE) AS "roleCodes",
       COUNT(DISTINCT CASE WHEN p.SCOPE_TYPE = 'CHAIN' THEN p.USER_PERMISSION_ID END) AS "chainPermissionCount",
@@ -43,38 +42,28 @@ async function findUsers() {
 
 async function findUserById(userId) {
   const userResult = await run(`
-    SELECT USER_ID AS "userId", USERNAME AS "username", FULL_NAME AS "fullName", EMAIL AS "email", STATUS AS "status"
-    FROM OPERA_CFG_USERS
-    WHERE USER_ID = :userId
-  `, { userId });
+    SELECT USER_ID AS "userId", USERNAME AS "username", FULL_NAME AS "fullName", EMAIL AS "email", STATUS AS "status",
+           TO_CHAR(LAST_LOGIN_AT, 'YYYY-MM-DD HH24:MI') AS "lastLoginAt"
+      FROM OPERA_CFG_USERS
+     WHERE USER_ID = :userId`, { userId: Number(userId) });
 
   const roleResult = await run(`
     SELECT r.ROLE_ID AS "roleId", r.ROLE_CODE AS "roleCode", r.ROLE_NAME AS "roleName"
-    FROM OPERA_CFG_USER_ROLES ur
-    JOIN OPERA_CFG_ROLES r ON r.ROLE_ID = ur.ROLE_ID
-    WHERE ur.USER_ID = :userId
-    ORDER BY r.ROLE_CODE
-  `, { userId });
+      FROM OPERA_CFG_USER_ROLES ur
+      JOIN OPERA_CFG_ROLES r ON r.ROLE_ID = ur.ROLE_ID
+     WHERE ur.USER_ID = :userId
+     ORDER BY r.ROLE_CODE`, { userId: Number(userId) });
 
   const permissionResult = await run(`
-    SELECT
-      p.USER_PERMISSION_ID AS "userPermissionId",
-      p.USER_ID AS "userId",
-      p.ROLE_ID AS "roleId",
-      r.ROLE_CODE AS "roleCode",
-      p.SCOPE_TYPE AS "scopeType",
-      p.CHAIN_ID AS "chainId",
-      c.CHAIN_NAME AS "chainName",
-      p.HOTEL_ID AS "hotelId",
-      h.HOTEL_NAME AS "hotelName",
-      p.IS_READ_ONLY AS "isReadOnly"
-    FROM OPERA_CFG_USER_PERMISSIONS p
-    JOIN OPERA_CFG_ROLES r ON r.ROLE_ID = p.ROLE_ID
-    LEFT JOIN OPERA_CFG_CHAINS c ON c.CHAIN_ID = p.CHAIN_ID
-    LEFT JOIN OPERA_CFG_HOTELS h ON h.HOTEL_ID = p.HOTEL_ID
-    WHERE p.USER_ID = :userId
-    ORDER BY r.ROLE_CODE, p.SCOPE_TYPE, c.CHAIN_NAME, h.HOTEL_NAME
-  `, { userId });
+    SELECT p.USER_PERMISSION_ID AS "userPermissionId", p.USER_ID AS "userId", p.ROLE_ID AS "roleId", r.ROLE_CODE AS "roleCode",
+           p.SCOPE_TYPE AS "scopeType", p.CHAIN_ID AS "chainId", c.CHAIN_NAME AS "chainName",
+           p.HOTEL_ID AS "hotelId", h.HOTEL_NAME AS "hotelName", p.IS_READ_ONLY AS "isReadOnly"
+      FROM OPERA_CFG_USER_PERMISSIONS p
+      JOIN OPERA_CFG_ROLES r ON r.ROLE_ID = p.ROLE_ID
+      LEFT JOIN OPERA_CFG_CHAINS c ON c.CHAIN_ID = p.CHAIN_ID
+      LEFT JOIN OPERA_CFG_HOTELS h ON h.HOTEL_ID = p.HOTEL_ID
+     WHERE p.USER_ID = :userId
+     ORDER BY r.ROLE_CODE, p.SCOPE_TYPE, c.CHAIN_NAME, h.HOTEL_NAME`, { userId: Number(userId) });
 
   const user = rows(userResult)[0];
   if (!user) return null;
@@ -85,60 +74,103 @@ async function findUserById(userId) {
 
 async function findRoles() {
   const result = await run(`
-    SELECT
-      r.ROLE_ID AS "roleId",
-      r.ROLE_CODE AS "roleCode",
-      r.ROLE_NAME AS "roleName",
-      r.ROLE_DESCRIPTION AS "roleDescription",
-      r.IS_SYSTEM_ROLE AS "isSystemRole",
-      TO_CHAR(NVL(r.UPDATED_AT, r.CREATED_AT), 'YYYY-MM-DD HH24:MI') AS "updatedAt",
-      COUNT(DISTINCT ur.USER_ID) AS "userCount",
-      COUNT(DISTINCT p.USER_PERMISSION_ID) AS "permissionCount"
-    FROM OPERA_CFG_ROLES r
-    LEFT JOIN OPERA_CFG_USER_ROLES ur ON ur.ROLE_ID = r.ROLE_ID
-    LEFT JOIN OPERA_CFG_USER_PERMISSIONS p ON p.ROLE_ID = r.ROLE_ID
-    GROUP BY r.ROLE_ID, r.ROLE_CODE, r.ROLE_NAME, r.ROLE_DESCRIPTION, r.IS_SYSTEM_ROLE, NVL(r.UPDATED_AT, r.CREATED_AT)
-    ORDER BY r.ROLE_CODE
-  `);
+    SELECT r.ROLE_ID AS "roleId", r.ROLE_CODE AS "roleCode", r.ROLE_NAME AS "roleName", r.ROLE_DESCRIPTION AS "roleDescription",
+           r.IS_SYSTEM_ROLE AS "isSystemRole", TO_CHAR(NVL(r.UPDATED_AT, r.CREATED_AT), 'YYYY-MM-DD HH24:MI') AS "updatedAt",
+           COUNT(DISTINCT ur.USER_ID) AS "userCount", COUNT(DISTINCT p.USER_PERMISSION_ID) AS "permissionCount"
+      FROM OPERA_CFG_ROLES r
+      LEFT JOIN OPERA_CFG_USER_ROLES ur ON ur.ROLE_ID = r.ROLE_ID
+      LEFT JOIN OPERA_CFG_USER_PERMISSIONS p ON p.ROLE_ID = r.ROLE_ID
+     GROUP BY r.ROLE_ID, r.ROLE_CODE, r.ROLE_NAME, r.ROLE_DESCRIPTION, r.IS_SYSTEM_ROLE, NVL(r.UPDATED_AT, r.CREATED_AT)
+     ORDER BY r.ROLE_CODE`);
   return rows(result);
 }
 
 async function findChains() {
-  const result = await run(`
-    SELECT CHAIN_ID AS "chainId", CHAIN_CODE AS "chainCode", CHAIN_NAME AS "chainName"
-    FROM OPERA_CFG_CHAINS
-    ORDER BY UPPER(CHAIN_NAME), UPPER(CHAIN_CODE)
-  `);
+  const result = await run(`SELECT CHAIN_ID AS "chainId", CHAIN_CODE AS "chainCode", CHAIN_NAME AS "chainName" FROM OPERA_CFG_CHAINS ORDER BY UPPER(CHAIN_NAME), UPPER(CHAIN_CODE)`);
   return rows(result);
 }
 
 async function findHotels() {
   const result = await run(`
     SELECT h.HOTEL_ID AS "hotelId", h.HOTEL_CODE AS "hotelCode", h.HOTEL_NAME AS "hotelName", h.CHAIN_ID AS "chainId", c.CHAIN_NAME AS "chainName"
-    FROM OPERA_CFG_HOTELS h
-    LEFT JOIN OPERA_CFG_CHAINS c ON c.CHAIN_ID = h.CHAIN_ID
-    ORDER BY UPPER(c.CHAIN_NAME), UPPER(h.HOTEL_NAME), UPPER(h.HOTEL_CODE)
-  `);
+      FROM OPERA_CFG_HOTELS h
+      LEFT JOIN OPERA_CFG_CHAINS c ON c.CHAIN_ID = h.CHAIN_ID
+     ORDER BY UPPER(c.CHAIN_NAME), UPPER(h.HOTEL_NAME), UPPER(h.HOTEL_CODE)`);
   return rows(result);
 }
 
+async function createUser({ username, fullName, email, status, roleIds = [], createdBy }) {
+  const unusableHash = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 10);
+  const result = await run(`
+    INSERT INTO OPERA_CFG_USERS (USERNAME, PASSWORD_HASH, FULL_NAME, EMAIL, STATUS, CREATED_BY)
+    VALUES (:username, :passwordHash, :fullName, :email, :status, :createdBy)
+    RETURNING USER_ID INTO :userId`, {
+      username,
+      passwordHash: unusableHash,
+      fullName: fullName || null,
+      email: email || null,
+      status: status || 'ACTIVE',
+      createdBy: createdBy || null,
+      userId: { dir: require('oracledb').BIND_OUT, type: require('oracledb').NUMBER }
+    }, { autoCommit: true });
+
+  const userId = result.outBinds.userId[0];
+  await replaceUserRoles(userId, roleIds, createdBy);
+  return findUserById(userId);
+}
+
 async function replaceUserRoles(userId, roleIds, assignedBy) {
-  await run('DELETE FROM OPERA_CFG_USER_ROLES WHERE USER_ID = :userId', { userId });
+  await run('DELETE FROM OPERA_CFG_USER_ROLES WHERE USER_ID = :userId', { userId: Number(userId) });
   for (const roleId of roleIds || []) {
-    await run(`INSERT INTO OPERA_CFG_USER_ROLES (USER_ID, ROLE_ID, ASSIGNED_BY) VALUES (:userId, :roleId, :assignedBy)`, { userId, roleId, assignedBy });
+    await run(`INSERT INTO OPERA_CFG_USER_ROLES (USER_ID, ROLE_ID, ASSIGNED_BY) VALUES (:userId, :roleId, :assignedBy)`, { userId: Number(userId), roleId: Number(roleId), assignedBy: assignedBy || null });
   }
 }
 
 async function replaceScopePermissions({ userId, roleId, scopeType, ids, isReadOnly, createdBy }) {
   const idColumn = scopeType === 'CHAIN' ? 'CHAIN_ID' : 'HOTEL_ID';
-  await run(`DELETE FROM OPERA_CFG_USER_PERMISSIONS WHERE USER_ID = :userId AND ROLE_ID = :roleId AND SCOPE_TYPE = :scopeType`, { userId, roleId, scopeType });
-
+  await run(`DELETE FROM OPERA_CFG_USER_PERMISSIONS WHERE USER_ID = :userId AND ROLE_ID = :roleId AND SCOPE_TYPE = :scopeType`, { userId: Number(userId), roleId: Number(roleId), scopeType });
   for (const id of ids || []) {
-    await run(`
-      INSERT INTO OPERA_CFG_USER_PERMISSIONS (USER_ID, ROLE_ID, SCOPE_TYPE, ${idColumn}, IS_READ_ONLY, CREATED_BY)
-      VALUES (:userId, :roleId, :scopeType, :scopeId, :isReadOnly, :createdBy)
-    `, { userId, roleId, scopeType, scopeId: id, isReadOnly: isReadOnly || 'N', createdBy });
+    await run(`INSERT INTO OPERA_CFG_USER_PERMISSIONS (USER_ID, ROLE_ID, SCOPE_TYPE, ${idColumn}, IS_READ_ONLY, CREATED_BY)
+               VALUES (:userId, :roleId, :scopeType, :scopeId, :isReadOnly, :createdBy)`, {
+      userId: Number(userId), roleId: Number(roleId), scopeType, scopeId: Number(id), isReadOnly: isReadOnly || 'N', createdBy: createdBy || null
+    });
   }
+}
+
+async function createPasswordResetToken(userId, createdBy) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const hash = tokenHash(token);
+
+  await run(`UPDATE OPERA_CFG_PASSWORD_RESET_TOKENS SET USED_AT = SYSTIMESTAMP WHERE USER_ID = :userId AND USED_AT IS NULL`, { userId: Number(userId) });
+  await run(`INSERT INTO OPERA_CFG_PASSWORD_RESET_TOKENS (USER_ID, TOKEN_HASH, EXPIRES_AT, CREATED_BY)
+             VALUES (:userId, :hash, SYSTIMESTAMP + INTERVAL '24' HOUR, :createdBy)`, {
+    userId: Number(userId), hash, createdBy: createdBy || null
+  });
+
+  return token;
+}
+
+async function validatePasswordResetToken(token) {
+  const hash = tokenHash(token);
+  const result = await run(`
+    SELECT t.RESET_TOKEN_ID AS "resetTokenId", u.USER_ID AS "userId", u.USERNAME AS "username", u.EMAIL AS "email"
+      FROM OPERA_CFG_PASSWORD_RESET_TOKENS t
+      JOIN OPERA_CFG_USERS u ON u.USER_ID = t.USER_ID
+     WHERE t.TOKEN_HASH = :hash
+       AND t.USED_AT IS NULL
+       AND t.EXPIRES_AT > SYSTIMESTAMP`, { hash });
+  return rows(result)[0] || null;
+}
+
+async function setPasswordWithToken(token, password) {
+  const tokenRow = await validatePasswordResetToken(token);
+  if (!tokenRow) return null;
+  const passwordHash = await bcrypt.hash(password, 10);
+  await run(`UPDATE OPERA_CFG_USERS SET PASSWORD_HASH = :passwordHash, PASSWORD_CHANGED_AT = SYSTIMESTAMP, FAILED_LOGIN_COUNT = 0, LOCKED_UNTIL = NULL, STATUS = 'ACTIVE', UPDATED_AT = SYSTIMESTAMP, UPDATED_BY = 'password-reset' WHERE USER_ID = :userId`, {
+    passwordHash, userId: Number(tokenRow.userId)
+  });
+  await run(`UPDATE OPERA_CFG_PASSWORD_RESET_TOKENS SET USED_AT = SYSTIMESTAMP WHERE RESET_TOKEN_ID = :resetTokenId`, { resetTokenId: Number(tokenRow.resetTokenId) });
+  return tokenRow;
 }
 
 module.exports = {
@@ -147,6 +179,10 @@ module.exports = {
   findRoles,
   findChains,
   findHotels,
+  createUser,
   replaceUserRoles,
-  replaceScopePermissions
+  replaceScopePermissions,
+  createPasswordResetToken,
+  validatePasswordResetToken,
+  setPasswordWithToken
 };

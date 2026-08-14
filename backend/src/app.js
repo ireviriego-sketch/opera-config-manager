@@ -19,6 +19,7 @@ const hotelsRoutes = require('./routes/hotels.routes');
 const deploymentsRoutes = require('./routes/deployments.routes');
 const deploymentContentRoutes = require('./routes/deploymentContent.routes');
 const adminSecurityRoutes = require('./routes/adminSecurity.routes');
+const passwordResetRoutes = require('./routes/passwordReset.routes');
 const { requireAnyRole } = require('./middleware/requireRole');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
@@ -32,13 +33,11 @@ function createApp() {
 
   app.use('/api/health', healthRoutes);
   app.use('/api/auth', authRoutes);
+  app.use('/api/password-reset', passwordResetRoutes);
   app.use('/api/navigation', navigationRoutes);
 
-  // Administración: solo ADMIN.
   app.use('/api/admin', requireAnyRole(['ADMIN']), adminSecurityRoutes);
 
-  // Plantillas y estructura de configuración: solo CONFIG_OPERATOR.
-  // Esto evita que un usuario que sea solo ADMIN o CHAIN_MANAGER vea/consuma plantillas.
   app.use('/api/templates', requireAnyRole(['CONFIG_OPERATOR']), templateRoutes);
   app.use('/api/template-versions', requireAnyRole(['CONFIG_OPERATOR']), templateVersionRoutes);
   app.use('/api/domains', requireAnyRole(['CONFIG_OPERATOR']), domainRoutes);
@@ -46,12 +45,9 @@ function createApp() {
   app.use('/api/attributes', requireAnyRole(['CONFIG_OPERATOR']), attributeRoutes);
   app.use('/api/relationships', requireAnyRole(['CONFIG_OPERATOR']), relationshipRoutes);
 
-  // Importaciones y despliegues se mantienen visibles/accesibles por ahora.
-  // No los bloqueamos todavía para no volver al comportamiento demasiado agresivo.
   app.use('/api/opera-config/deployments', deploymentsRoutes);
   app.use('/api/opera-config/deployment-content', deploymentContentRoutes);
 
-  // Cadenas y hoteles: rol + alcance en repositories.
   app.use('/api/opera-config/chains', requireAnyRole(['CHAIN_MANAGER']), chainsRoutes);
   app.use('/api/opera-config/hotels', requireAnyRole(['CHAIN_MANAGER', 'HOTEL_MANAGER']), hotelsRoutes);
 
