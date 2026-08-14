@@ -1,3 +1,133 @@
-.page-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.deployment-workbench{display:grid;grid-template-columns:340px 1fr;gap:18px;margin:18px}.structure-panel,.records-panel{background:#fff;border:1px solid #d9e0ea;border-radius:18px;box-shadow:0 14px 35px rgba(16,24,40,.08);padding:18px;min-height:calc(100vh - 160px)}.panel-header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:1px solid #d9e0ea;padding-bottom:12px;margin-bottom:14px}.domain-node{border:1px solid #e5e7eb;border-radius:14px;padding:12px;margin-bottom:12px;background:#f8fafc}.domain-node h3{margin:0 0 4px}.entity-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}.entity-button{border:1px solid #c4b5fd;background:#f5f3ff;border-radius:12px;padding:10px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center;color:#3b1fa8;font-weight:700}.entity-button:hover{border-color:#6b46c1;background:#ede9fe;color:#3b1fa8}.entity-button.active{background:#6b46c1;border-color:#6b46c1;color:#fff}.entity-button.active small{color:#e9d5ff}.entity-button small{color:#6b46c1;font-weight:700;background:#ede9fe;border-radius:999px;padding:2px 8px;font-size:11px}.entity-button.active small{background:rgba(255,255,255,0.2);color:#fff}.attributes-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.attribute-pill{background:#eef2ff;color:#3538cd;border-radius:999px;padding:6px 10px;font-weight:800;font-size:12px}.input{width:100%;border:1px solid #d9e0ea;border-radius:12px;padding:10px 12px;font-size:14px;background:#fff}.table-wrap{overflow:auto;margin-top:16px}table{width:100%;border-collapse:collapse;background:#fff}th,td{border-bottom:1px solid #d9e0ea;padding:10px;text-align:left;font-size:13px}th{background:#f8fafc;color:#344054}.row-actions{display:flex;gap:8px;flex-wrap:wrap}.modal{position:fixed;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.55);z-index:9999}.modal-card{width:min(900px,92vw);max-height:85vh;margin:0 auto;overflow-y:auto;background:#fff;border-radius:18px;box-shadow:0 14px 35px rgba(16,24,40,.18);padding:18px}.modal-card-wide{width:min(1100px,94vw)}.modal-header{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #d9e0ea;padding-bottom:12px}.record-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}.record-form label{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:13px}.form-actions{grid-column:1/-1;display:flex;gap:10px;align-items:center}.link-button{border:0;background:transparent;color:#6b46c1;font-weight:800;cursor:pointer}.button-link{text-decoration:none}.hidden{display:none!important}.error-list{margin:0;padding-left:20px;color:#b42318}.danger{color:#b42318}body.modal-open{overflow:hidden}@media(max-width:1000px){.deployment-workbench{grid-template-columns:1fr}.record-form{grid-template-columns:1fr}}
-#newRecordBtn[style*='display:none'],#newRecordBtn[style*='display: none']{display:none!important;width:0;height:0;padding:0;border:0;margin:0;overflow:hidden}
-.domain-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.domain-header h3{margin:0}.import-domain-btn{font-size:0.75rem!important;padding:4px 10px!important;border-radius:999px!important;background:#e0e7ff!important;color:#3730a3!important;border:1px solid #c7d2fe!important;font-weight:700!important}.import-domain-btn:hover{background:#c7d2fe!important}
+/* ── Layout general ── */
+.content-grid-page { padding: 18px; }
+
+.structure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+/* ── Tarjeta de dominio ── */
+.domain-card {
+  background: #fff;
+  border: 1px solid #d9e0ea;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(16,24,40,.07);
+  padding: 16px;
+}
+
+.domain-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.domain-card-header h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #1e1b4b;
+}
+
+/* ── Lista de entidades ── */
+.entity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entity-button {
+  border: 1px solid #c4b5fd;
+  background: #f5f3ff;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  color: #3b1fa8;
+  font-weight: 700;
+  width: 100%;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.entity-button:hover {
+  border-color: #6b46c1;
+  background: #ede9fe;
+}
+
+.entity-button small {
+  color: #6b46c1;
+  font-weight: 700;
+  background: #ede9fe;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* ── Botón importar ── */
+.import-domain-btn {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  border: 1px solid #c7d2fe;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.import-domain-btn:hover { background: #c7d2fe; }
+
+/* ── Modales ── */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15,23,42,.55);
+  z-index: 9999;
+}
+
+.modal-card {
+  width: min(900px, 92vw);
+  max-height: 85vh;
+  margin: 0 auto;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 14px 35px rgba(16,24,40,.18);
+  padding: 18px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #d9e0ea;
+  padding-bottom: 12px;
+}
+
+/* ── Utilidades ── */
+.page-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.input { width: 100%; border: 1px solid #d9e0ea; border-radius: 12px; padding: 10px 12px; font-size: 14px; background: #fff; }
+.form-actions { display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+.link-button { border: 0; background: transparent; color: #6b46c1; font-weight: 800; cursor: pointer; }
+.hidden { display: none !important; }
+.error-list { margin: 0; padding-left: 20px; color: #b42318; }
+body.modal-open { overflow: hidden; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .structure-grid { grid-template-columns: 1fr; }
+}

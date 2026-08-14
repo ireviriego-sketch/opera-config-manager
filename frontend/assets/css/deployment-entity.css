@@ -1,0 +1,133 @@
+/* ── Layout general ── */
+.entity-page {
+  padding: 18px;
+}
+
+/* ── Barra de atributos ── */
+.attributes-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.attribute-pill {
+  background: #eef2ff;
+  color: #3538cd;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+/* ── Tabla de registros ── */
+.table-wrap {
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #d9e0ea;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(16,24,40,.07);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th, td {
+  border-bottom: 1px solid #d9e0ea;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 13px;
+}
+
+th {
+  background: #f8fafc;
+  color: #344054;
+  font-weight: 700;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Modales ── */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15,23,42,.55);
+  z-index: 9999;
+}
+
+.modal-card {
+  width: min(900px, 92vw);
+  max-height: 85vh;
+  margin: 0 auto;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 14px 35px rgba(16,24,40,.18);
+  padding: 18px;
+}
+
+.modal-card-wide {
+  width: min(1100px, 94vw);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #d9e0ea;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.record-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.record-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+/* ── Utilidades ── */
+.page-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.input { width: 100%; border: 1px solid #d9e0ea; border-radius: 12px; padding: 10px 12px; font-size: 14px; background: #fff; }
+.link-button { border: 0; background: transparent; color: #6b46c1; font-weight: 800; cursor: pointer; }
+.hidden { display: none !important; }
+.error-list { margin: 0; padding-left: 20px; color: #b42318; }
+.danger { color: #b42318; }
+body.modal-open { overflow: hidden; }
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .record-form { grid-template-columns: 1fr; }
+}
