@@ -5,8 +5,33 @@
   const body = $('auditBody');
   let auditItems = [];
 
+  const EXTRA_ACTIONS = [
+    'CREATE_DEPLOYMENT_RECORD', 'UPDATE_DEPLOYMENT_RECORD', 'DELETE_DEPLOYMENT_RECORD',
+    'DELETE_DEPLOYMENT_ENTITY_RECORDS', 'IMPORT_DEPLOYMENT_DOMAIN_EXCEL',
+    'CREATE_CHAIN', 'UPDATE_CHAIN', 'DELETE_CHAIN',
+    'CREATE_HOTEL', 'UPDATE_HOTEL', 'DELETE_HOTEL', 'IMPORT_HOTELS',
+    'CREATE_TEMPLATE', 'UPDATE_TEMPLATE',
+    'CREATE_VERSION', 'UPDATE_VERSION', 'ACTIVATE_VERSION',
+    'CREATE_RELATIONSHIP', 'UPDATE_RELATIONSHIP', 'DELETE_RELATIONSHIP',
+    'CREATE_USER', 'ASSIGN_ROLE', 'ASSIGN_SCOPE', 'RESET_PASSWORD'
+  ];
+
   function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function ensureActionOptions() {
+    const select = $('actionFilter');
+    if (!select) return;
+    const existing = new Set(Array.from(select.options).map(option => option.value));
+    EXTRA_ACTIONS.forEach(action => {
+      if (!existing.has(action)) {
+        const option = document.createElement('option');
+        option.value = action;
+        option.textContent = action;
+        select.appendChild(option);
+      }
+    });
   }
 
   async function requestJson(url, options = {}) {
@@ -121,5 +146,7 @@
 
   $('refreshAuditBtn')?.addEventListener('click', loadAudit);
   $('closeAuditModalBtn')?.addEventListener('click', () => { $('auditDetailModal').hidden = true; });
+
+  ensureActionOptions();
   loadAudit();
 })();

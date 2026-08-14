@@ -4,27 +4,27 @@ const hotelsRepository = require('../repositories/hotels.repository');
 const auditService = require('../services/audit.service');
 
 function currentUser(req) {
-  return req.user?.email || req.user?.name || req.headers['x-user'] || req.headers['x-username'] || null;
+  return req.user?.username || req.user?.USERNAME || req.user?.email || req.user?.name || req.headers['x-user'] || req.headers['x-username'] || 'system';
 }
 
 function currentUserId(req) {
   return req.authzUserId || req.user?.userId || req.user?.USER_ID || null;
 }
 
-function chainSummary(action, chain) {
-  const name = chain?.chainName || chain?.CHAIN_NAME || chain?.chainCode || chain?.CHAIN_CODE || chain?.chainId || chain?.CHAIN_ID || 'cadena';
-  if (action === 'CREATE') return `Cadena creada: ${name}`;
-  if (action === 'UPDATE') return `Cadena actualizada: ${name}`;
-  if (action === 'DELETE') return `Cadena eliminada: ${name}`;
-  return `Cambio en cadena: ${name}`;
+async function auditSafely(req, entry) {
+  try {
+    await auditService.logFromRequest(req, entry);
+  } catch (error) {
+    console.error('Audit log failed:', error.message);
+  }
 }
 
-function hotelSummary(action, hotel) {
-  const name = hotel?.hotelName || hotel?.HOTEL_NAME || hotel?.hotelCode || hotel?.HOTEL_CODE || hotel?.hotelId || hotel?.HOTEL_ID || 'hotel';
-  if (action === 'CREATE') return `Hotel creado: ${name}`;
-  if (action === 'UPDATE') return `Hotel actualizado: ${name}`;
-  if (action === 'DELETE') return `Hotel eliminado: ${name}`;
-  return `Cambio en hotel: ${name}`;
+function chainName(chain) {
+  return chain?.chainName || chain?.CHAIN_NAME || chain?.chainCode || chain?.CHAIN_CODE || String(chain?.chainId || chain?.CHAIN_ID || 'cadena');
+}
+
+function hotelName(hotel) {
+  return hotel?.hotelName || hotel?.HOTEL_NAME || hotel?.hotelCode || hotel?.HOTEL_CODE || String(hotel?.hotelId || hotel?.HOTEL_ID || 'hotel');
 }
 
 async function listChains(req, res) {
@@ -40,19 +40,7 @@ async function getChain(req, res) {
 
 async function createChain(req, res) {
   const chain = await chainsService.createChain(req.body, currentUserId(req), currentUser(req));
-
-  await auditService.logFromRequest(req, {
-    action: 'CREATE',
-    actionCode: 'CREATE',
-    resultStatus: 'SUCCESS',
-    entityType: 'CHAIN',
-    entityId: chain.chainId,
-    entityName: chain.chainName,
-    summary: chainSummary('CREATE', chain),
-    oldValues: null,
-    newValues: chain
-  });
-
+  await auditSafely(req, { username: currentUser(req), action: 'CREATE_CHAIN', actionCode: 'CREATE_CHAIN', resultStatus: 'SUCCESS', entityType: 'CHAIN', entityId: chain.chainId, entityName: chainName(chain), summary: `Cadena creada: ${chainName(chain)}`, oldValues: null, newValues: chain });
   res.status(201).json({ ok: true, chain });
 }
 
@@ -60,20 +48,17 @@ async function updateChain(req, res) {
   const before = await chainsRepository.findById(req.params.chainId);
   const chain = await chainsService.updateChain(req.params.chainId, req.body, currentUserId(req), currentUser(req));
   if (!chain) return res.status(404).json({ ok: false, error: 'Chain not found or not authorized' });
-
-  await auditService.logFromRequest(req, {
-    action: 'UPDATE',
-    actionCode: 'UPDATE',
-    resultStatus: 'SUCCESS',
-    entityType: 'CHAIN',
-    entityId: chain.chainId,
-    entityName: chain.chainName,
-    summary: chainSummary('UPDATE', chain),
-    oldValues: before,
-    newValues: chain
-  });
-
+  await auditSafely(req, { username: currentUser(req), action: 'UPDATE_CHAIN', actionCode: 'UPDATE_CHAIN', resultStatus: 'SUCCESS', entityType: 'CHAIN', entityId: chain.chainId || req.params.chainId, entityName: chainName(chain), summary: `Cadena actualizada: ${chainName(chain)}`, oldValues: before, newValues: chain });
   res.json({ ok: true, chain });
+}
+
+async function deleteChain(req, res) {
+  const before = await chainsRepository.findById(req.params.chainId);
+  if (!before) return res.status(404).json({ ok: false, error: 'Chain not found' });
+  const deleted = await chainsService.deleteChain(req.params.chainId, currentUserId(req), currentUser(req));
+  if (!deleted) return res.status(404).json({ ok: false, error: 'Chain not found or not authorized' });
+  await auditSafely(req, { username: currentUser(req), action: 'DELETE_CHAIN', actionCode: 'DELETE_CHAIN', resultStatus: 'SUCCESS', entityType: 'CHAIN', entityId: req.params.chainId, entityName: chainName(before), summary: `Cadena eliminada: ${chainName(before)}`, oldValues: before, newValues: { deleted: true, chainId: Number(req.params.chainId) } });
+  res.json({ ok: true, deleted: true });
 }
 
 async function listHotels(req, res) {
@@ -83,19 +68,7 @@ async function listHotels(req, res) {
 
 async function createHotel(req, res) {
   const hotel = await chainsService.createHotel(req.params.chainId, req.body, currentUserId(req), currentUser(req));
-
-  await auditService.logFromRequest(req, {
-    action: 'CREATE',
-    actionCode: 'CREATE',
-    resultStatus: 'SUCCESS',
-    entityType: 'HOTEL',
-    entityId: hotel.hotelId,
-    entityName: hotel.hotelName,
-    summary: hotelSummary('CREATE', hotel),
-    oldValues: null,
-    newValues: hotel
-  });
-
+  await auditSafely(req, { username: currentUser(req), action: 'CREATE_HOTEL', actionCode: 'CREATE_HOTEL', resultStatus: 'SUCCESS', entityType: 'HOTEL', entityId: hotel.hotelId, entityName: hotelName(hotel), summary: `Hotel creado: ${hotelName(hotel)}`, oldValues: null, newValues: hotel, details: { chainId: Number(req.params.chainId) } });
   res.status(201).json({ ok: true, hotel });
 }
 
@@ -103,47 +76,25 @@ async function updateHotel(req, res) {
   const before = await hotelsRepository.findById(req.params.hotelId);
   const hotel = await chainsService.updateHotel(req.params.chainId, req.params.hotelId, req.body, currentUserId(req), currentUser(req));
   if (!hotel) return res.status(404).json({ ok: false, error: 'Hotel not found or not authorized' });
-
-  await auditService.logFromRequest(req, {
-    action: 'UPDATE',
-    actionCode: 'UPDATE',
-    resultStatus: 'SUCCESS',
-    entityType: 'HOTEL',
-    entityId: hotel.hotelId,
-    entityName: hotel.hotelName,
-    summary: hotelSummary('UPDATE', hotel),
-    oldValues: before,
-    newValues: hotel
-  });
-
+  await auditSafely(req, { username: currentUser(req), action: 'UPDATE_HOTEL', actionCode: 'UPDATE_HOTEL', resultStatus: 'SUCCESS', entityType: 'HOTEL', entityId: hotel.hotelId || req.params.hotelId, entityName: hotelName(hotel), summary: `Hotel actualizado: ${hotelName(hotel)}`, oldValues: before, newValues: hotel, details: { chainId: Number(req.params.chainId) } });
   res.json({ ok: true, hotel });
 }
 
+async function deleteHotel(req, res) {
+  const before = await hotelsRepository.findById(req.params.hotelId);
+  if (!before) return res.status(404).json({ ok: false, error: 'Hotel not found' });
+  const deleted = await chainsService.deleteHotel(req.params.chainId, req.params.hotelId, currentUserId(req), currentUser(req));
+  if (!deleted) return res.status(404).json({ ok: false, error: 'Hotel not found or not authorized' });
+  await auditSafely(req, { username: currentUser(req), action: 'DELETE_HOTEL', actionCode: 'DELETE_HOTEL', resultStatus: 'SUCCESS', entityType: 'HOTEL', entityId: req.params.hotelId, entityName: hotelName(before), summary: `Hotel eliminado: ${hotelName(before)}`, oldValues: before, newValues: { deleted: true, hotelId: Number(req.params.hotelId) }, details: { chainId: Number(req.params.chainId) } });
+  res.json({ ok: true, deleted: true });
+}
+
 async function importHotels(req, res) {
+  const beforeHotels = await chainsService.listHotels(req.params.chainId, currentUserId(req));
   const result = await chainsService.importHotelsFromAccentureHospitality(req.params.chainId, req.body, currentUserId(req), currentUser(req));
-
-  await auditService.logFromRequest(req, {
-    action: 'IMPORT',
-    actionCode: 'IMPORT',
-    resultStatus: 'SUCCESS',
-    entityType: 'CHAIN',
-    entityId: req.params.chainId,
-    entityName: `CHAIN ${req.params.chainId}`,
-    summary: `Hoteles importados para cadena ${req.params.chainId}`,
-    oldValues: null,
-    newValues: result
-  });
-
+  const afterHotels = await chainsService.listHotels(req.params.chainId, currentUserId(req));
+  await auditSafely(req, { username: currentUser(req), action: 'IMPORT_HOTELS', actionCode: 'IMPORT_HOTELS', resultStatus: 'SUCCESS', entityType: 'CHAIN', entityId: req.params.chainId, entityName: `CHAIN ${req.params.chainId}`, summary: `Hoteles importados para cadena ${req.params.chainId}`, oldValues: { hotels: beforeHotels }, newValues: { result, hotels: afterHotels }, details: { chainId: Number(req.params.chainId) } });
   res.json({ ok: true, ...result });
 }
 
-module.exports = {
-  listChains,
-  getChain,
-  createChain,
-  updateChain,
-  listHotels,
-  createHotel,
-  updateHotel,
-  importHotels
-};
+module.exports = { listChains, getChain, createChain, updateChain, deleteChain, listHotels, createHotel, updateHotel, deleteHotel, importHotels };

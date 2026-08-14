@@ -25,23 +25,14 @@ function forbidden(message = 'No tienes permiso sobre este hotel.') {
 
 async function findAllForUser(userId) {
   const result = await execute(
-    `SELECT DISTINCT
-            h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status,
-            h.created_at, h.created_by, h.updated_at, h.updated_by
+    `SELECT DISTINCT h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status, h.created_at, h.created_by, h.updated_at, h.updated_by
        FROM opera_cfg_hotels h
        JOIN opera_cfg_chains c ON c.chain_id = h.chain_id
-       JOIN opera_cfg_user_permissions p
-         ON p.user_id = :userId
-        AND (
-             (p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id)
-          OR (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id)
-        )
+       JOIN opera_cfg_user_permissions p ON p.user_id = :userId AND ((p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id) OR (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id))
        JOIN opera_cfg_user_roles ur ON ur.user_id = p.user_id
        JOIN opera_cfg_roles r ON r.role_id = ur.role_id
-      WHERE (
-             (p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER')
-          OR (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER')
-      )
+      WHERE ((p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER') OR (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER'))
+        AND NVL(h.status, 'ACTIVE') <> 'DELETED'
       ORDER BY UPPER(c.chain_name), UPPER(h.hotel_name)`,
     { userId: Number(userId) }
   );
@@ -50,24 +41,15 @@ async function findAllForUser(userId) {
 
 async function findByChainIdForUser(chainId, userId) {
   const result = await execute(
-    `SELECT DISTINCT
-            h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status,
-            h.created_at, h.created_by, h.updated_at, h.updated_by
+    `SELECT DISTINCT h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status, h.created_at, h.created_by, h.updated_at, h.updated_by
        FROM opera_cfg_hotels h
        JOIN opera_cfg_chains c ON c.chain_id = h.chain_id
-       JOIN opera_cfg_user_permissions p
-         ON p.user_id = :userId
-        AND (
-             (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id)
-          OR (p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id)
-        )
+       JOIN opera_cfg_user_permissions p ON p.user_id = :userId AND ((p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id) OR (p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id))
        JOIN opera_cfg_user_roles ur ON ur.user_id = p.user_id
        JOIN opera_cfg_roles r ON r.role_id = ur.role_id
       WHERE h.chain_id = :chainId
-        AND (
-             (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER')
-          OR (p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER')
-        )
+        AND ((p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER') OR (p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER'))
+        AND NVL(h.status, 'ACTIVE') <> 'DELETED'
       ORDER BY UPPER(h.hotel_name)`,
     { chainId: Number(chainId), userId: Number(userId) }
   );
@@ -78,19 +60,11 @@ async function hasHotelAccess(hotelId, userId) {
   const result = await execute(
     `SELECT 1 AS has_access
        FROM opera_cfg_hotels h
-       JOIN opera_cfg_user_permissions p
-         ON p.user_id = :userId
-        AND (
-             (p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id)
-          OR (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id)
-        )
+       JOIN opera_cfg_user_permissions p ON p.user_id = :userId AND ((p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id) OR (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id))
        JOIN opera_cfg_user_roles ur ON ur.user_id = p.user_id
        JOIN opera_cfg_roles r ON r.role_id = ur.role_id
       WHERE h.hotel_id = :hotelId
-        AND (
-             (p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER')
-          OR (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER')
-        )
+        AND ((p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER') OR (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER'))
       FETCH FIRST 1 ROWS ONLY`,
     { hotelId: Number(hotelId), userId: Number(userId) }
   );
@@ -115,8 +89,7 @@ async function hasChainHotelCreateAccess(chainId, userId) {
 
 async function findById(hotelId) {
   const result = await execute(
-    `SELECT h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status,
-            h.created_at, h.created_by, h.updated_at, h.updated_by
+    `SELECT h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status, h.created_at, h.created_by, h.updated_at, h.updated_by
        FROM opera_cfg_hotels h
        JOIN opera_cfg_chains c ON c.chain_id = h.chain_id
       WHERE h.hotel_id = :hotelId`,
@@ -153,6 +126,20 @@ async function updateHotel(chainId, hotelId, { hotelCode, hotelName, status, upd
   return findById(hotelId);
 }
 
+async function deleteHotel(chainId, hotelId, deletedBy) {
+  const result = await execute(
+    `UPDATE opera_cfg_hotels
+        SET status = 'DELETED',
+            updated_at = SYSTIMESTAMP,
+            updated_by = :deletedBy
+      WHERE chain_id = :chainId
+        AND hotel_id = :hotelId`,
+    { chainId: Number(chainId), hotelId: Number(hotelId), deletedBy },
+    { autoCommit: true }
+  );
+  return !!result.rowsAffected;
+}
+
 async function createHotelForUser(chainId, userId, payload) {
   const allowed = await hasChainHotelCreateAccess(chainId, userId);
   if (!allowed) throw forbidden('No tienes permiso para crear hoteles en esta cadena.');
@@ -165,6 +152,12 @@ async function updateHotelForUser(chainId, hotelId, userId, payload) {
   return updateHotel(chainId, hotelId, payload);
 }
 
+async function deleteHotelForUser(chainId, hotelId, userId, deletedBy) {
+  const allowed = await hasHotelAccess(hotelId, userId);
+  if (!allowed) throw forbidden();
+  return deleteHotel(chainId, hotelId, deletedBy);
+}
+
 module.exports = {
   findAllForUser,
   findByChainIdForUser,
@@ -173,5 +166,7 @@ module.exports = {
   createHotel,
   createHotelForUser,
   updateHotel,
-  updateHotelForUser
+  updateHotelForUser,
+  deleteHotel,
+  deleteHotelForUser
 };

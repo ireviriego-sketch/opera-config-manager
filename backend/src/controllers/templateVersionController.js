@@ -25,6 +25,7 @@ async function listByTemplate(req, res, next) {
   try {
     const templateId = Number(req.query.templateId);
     if (!templateId) return res.status(400).json({ error: 'TEMPLATE_ID_REQUIRED' });
+
     const versions = await templateVersionRepository.findByTemplateId(templateId);
     res.json({ versions });
   } catch (error) {
@@ -36,9 +37,17 @@ async function create(req, res, next) {
   try {
     const templateId = Number(req.body?.templateId ?? req.body?.TEMPLATE_ID);
     const versionLabel = req.body?.versionLabel ?? req.body?.VERSION_LABEL ?? null;
+
     if (!templateId) return res.status(400).json({ error: 'TEMPLATE_ID_REQUIRED' });
 
-    const version = await templateVersionRepository.createVersion({ templateId, versionLabel, createdBy: currentUser(req) });
+    const version = await templateVersionRepository.createVersion({
+      templateId,
+      versionLabel,
+      createdBy: currentUser(req)
+    });
+
+    if (!version) return res.status(500).json({ error: 'VERSION_CREATE_FAILED' });
+
     const template = await templateRepository.findById(templateId);
 
     await auditSafely(req, {
@@ -55,7 +64,13 @@ async function create(req, res, next) {
       details: { template }
     });
 
-    res.status(201).json({ versionId: version.VERSION_ID, versionNumber: version.VERSION_NUMBER, VERSION_ID: version.VERSION_ID, VERSION_NUMBER: version.VERSION_NUMBER, version });
+    res.status(201).json({
+      versionId: version.VERSION_ID,
+      versionNumber: version.VERSION_NUMBER,
+      VERSION_ID: version.VERSION_ID,
+      VERSION_NUMBER: version.VERSION_NUMBER,
+      version
+    });
   } catch (error) {
     next(error);
   }
@@ -73,6 +88,7 @@ async function update(req, res, next) {
       isActive: req.body.isActive ?? req.body.IS_ACTIVE ?? before.IS_ACTIVE,
       updatedBy: currentUser(req)
     });
+
     const template = await templateRepository.findById(updated.TEMPLATE_ID);
 
     await auditSafely(req, {
@@ -102,6 +118,8 @@ async function activate(req, res, next) {
     if (!before) return res.status(404).json({ error: 'VERSION_NOT_FOUND' });
 
     const after = await templateVersionRepository.activateVersion(versionId, currentUser(req));
+    if (!after) return res.status(404).json({ error: 'VERSION_NOT_FOUND' });
+
     const template = await templateRepository.findById(after.TEMPLATE_ID);
 
     await auditSafely(req, {
@@ -124,4 +142,9 @@ async function activate(req, res, next) {
   }
 }
 
-module.exports = { listByTemplate, create, update, activate };
+module.exports = {
+  listByTemplate,
+  create,
+  update,
+  activate
+};

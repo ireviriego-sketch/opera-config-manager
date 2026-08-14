@@ -17,11 +17,11 @@ router.get('/', asyncHandler(chainsController.listChains));
 router.get('/:chainId', asyncHandler(chainsController.getChain));
 router.post('/', asyncHandler(chainsController.createChain));
 router.put('/:chainId', asyncHandler(chainsController.updateChain));
-
+router.delete('/:chainId', asyncHandler(chainsController.deleteChain));
 router.get('/:chainId/hotels', asyncHandler(chainsController.listHotels));
 router.post('/:chainId/hotels', asyncHandler(chainsController.createHotel));
 router.put('/:chainId/hotels/:hotelId', asyncHandler(chainsController.updateHotel));
-
+router.delete('/:chainId/hotels/:hotelId', asyncHandler(chainsController.deleteHotel));
 router.post('/:chainId/import-hotels-from-acc-hospitality', asyncHandler(chainsController.importHotels));
 
 module.exports = router;

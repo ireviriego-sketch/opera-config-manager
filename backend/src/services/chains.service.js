@@ -26,6 +26,10 @@ async function updateChain(chainId, body, userId, userName) {
   return chainsRepository.updateChainForUser(chainId, userId, { ...payload, updatedBy: userName || null });
 }
 
+async function deleteChain(chainId, userId, userName) {
+  return chainsRepository.deleteChainForUser(chainId, userId, userName || null);
+}
+
 async function listHotels(chainId, userId) {
   return hotelsRepository.findByChainIdForUser(chainId, userId);
 }
@@ -38,6 +42,10 @@ async function createHotel(chainId, body, userId, userName) {
 async function updateHotel(chainId, hotelId, body, userId, userName) {
   const payload = validateHotelPayload(body);
   return hotelsRepository.updateHotelForUser(chainId, hotelId, userId, { ...payload, updatedBy: userName || null });
+}
+
+async function deleteHotel(chainId, hotelId, userId, userName) {
+  return hotelsRepository.deleteHotelForUser(chainId, hotelId, userId, userName || null);
 }
 
 async function importHotelsFromAccentureHospitality(chainId, body, userId, userName) {
@@ -62,7 +70,6 @@ async function importHotelsFromAccentureHospitality(chainId, body, userId, userN
   const sourceHotels = await accentureHospitalityService.listHotelsByChain(sourceChainId);
   const warnings = [];
   const hotelsToImport = [];
-
   for (const sourceHotel of sourceHotels) {
     const sourceHotelId = sourceHotel.HOTEL_ID || sourceHotel.hotelId;
     const sourceHotelName = sourceHotel.HOTELNAME || sourceHotel.hotelName;
@@ -70,24 +77,12 @@ async function importHotelsFromAccentureHospitality(chainId, body, userId, userN
       warnings.push('Skipped source hotel without HOTEL_ID or HOTELNAME');
       continue;
     }
-    hotelsToImport.push({
-      hotelCode: `ACC-${sourceHotelId}`,
-      hotelName: String(sourceHotelName).trim(),
-      status: 'ACTIVE'
-    });
+    hotelsToImport.push({ hotelCode: `ACC-${sourceHotelId}`, hotelName: String(sourceHotelName).trim(), status: 'ACTIVE' });
   }
 
   const summary = await chainsRepository.upsertImportedHotels(localChain.chainId, hotelsToImport, userName || null);
   const hotels = await listHotels(localChain.chainId, userId);
-
-  return {
-    sourceChainId,
-    imported: summary.imported,
-    updated: summary.updated,
-    skipped: warnings.length,
-    warnings,
-    hotels
-  };
+  return { sourceChainId, imported: summary.imported, updated: summary.updated, skipped: warnings.length, warnings, hotels };
 }
 
 module.exports = {
@@ -95,8 +90,10 @@ module.exports = {
   getChain,
   createChain,
   updateChain,
+  deleteChain,
   listHotels,
   createHotel,
   updateHotel,
+  deleteHotel,
   importHotelsFromAccentureHospitality
 };
