@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OPERA CFG - Entidad</title>
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="stylesheet" href="assets/css/deployment-entity.css" />
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">OC</div><div><h2>OPERA CFG</h2><span>Configuration Manager</span></div></div>
+    <nav id="sideMenu" class="side-menu"></nav>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="entityTitle">Cargando...</h1>
+        <p id="entitySubtitle" class="muted"></p>
+      </div>
+      <div class="page-actions">
+        <button id="backBtn" class="secondary" type="button">Volver</button>
+        <button id="newRecordBtn" class="primary" type="button">Nuevo registro</button>
+      </div>
+    </header>
+
+    <section class="entity-page">
+      <div id="searchContainer"></div>
+      <div id="recordsContainer"></div>
+    </section>
+  </main>
+
+  <!-- Modal registro -->
+  <div id="recordModal" class="modal hidden">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h2 id="recordModalTitle">Nuevo registro</h2>
+        <button id="closeRecordModalBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <form id="recordForm" class="record-form" novalidate></form>
+    </div>
+  </div>
+
+  <!-- Modal mensaje -->
+  <div id="messageModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="messageTitle">Aviso</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+      </div>
+      <div id="messageBody"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/deployment-content-api.js"></script>
+  <script src="assets/js/deployment-entity.js"></script>
+</body>
+</html>

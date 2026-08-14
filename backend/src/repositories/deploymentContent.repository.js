@@ -201,14 +201,19 @@ async function deleteRecord(deploymentId, recordId) {
   return !!result.rowsAffected;
 }
 
+async function deleteEntityRecords(deploymentId, entityId) {
+  const result = await execute(
+    `DELETE FROM opera_cfg_chain_deployment_records
+      WHERE chain_deployment_id = :deploymentId
+        AND deployment_entity_id = :entityId`,
+    { deploymentId: Number(deploymentId), entityId: Number(entityId) },
+    { autoCommit: true }
+  );
+  return result.rowsAffected || 0;
+}
+
 // ─── Importación desde Excel ───────────────────────────────────────────────
 
-/**
- * Limpia un header del Excel para compararlo con nombres de atributos.
- * Estrategia: quitar asteriscos y paréntesis, normalizar espacios/saltos,
- * reemplazar espacios por _ y convertir a mayúsculas.
- * NO elimina texto después del guion para preservar sufijos como "Numeric 8".
- */
 function normalizeHeader(raw) {
   if (!raw) return null;
   let s = String(raw)
@@ -224,30 +229,18 @@ function normalizeHeader(raw) {
   return s || null;
 }
 
-/**
- * Genera variantes de un header normalizado para aumentar las posibilidades de match.
- * Ejemplo: "CODE_NUMERIC_8" → ["CODE_NUMERIC_8", "CODE_NUMERIC", "CODE"]
- */
 function headerVariants(normalized) {
   if (!normalized) return [];
   const parts = normalized.split('_');
   const variants = [normalized];
-  // Versión sin el último token numérico o descriptivo
   if (parts.length > 1) variants.push(parts.slice(0, -1).join('_'));
-  // Solo el primer token
   if (parts.length > 2) variants.push(parts[0]);
   return variants;
 }
 
-/**
- * Detecta la fila de headers buscando la primera fila después de la fila 10
- * con al menos 3 valores no nulos, cuyo primer valor no sea instrucciones largas.
- */
 function detectHeaderRow(worksheet) {
   const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
 
-  // Estrategia: buscar la última fila con asterisco (*) antes de la primera fila de datos reales
-  // Una fila de datos reales es aquella cuya col A tiene un valor corto sin asterisco ni palabras clave
   const skipPrefixes = ['opera', 'accor', 'description', 'worksheet', 'note:', 'property specific',
     '< back', 'occs', 'package code def', 'transaction detail', 'posting attr', 'package pricing'];
 
@@ -266,22 +259,17 @@ function detectHeaderRow(worksheet) {
     const rowText = nonNull.map(v => String(v)).join(' ').toLowerCase();
     const firstVal = String(nonNull[0]).trim();
 
-    // Es una fila de headers si contiene asteriscos
     const hasAsterisk = nonNull.some(v => String(v).includes('*'));
     if (hasAsterisk && firstVal.length < 80) {
       lastHeaderRow = R;
       continue;
     }
 
-    // Es una fila de agrupación/título (ignorar)
     const isGrouping = skipPrefixes.some(p => rowText.startsWith(p)) || firstVal.length > 60;
     if (isGrouping) continue;
 
-    // Es una fila de datos reales: col A tiene valor corto sin texto descriptivo largo
-    // y la fila tiene múltiples valores
     if (nonNull.length >= 2 && firstVal.length <= 30 && !firstVal.includes(':') &&
         !firstVal.toLowerCase().startsWith('opera') && !firstVal.toLowerCase().startsWith('accor')) {
-      // Los datos empiezan aquí — devolver el último header encontrado
       if (lastHeaderRow !== null) return lastHeaderRow;
     }
   }
@@ -289,10 +277,6 @@ function detectHeaderRow(worksheet) {
   return lastHeaderRow;
 }
 
-/**
- * Nombre base de una hoja para matching con entidades.
- * "Transportation (Part 1 of 2)" → "TRANSPORTATION"
- */
 function sheetBaseName(sheetName) {
   return sheetName
     .replace(/\s*\(Part\s+\d+\s+of\s+\d+\)/i, '')
@@ -300,29 +284,20 @@ function sheetBaseName(sheetName) {
     .toUpperCase();
 }
 
-/**
- * Hace matching entre header normalizado y atributos de la entidad.
- * Prioriza el match más específico (más largo) para evitar que "CODE" 
- * gane sobre "CODE_NUMERIC_8".
- */
 function matchAttribute(normalizedHeader, attributes, assigned) {
   if (!normalizedHeader || normalizedHeader === 'X') return null;
   const attrCodes = attributes.map(a => (a.attributeCode || '').toUpperCase());
 
-  // 1. Match exacto
   const exactIdx = attrCodes.indexOf(normalizedHeader);
   if (exactIdx >= 0 && !assigned.has(attributes[exactIdx].attributeCode)) {
     return attributes[exactIdx].attributeCode;
   }
 
-  // 2. Match por nombre de atributo normalizado
   const byName = attributes.find(a =>
     !assigned.has(a.attributeCode) && normalizeHeader(a.attributeName) === normalizedHeader
   );
   if (byName) return byName.attributeCode;
 
-  // 3. El header es prefijo del atributo (ej: CODE_NUMERIC → CODE_NUMERIC_8)
-  // Preferir el match más largo
   const prefixCandidates = attributes
     .filter(a => !assigned.has(a.attributeCode) &&
       (a.attributeCode || '').toUpperCase().startsWith(normalizedHeader) &&
@@ -330,7 +305,6 @@ function matchAttribute(normalizedHeader, attributes, assigned) {
     .sort((a, b) => (b.attributeCode || '').length - (a.attributeCode || '').length);
   if (prefixCandidates.length) return prefixCandidates[0].attributeCode;
 
-  // 4. El atributo es prefijo del header (ej: SERVICE_RECOVERY_CODE → SERVICE_RECOVERY_CODE_OPTIONAL)
   const suffixCandidates = attributes
     .filter(a => !assigned.has(a.attributeCode) &&
       normalizedHeader.startsWith((a.attributeCode || '').toUpperCase()) &&
@@ -342,7 +316,6 @@ function matchAttribute(normalizedHeader, attributes, assigned) {
 }
 
 async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
-  // 1. Obtener entidades del dominio
   const entitiesResult = await execute(
     `SELECT de.deployment_entity_id, de.entity_code, de.entity_name
        FROM opera_cfg_chain_deployment_entities de
@@ -356,7 +329,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
     return { inserted: 0, skipped: 0, errors: ['No se encontraron entidades para este dominio.'] };
   }
 
-  // 2. Obtener atributos de cada entidad
   const entityAttributesMap = new Map();
   for (const row of entitiesResult.rows) {
     const attrResult = await execute(
@@ -374,7 +346,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
     })));
   }
 
-  // 3. Construir mapa nombre_entidad → datos
   const entityMap = new Map();
   for (const row of entitiesResult.rows) {
     const entityId = Number(row.DEPLOYMENT_ENTITY_ID);
@@ -387,7 +358,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
     if (row.ENTITY_CODE) entityMap.set((row.ENTITY_CODE || '').toUpperCase(), data);
   }
 
-  // 4. Leer el Excel
   const workbook = XLSX.read(fileBuffer, { type: 'buffer', cellDates: true });
 
   let inserted = 0;
@@ -406,7 +376,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
     const baseName = sheetBaseName(sheetName);
     if (skipSheets.has(baseName)) continue;
 
-    // Buscar entidad por nombre exacto primero, luego parcial
     let entityData = entityMap.get(baseName);
     if (!entityData) {
       for (const [key, val] of entityMap.entries()) {
@@ -421,7 +390,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
     const worksheet = workbook.Sheets[sheetName];
     if (!worksheet || !worksheet['!ref']) continue;
 
-    // Detectar fila de headers
     const headerRowIdx = detectHeaderRow(worksheet);
     if (headerRowIdx === null) {
       errors.push(`"${sheetName}": no se detectó fila de headers — omitida.`);
@@ -429,7 +397,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
       continue;
     }
 
-    // Leer headers
     const range = XLSX.utils.decode_range(worksheet['!ref']);
     const rawHeaders = [];
     for (let C = range.s.c; C <= range.e.c; C++) {
@@ -437,8 +404,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
       rawHeaders.push(cell ? String(cell.v || '') : null);
     }
 
-    // Mapear columna → attributeCode
-    // Rastrear qué atributos ya están asignados para evitar duplicados
     const assignedAttrs = new Set();
     const colToAttr = rawHeaders.map(h => {
       const normalized = normalizeHeader(h);
@@ -455,7 +420,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
       continue;
     }
 
-    // Leer filas de datos
     let sheetInserted = 0;
     for (let R = headerRowIdx + 1; R <= range.e.r; R++) {
       const record = {};
@@ -476,7 +440,6 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
           val = String(cell.v).trim();
         }
 
-        // Ignorar valores que son solo "X" (columnas de selección del Excel)
         if (val === 'X' || val === 'x') continue;
 
         if (val !== '') {
@@ -515,4 +478,4 @@ async function importDomainExcel(deploymentId, domainId, fileBuffer, userName) {
   return { inserted, skipped, errors, processedSheets: Array.from(processedSheets) };
 }
 
-module.exports = { getStructure, getEntityAttributes, listRecords, createRecord, updateRecord, deleteRecord, importDomainExcel };
+module.exports = { getStructure, getEntityAttributes, listRecords, createRecord, updateRecord, deleteRecord, deleteEntityRecords, importDomainExcel };
