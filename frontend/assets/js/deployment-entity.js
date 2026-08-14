@@ -33,6 +33,7 @@
 
     $('backBtn').onclick = () => history.back();
     $('newRecordBtn').onclick = newRecord;
+    $('importOperaBtn').onclick = importToOpera;
     $('closeRecordModalBtn').onclick = () => closeModal('recordModal');
     $('closeMessageBtn').onclick = () => closeModal('messageModal');
     $('recordForm').onsubmit = saveRecord;
@@ -68,7 +69,7 @@
       state.filteredRecords = state.records;
       state.currentPage = 1;
 
-      
+      renderImportCounter();
       renderSearchBar();
       renderRecords();
     } catch (err) { error(err); }
@@ -78,14 +79,24 @@
     return attribute.attributeCode || attribute.attributeName || `ATTR_${attribute.deploymentAttributeId}`;
   }
 
-  function renderAttributes() {
-    $('attributesContainer').innerHTML = state.attributes.length
-      ? state.attributes.map(attr => `
-          <span class="attribute-pill" title="${escapeHtml(attr.dataType || '')}">
-            ${escapeHtml(attributeKey(attr))}${attr.isRequired === 'Y' ? ' *' : ''}
-          </span>
-        `).join('')
-      : '<p class="muted">Esta entidad no tiene atributos copiados.</p>';
+  function renderImportCounter() {
+    const total = state.records.length;
+    const imported = state.records.filter(r => r.status === 'IMPORTED').length;
+    const errors = state.records.filter(r => r.status === 'ERROR').length;
+    const counter = $('importCounter');
+    if (!counter) return;
+
+    let colorClass = 'counter-draft';
+    if (imported === total && total > 0) colorClass = 'counter-ok';
+    else if (imported > 0 || errors > 0) colorClass = 'counter-partial';
+
+    counter.innerHTML = `
+      <span class="counter-badge ${colorClass}">
+        <span class="counter-icon">${imported === total && total > 0 ? '✅' : errors > 0 ? '⚠️' : '⏳'}</span>
+        <span class="counter-text">${imported} / ${total} importados</span>
+        ${errors > 0 ? `<span class="counter-errors">${errors} errores</span>` : ''}
+      </span>
+    `;
   }
 
   function renderSearchBar() {
@@ -94,24 +105,17 @@
     container.innerHTML = `
       <div class="search-bar">
         <span class="search-icon">🔍</span>
-        <input
-          id="searchInput"
-          class="search-input"
-          type="text"
+        <input id="searchInput" class="search-input" type="text"
           placeholder="Buscar en cualquier campo..."
-          value="${escapeHtml(state.searchTerm)}"
-          autocomplete="off"
-        />
+          value="${escapeHtml(state.searchTerm)}" autocomplete="off" />
         <button id="searchClearBtn" class="search-clear ${state.searchTerm ? '' : 'hidden'}" type="button">✕</button>
       </div>
     `;
-
     $('searchInput').oninput = (e) => {
       state.searchTerm = e.target.value.trim().toLowerCase();
       state.currentPage = 1;
       applyFilter();
     };
-
     $('searchClearBtn').onclick = () => {
       state.searchTerm = '';
       state.currentPage = 1;
@@ -125,16 +129,21 @@
     if (!state.searchTerm) {
       state.filteredRecords = state.records;
     } else {
-      state.filteredRecords = state.records.filter(record => {
-        return Object.values(record.record || {}).some(val =>
+      state.filteredRecords = state.records.filter(record =>
+        Object.values(record.record || {}).some(val =>
           String(val ?? '').toLowerCase().includes(state.searchTerm)
-        );
-      });
+        )
+      );
     }
-    // Mostrar/ocultar botón limpiar
     const clearBtn = $('searchClearBtn');
     if (clearBtn) clearBtn.classList.toggle('hidden', !state.searchTerm);
     renderRecords();
+  }
+
+  function recordStatusClass(status) {
+    if (status === 'IMPORTED') return 'record-card--imported';
+    if (status === 'ERROR') return 'record-card--error';
+    return '';
   }
 
   function renderRecords() {
@@ -156,7 +165,6 @@
       const fields = columns.map(col => {
         const val = record.record?.[col] || '';
         if (!val) return '';
-        // Resaltar coincidencia de búsqueda en el valor
         const displayVal = state.searchTerm
           ? escapeHtml(val).replace(new RegExp(`(${escapeHtml(state.searchTerm)})`, 'gi'), '<mark>$1</mark>')
           : escapeHtml(val);
@@ -166,7 +174,15 @@
         </div>`;
       }).filter(Boolean).join('');
 
-      return `<div class="record-card">
+      const statusClass = recordStatusClass(record.status);
+      const statusBadge = record.status === 'IMPORTED'
+        ? '<span class="record-status-badge badge-imported">✓ Importado</span>'
+        : record.status === 'ERROR'
+        ? '<span class="record-status-badge badge-error">✗ Error</span>'
+        : '';
+
+      return `<div class="record-card ${statusClass}">
+        ${statusBadge}
         <div class="record-card-fields">${fields}</div>
         <div class="record-card-actions">
           <button class="secondary small" data-edit-record="${record.deploymentRecordId}">Editar</button>
@@ -176,7 +192,7 @@
     }).join('');
 
     const totalLabel = state.searchTerm
-      ? `${records.length} resultado${records.length !== 1 ? 's' : ''} para "<strong>${escapeHtml(state.searchTerm)}</strong>" · ${state.records.length} totales`
+      ? `${records.length} resultado${records.length !== 1 ? 's' : ''} · ${state.records.length} totales`
       : `${state.records.length} registros totales`;
 
     const paginationHtml = totalPages > 1 ? `
@@ -196,7 +212,6 @@
       ${paginationHtml}
     `;
 
-    // Eventos paginación
     document.querySelectorAll('[data-page]').forEach(btn =>
       btn.onclick = () => { state.currentPage = Number(btn.dataset.page); renderRecords(); window.scrollTo(0, 0); }
     );
@@ -205,13 +220,19 @@
     if (prev) prev.onclick = () => { state.currentPage--; renderRecords(); window.scrollTo(0, 0); };
     if (next) next.onclick = () => { state.currentPage++; renderRecords(); window.scrollTo(0, 0); };
 
-    // Eventos editar/borrar
     document.querySelectorAll('[data-edit-record]').forEach(btn =>
       btn.onclick = () => editRecord(Number(btn.dataset.editRecord))
     );
     document.querySelectorAll('[data-delete-record]').forEach(btn =>
       btn.onclick = () => deleteRecord(Number(btn.dataset.deleteRecord))
     );
+  }
+
+  function importToOpera() {
+    message('Próximamente', `
+      <p>La integración con <strong>OPERA Cloud</strong> estará disponible próximamente.</p>
+      <p style="margin-top:8px;color:#6b7280;font-size:13px">Cuando esté lista, este botón enviará los registros directamente a OPERA Cloud y actualizará el estado de cada uno.</p>
+    `);
   }
 
   function newRecord() {
@@ -245,7 +266,6 @@
     document.querySelectorAll('[data-record-field]').forEach(input => {
       record[input.dataset.recordField] = input.value.trim();
     });
-
     try {
       if (state.editingRecord) {
         await api.updateRecord(state.deploymentId, state.editingRecord.deploymentRecordId, record);
@@ -255,6 +275,7 @@
       closeModal('recordModal');
       state.records = (await api.listRecords(state.deploymentId, state.entityId)).rows || [];
       applyFilter();
+      renderImportCounter();
     } catch (err) { error(err); }
   }
 
@@ -264,6 +285,7 @@
       await api.deleteRecord(state.deploymentId, recordId);
       state.records = (await api.listRecords(state.deploymentId, state.entityId)).rows || [];
       applyFilter();
+      renderImportCounter();
     } catch (err) { error(err); }
   }
 
