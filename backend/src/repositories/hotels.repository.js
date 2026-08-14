@@ -17,85 +17,108 @@ function mapHotel(row) {
   };
 }
 
-async function findAll(filters = {}) {
-  const search = String(filters.search || '').trim().toUpperCase();
-  const binds = {};
-  let where = '1 = 1';
+function forbidden(message = 'No tienes permiso sobre este hotel.') {
+  const error = new Error(message);
+  error.statusCode = 403;
+  return error;
+}
 
-  if (search) {
-    binds.search = `%${search}%`;
-    where += `
-      AND (
-        UPPER(h.hotel_code) LIKE :search
-        OR UPPER(h.hotel_name) LIKE :search
-        OR UPPER(c.chain_code) LIKE :search
-        OR UPPER(c.chain_name) LIKE :search
-        OR UPPER(h.status) LIKE :search
-      )`;
-  }
-
+async function findAllForUser(userId) {
   const result = await execute(
-    `SELECT h.hotel_id,
-            h.chain_id,
-            c.chain_code,
-            c.chain_name,
-            h.hotel_code,
-            h.hotel_name,
-            h.status,
-            h.created_at,
-            h.created_by,
-            h.updated_at,
-            h.updated_by
+    `SELECT DISTINCT
+            h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status,
+            h.created_at, h.created_by, h.updated_at, h.updated_by
        FROM opera_cfg_hotels h
-       JOIN opera_cfg_chains c
-         ON c.chain_id = h.chain_id
-      WHERE ${where}
-      ORDER BY UPPER(h.hotel_name), UPPER(c.chain_name)`,
-    binds
+       JOIN opera_cfg_chains c ON c.chain_id = h.chain_id
+       JOIN opera_cfg_user_permissions p
+         ON p.user_id = :userId
+        AND (
+             (p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id)
+          OR (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id)
+        )
+       JOIN opera_cfg_user_roles ur ON ur.user_id = p.user_id
+       JOIN opera_cfg_roles r ON r.role_id = ur.role_id
+      WHERE (
+             (p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER')
+          OR (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER')
+      )
+      ORDER BY UPPER(c.chain_name), UPPER(h.hotel_name)`,
+    { userId: Number(userId) }
   );
-
   return result.rows.map(mapHotel);
 }
 
-async function findByChainId(chainId) {
+async function findByChainIdForUser(chainId, userId) {
   const result = await execute(
-    `SELECT h.hotel_id,
-            h.chain_id,
-            c.chain_code,
-            c.chain_name,
-            h.hotel_code,
-            h.hotel_name,
-            h.status,
-            h.created_at,
-            h.created_by,
-            h.updated_at,
-            h.updated_by
+    `SELECT DISTINCT
+            h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status,
+            h.created_at, h.created_by, h.updated_at, h.updated_by
        FROM opera_cfg_hotels h
-       JOIN opera_cfg_chains c
-         ON c.chain_id = h.chain_id
+       JOIN opera_cfg_chains c ON c.chain_id = h.chain_id
+       JOIN opera_cfg_user_permissions p
+         ON p.user_id = :userId
+        AND (
+             (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id)
+          OR (p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id)
+        )
+       JOIN opera_cfg_user_roles ur ON ur.user_id = p.user_id
+       JOIN opera_cfg_roles r ON r.role_id = ur.role_id
       WHERE h.chain_id = :chainId
+        AND (
+             (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER')
+          OR (p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER')
+        )
       ORDER BY UPPER(h.hotel_name)`,
-    { chainId: Number(chainId) }
+    { chainId: Number(chainId), userId: Number(userId) }
   );
   return result.rows.map(mapHotel);
+}
+
+async function hasHotelAccess(hotelId, userId) {
+  const result = await execute(
+    `SELECT 1 AS has_access
+       FROM opera_cfg_hotels h
+       JOIN opera_cfg_user_permissions p
+         ON p.user_id = :userId
+        AND (
+             (p.scope_type = 'HOTEL' AND p.hotel_id = h.hotel_id)
+          OR (p.scope_type = 'CHAIN' AND p.chain_id = h.chain_id)
+        )
+       JOIN opera_cfg_user_roles ur ON ur.user_id = p.user_id
+       JOIN opera_cfg_roles r ON r.role_id = ur.role_id
+      WHERE h.hotel_id = :hotelId
+        AND (
+             (p.scope_type = 'HOTEL' AND r.role_code = 'HOTEL_MANAGER')
+          OR (p.scope_type = 'CHAIN' AND r.role_code = 'CHAIN_MANAGER')
+        )
+      FETCH FIRST 1 ROWS ONLY`,
+    { hotelId: Number(hotelId), userId: Number(userId) }
+  );
+  return !!result.rows.length;
+}
+
+async function hasChainHotelCreateAccess(chainId, userId) {
+  const result = await execute(
+    `SELECT 1 AS has_access
+       FROM opera_cfg_user_permissions p
+       JOIN opera_cfg_user_roles ur ON ur.user_id = p.user_id
+       JOIN opera_cfg_roles r ON r.role_id = ur.role_id
+      WHERE p.user_id = :userId
+        AND p.scope_type = 'CHAIN'
+        AND p.chain_id = :chainId
+        AND r.role_code = 'CHAIN_MANAGER'
+      FETCH FIRST 1 ROWS ONLY`,
+    { chainId: Number(chainId), userId: Number(userId) }
+  );
+  return !!result.rows.length;
 }
 
 async function findById(hotelId) {
   const result = await execute(
-    `SELECT h.hotel_id,
-            h.chain_id,
-            c.chain_code,
-            c.chain_name,
-            h.hotel_code,
-            h.hotel_name,
-            h.status,
-            h.created_at,
-            h.created_by,
-            h.updated_at,
-            h.updated_by
+    `SELECT h.hotel_id, h.chain_id, c.chain_code, c.chain_name, h.hotel_code, h.hotel_name, h.status,
+            h.created_at, h.created_by, h.updated_at, h.updated_by
        FROM opera_cfg_hotels h
-       JOIN opera_cfg_chains c
-         ON c.chain_id = h.chain_id
+       JOIN opera_cfg_chains c ON c.chain_id = h.chain_id
       WHERE h.hotel_id = :hotelId`,
     { hotelId: Number(hotelId) }
   );
@@ -104,22 +127,12 @@ async function findById(hotelId) {
 
 async function createHotel(chainId, { hotelCode, hotelName, status, createdBy }) {
   const result = await execute(
-    `INSERT INTO opera_cfg_hotels
-       (chain_id, hotel_code, hotel_name, status, created_by)
-     VALUES
-       (:chainId, :hotelCode, :hotelName, :status, :createdBy)
+    `INSERT INTO opera_cfg_hotels (chain_id, hotel_code, hotel_name, status, created_by)
+     VALUES (:chainId, :hotelCode, :hotelName, :status, :createdBy)
      RETURNING hotel_id INTO :hotelId`,
-    {
-      chainId: Number(chainId),
-      hotelCode,
-      hotelName,
-      status,
-      createdBy,
-      hotelId: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
-    },
+    { chainId: Number(chainId), hotelCode, hotelName, status, createdBy, hotelId: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER } },
     { autoCommit: true }
   );
-
   return findById(result.outBinds.hotelId[0]);
 }
 
@@ -133,25 +146,32 @@ async function updateHotel(chainId, hotelId, { hotelCode, hotelName, status, upd
             updated_by = :updatedBy
       WHERE chain_id = :chainId
         AND hotel_id = :hotelId`,
-    {
-      chainId: Number(chainId),
-      hotelId: Number(hotelId),
-      hotelCode,
-      hotelName,
-      status,
-      updatedBy
-    },
+    { chainId: Number(chainId), hotelId: Number(hotelId), hotelCode, hotelName, status, updatedBy },
     { autoCommit: true }
   );
-
   if (!result.rowsAffected) return null;
   return findById(hotelId);
 }
 
+async function createHotelForUser(chainId, userId, payload) {
+  const allowed = await hasChainHotelCreateAccess(chainId, userId);
+  if (!allowed) throw forbidden('No tienes permiso para crear hoteles en esta cadena.');
+  return createHotel(chainId, payload);
+}
+
+async function updateHotelForUser(chainId, hotelId, userId, payload) {
+  const allowed = await hasHotelAccess(hotelId, userId);
+  if (!allowed) throw forbidden();
+  return updateHotel(chainId, hotelId, payload);
+}
+
 module.exports = {
-  findAll,
-  findByChainId,
+  findAllForUser,
+  findByChainIdForUser,
   findById,
+  hasHotelAccess,
   createHotel,
-  updateHotel
+  createHotelForUser,
+  updateHotel,
+  updateHotelForUser
 };

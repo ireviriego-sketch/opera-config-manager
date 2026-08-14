@@ -3,48 +3,52 @@ const hotelsRepository = require('../repositories/hotels.repository');
 const accentureHospitalityService = require('./accentureHospitality.service');
 const { validateChainPayload, validateHotelPayload } = require('../utils/chains.validators');
 
-async function listChains() {
-  return chainsRepository.findAll();
+function forbidden(message) {
+  const error = new Error(message || 'No tienes permiso para esta operación.');
+  error.statusCode = 403;
+  return error;
 }
 
-async function getChain(chainId) {
-  return chainsRepository.findById(chainId);
+async function listChains(userId) {
+  return chainsRepository.findAllForUser(userId);
 }
 
-async function createChain(body, userName) {
+async function getChain(chainId, userId) {
+  return chainsRepository.findByIdForUser(chainId, userId);
+}
+
+async function createChain() {
+  throw forbidden('No se permite crear cadenas desde este rol. La asignación de cadenas debe realizarla un administrador funcional del sistema.');
+}
+
+async function updateChain(chainId, body, userId, userName) {
   const payload = validateChainPayload(body);
-  return chainsRepository.createChain({ ...payload, createdBy: userName || null });
+  return chainsRepository.updateChainForUser(chainId, userId, { ...payload, updatedBy: userName || null });
 }
 
-async function updateChain(chainId, body, userName) {
-  const payload = validateChainPayload(body);
-  return chainsRepository.updateChain(chainId, { ...payload, updatedBy: userName || null });
+async function listHotels(chainId, userId) {
+  return hotelsRepository.findByChainIdForUser(chainId, userId);
 }
 
-async function listHotels(chainId) {
-  return hotelsRepository.findByChainId(chainId);
-}
-
-async function createHotel(chainId, body, userName) {
+async function createHotel(chainId, body, userId, userName) {
   const payload = validateHotelPayload(body);
-  return hotelsRepository.createHotel(chainId, { ...payload, createdBy: userName || null });
+  return hotelsRepository.createHotelForUser(chainId, userId, { ...payload, createdBy: userName || null });
 }
 
-async function updateHotel(chainId, hotelId, body, userName) {
+async function updateHotel(chainId, hotelId, body, userId, userName) {
   const payload = validateHotelPayload(body);
-  return hotelsRepository.updateHotel(chainId, hotelId, { ...payload, updatedBy: userName || null });
+  return hotelsRepository.updateHotelForUser(chainId, hotelId, userId, { ...payload, updatedBy: userName || null });
 }
 
-async function importHotelsFromAccentureHospitality(chainId, body, userName) {
-  const localChain = await getChain(chainId);
+async function importHotelsFromAccentureHospitality(chainId, body, userId, userName) {
+  const localChain = await getChain(chainId, userId);
   if (!localChain) {
-    const error = new Error('Chain not found');
+    const error = new Error('Chain not found or not authorized');
     error.statusCode = 404;
     throw error;
   }
 
   let sourceChainId = body && body.accChainId ? Number(body.accChainId) : null;
-
   if (!sourceChainId) {
     const sourceChain = await accentureHospitalityService.findChainByName(localChain.chainName);
     if (!sourceChain) {
@@ -62,12 +66,10 @@ async function importHotelsFromAccentureHospitality(chainId, body, userName) {
   for (const sourceHotel of sourceHotels) {
     const sourceHotelId = sourceHotel.HOTEL_ID || sourceHotel.hotelId;
     const sourceHotelName = sourceHotel.HOTELNAME || sourceHotel.hotelName;
-
     if (!sourceHotelId || !sourceHotelName) {
       warnings.push('Skipped source hotel without HOTEL_ID or HOTELNAME');
       continue;
     }
-
     hotelsToImport.push({
       hotelCode: `ACC-${sourceHotelId}`,
       hotelName: String(sourceHotelName).trim(),
@@ -76,7 +78,7 @@ async function importHotelsFromAccentureHospitality(chainId, body, userName) {
   }
 
   const summary = await chainsRepository.upsertImportedHotels(localChain.chainId, hotelsToImport, userName || null);
-  const hotels = await listHotels(localChain.chainId);
+  const hotels = await listHotels(localChain.chainId, userId);
 
   return {
     sourceChainId,

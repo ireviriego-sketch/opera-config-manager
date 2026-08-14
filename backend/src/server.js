@@ -1,12 +1,16 @@
 const { createApp } = require('./app');
 const { env, validateEnv } = require('./config/env');
 const { initOraclePool, closeOraclePool } = require('./db/oraclePool');
+const adminSecurityRoutes = require('./routes/adminSecurity.routes');
 
 async function start() {
   validateEnv();
   await initOraclePool();
 
   const app = createApp();
+
+  app.use('/api/admin', adminSecurityRoutes);
+
   const server = app.listen(env.port, () => {
     console.log(`${env.appName} API running on port ${env.port}`);
   });
