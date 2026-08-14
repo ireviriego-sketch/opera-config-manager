@@ -22,6 +22,7 @@ const adminSecurityRoutes = require('./routes/adminSecurity.routes');
 const passwordResetRoutes = require('./routes/passwordReset.routes');
 const { requireAnyRole } = require('./middleware/requireRole');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
+const auditRoutes = require('./routes/audit.routes');
 
 function createApp() {
   const app = express();
@@ -30,27 +31,22 @@ function createApp() {
   app.use(cors({ origin: env.corsOrigin }));
   app.use(express.json({ limit: '10mb' }));
   app.use(morgan('dev'));
-
   app.use('/api/health', healthRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/password-reset', passwordResetRoutes);
   app.use('/api/navigation', navigationRoutes);
-
   app.use('/api/admin', requireAnyRole(['ADMIN']), adminSecurityRoutes);
-
+  app.use('/api/audit', requireAnyRole(['ADMIN']), auditRoutes);
   app.use('/api/templates', requireAnyRole(['CONFIG_OPERATOR']), templateRoutes);
   app.use('/api/template-versions', requireAnyRole(['CONFIG_OPERATOR']), templateVersionRoutes);
   app.use('/api/domains', requireAnyRole(['CONFIG_OPERATOR']), domainRoutes);
   app.use('/api/entities', requireAnyRole(['CONFIG_OPERATOR']), entityRoutes);
   app.use('/api/attributes', requireAnyRole(['CONFIG_OPERATOR']), attributeRoutes);
   app.use('/api/relationships', requireAnyRole(['CONFIG_OPERATOR']), relationshipRoutes);
-
   app.use('/api/opera-config/deployments', deploymentsRoutes);
   app.use('/api/opera-config/deployment-content', deploymentContentRoutes);
-
   app.use('/api/opera-config/chains', requireAnyRole(['CHAIN_MANAGER']), chainsRoutes);
   app.use('/api/opera-config/hotels', requireAnyRole(['CHAIN_MANAGER', 'HOTEL_MANAGER']), hotelsRoutes);
-
   app.use(express.static(path.resolve(__dirname, '../../frontend')));
   app.use(notFoundHandler);
   app.use(errorHandler);

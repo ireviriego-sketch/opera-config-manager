@@ -11,8 +11,10 @@ function normalizeRoute(routePath) {
   const raw = String(routePath || '').trim();
   if (!raw || raw === '#') return '#';
   if (/^https?:\/\//i.test(raw)) return raw;
+
   const clean = raw.split('?')[0].replace(/\/+$/, '') || '/';
   const query = raw.includes('?') ? raw.slice(raw.indexOf('?')) : '';
+
   const routeMap = {
     '/': 'index.html',
     '/home': 'index.html',
@@ -29,11 +31,14 @@ function normalizeRoute(routePath) {
     '/hotels': 'hotels.html',
     '/imports': '#',
     '/deployments': '#',
-    '/audit': '#',
+    '/audit': 'admin-audit.html',
+    '/admin-audit': 'admin-audit.html',
     '/logs': '#',
     '/admin-users': 'admin-users.html',
+    '/admin-roles': 'admin-roles.html',
     '/admin-lovs': 'admin-lovs.html'
   };
+
   if (routeMap[clean]) return routeMap[clean] === '#' ? '#' : routeMap[clean] + query;
   if (clean.endsWith('.html')) return clean.replace(/^\//, '') + query;
   return clean.replace(/^\//, '') + '.html' + query;
@@ -91,6 +96,7 @@ function iconFor(item) {
   if (iconName.includes('audit') || iconName.includes('history') || label.includes('auditor')) return '📋';
   if (iconName.includes('log') || iconName.includes('error') || label.includes('log')) return '📜';
   if (iconName.includes('user') || label.includes('usuario')) return '👤';
+  if (iconName.includes('role') || label.includes('rol')) return '•';
   if (iconName.includes('list') || label.includes('lov')) return '📄';
   if (iconName.includes('setting') || label.includes('administr')) return '⚙️';
   return '•';
@@ -99,11 +105,14 @@ function iconFor(item) {
 function isActiveNavigation(routePath) {
   const target = normalizeRoute(routePath).split('?')[0];
   const current = window.location.pathname.split('/').pop() || 'index.html';
+
   if (target === current) return true;
   if (target === 'chains.html' && current === 'chain-detail.html') return true;
   if (target === 'templates.html' && ['template-detail.html', 'version-detail.html', 'domain-detail.html', 'entity-detail.html'].includes(current)) return true;
   if (target === 'admin-users.html' && current === 'admin-users.html') return true;
+  if (target === 'admin-roles.html' && current === 'admin-roles.html') return true;
   if (target === 'admin-lovs.html' && current === 'admin-lovs.html') return true;
+  if (target === 'admin-audit.html' && current === 'admin-audit.html') return true;
   return false;
 }
 
@@ -127,6 +136,7 @@ function buildNavigationTree(items) {
     const id = getItemId(item);
     const parentId = getParentId(item);
     const node = map.get(id);
+
     if (parentId && map.has(parentId)) {
       const parent = map.get(parentId);
       const exists = parent.children.some(function (child) { return getItemId(child) === id; });
@@ -231,7 +241,6 @@ function setupCollapsibleSidebar() {
   if (!sidebar || !menu) return;
 
   document.body.classList.add('sidebar-ready');
-
   const pinned = localStorage.getItem('operaCfg.sidebarPinned') === 'Y';
   setSidebarState(sidebar, pinned);
 
