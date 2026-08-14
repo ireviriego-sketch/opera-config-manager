@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administración de LOVs - OPERA CFG</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+  <div class="app-shell app-layout app-container">
+    <aside class="sidebar">
+      <div class="brand app-brand">
+        <div class="brand-logo app-logo">OC</div>
+        <div class="brand-text">
+          <strong>OPERA CFG</strong>
+          <span>Configuration Manager</span>
+        </div>
+      </div>
+      <nav id="sideMenu" class="side-menu"></nav>
+    </aside>
+
+    <main class="main-content page-main">
+      <header class="page-header hero-card">
+        <div>
+          <h1>Administración de LOVs</h1>
+          <p>Gestión de listas de valores reutilizables para plantillas, atributos y despliegues.</p>
+        </div>
+        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Salir</button>
+      </header>
+
+      <section class="card page-card">
+        <div class="section-header card-header">
+          <div>
+            <h2>LOVs</h2>
+            <p>Consulta y mantenimiento de catálogos de valores reutilizables.</p>
+          </div>
+          <button id="newLovBtn" type="button" class="btn btn-primary">Nueva LOV</button>
+        </div>
+
+        <div class="toolbar table-toolbar">
+          <input id="lovSearch" class="form-control" type="search" placeholder="Buscar por código, nombre o estado">
+        </div>
+
+        <div class="table-wrapper">
+          <table class="table data-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Valores</th>
+                <th>Estado</th>
+                <th>Actualizado</th>
+              </tr>
+            </thead>
+            <tbody id="lovsBody">
+              <tr>
+                <td colspan="5">Cargando LOVs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/admin-lovs.js"></script>
+</body>
+</html>

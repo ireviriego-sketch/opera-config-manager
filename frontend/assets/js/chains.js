@@ -2,22 +2,33 @@
   const api = window.ChainsApi;
   const state = { chains: [] };
   const $ = id => document.getElementById(id);
-  const show = element => element.classList.remove('hidden');
-  const hide = element => element.classList.add('hidden');
+  const show = element => element && element.classList.remove('hidden');
+  const hide = element => element && element.classList.add('hidden');
   const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
-  const badge = status => `<span class="badge ${status}">${status}</span>`;
-  const message = (title, html) => { $('messageTitle').textContent = title; $('messageBody').innerHTML = html; show($('messageModal')); };
-  const error = err => message('Validación', `<ul class="error-list"><li>${escapeHtml(err.message || err)}</li></ul>`);
+  const badge = status => `<span class="badge">${escapeHtml(status || '')}</span>`;
+
+  const message = (title, html) => {
+    if (!$('messageTitle') || !$('messageBody') || !$('messageModal')) return alert(title + '\n' + String(html || '').replace(/<[^>]*>/g, ''));
+    $('messageTitle').textContent = title;
+    $('messageBody').innerHTML = html;
+    show($('messageModal'));
+  };
+
+  const error = err => message('Validación', `<p>${escapeHtml(err.message || err)}</p>`);
 
   document.addEventListener('DOMContentLoaded', init);
 
   async function init() {
-    $('refreshBtn').onclick = loadChains;
-    $('newChainBtn').onclick = openNewChain;
-    $('closeModalBtn').onclick = () => hide($('chainModal'));
-    $('closeMessageBtn').onclick = () => hide($('messageModal'));
-    $('searchInput').oninput = renderChains;
-    $('chainForm').onsubmit = saveChain;
+    if ($('refreshBtn')) $('refreshBtn').onclick = loadChains;
+    if ($('newChainBtn')) {
+      $('newChainBtn').onclick = openNewChain;
+      $('newChainBtn').disabled = true;
+      $('newChainBtn').title = 'La creación de cadenas no está permitida desde este rol.';
+    }
+    if ($('closeModalBtn')) $('closeModalBtn').onclick = () => hide($('chainModal'));
+    if ($('closeMessageBtn')) $('closeMessageBtn').onclick = () => hide($('messageModal'));
+    if ($('searchInput')) $('searchInput').oninput = renderChains;
+    if ($('chainForm')) $('chainForm').onsubmit = saveChain;
     await loadChains();
   }
 
@@ -31,37 +42,37 @@
   }
 
   function renderChains() {
-    const query = $('searchInput').value.toLowerCase();
+    const query = ($('searchInput')?.value || '').toLowerCase();
     const rows = state.chains.filter(chain => `${chain.chainCode} ${chain.chainName}`.toLowerCase().includes(query));
-    $('chainsContainer').innerHTML = rows.length
-      ? rows.map(chain => `
-          <article class="chain-card">
-            <h3>${escapeHtml(chain.chainName)}</h3>
-            <p class="muted">${escapeHtml(chain.chainCode)} · ${badge(chain.status)}</p>
-            <p class="muted">Hoteles: ${Number(chain.hotelsCount || 0)}</p>
-            <div class="chain-card-footer"><a class="secondary small button-link" href="chain-detail.html?id=${encodeURIComponent(chain.chainId)}">Abrir</a></div>
-          </article>
-        `).join('')
-      : '<p class="muted">No hay cadenas.</p>';
+
+    if (!$('chainsContainer')) return;
+
+    if (!rows.length) {
+      $('chainsContainer').innerHTML = `
+        <div class="empty-state">
+          <strong>No tiene cadenas asignadas.</strong>
+          <p>Solicita a un administrador que asigne una o varias cadenas a tu usuario desde Administración &gt; Usuarios &gt; Cadenas autorizadas.</p>
+        </div>
+      `;
+      return;
+    }
+
+    $('chainsContainer').innerHTML = rows.map(chain => `
+      <article class="chain-card">
+        <h3>${escapeHtml(chain.chainName)}</h3>
+        <p>${escapeHtml(chain.chainCode)} · ${badge(chain.status)}</p>
+        <p>Hoteles: ${Number(chain.hotelsCount || 0)}</p>
+        <a class="btn btn-secondary" href="chain-detail.html?id=${encodeURIComponent(chain.chainId)}">Abrir</a>
+      </article>
+    `).join('');
   }
 
   function openNewChain() {
-    $('chainCodeInput').value = '';
-    $('chainNameInput').value = '';
-    $('chainStatusInput').value = 'ACTIVE';
-    show($('chainModal'));
+    message('Acceso restringido', '<p>La creación de nuevas cadenas no está permitida desde este rol. Primero debe existir una asignación explícita de cadena.</p>');
   }
 
   async function saveChain(event) {
     event.preventDefault();
-    try {
-      const payload = { chainCode: $('chainCodeInput').value.trim(), chainName: $('chainNameInput').value.trim(), status: $('chainStatusInput').value };
-      const result = await api.createChain(payload);
-      const chainId = result.chain?.chainId;
-      if (chainId) window.location.href = `chain-detail.html?id=${encodeURIComponent(chainId)}`;
-      else { hide($('chainModal')); await loadChains(); }
-    } catch (err) {
-      error(err);
-    }
+    message('Acceso restringido', '<p>La creación de nuevas cadenas no está permitida desde este rol.</p>');
   }
 })();

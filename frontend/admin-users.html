@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Usuarios - OPERA CFG</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/admin-access.css">
+</head>
+<body>
+  <div class="app-shell app-layout app-container">
+    <aside class="sidebar">
+      <div class="brand app-brand">
+        <div class="brand-logo app-logo">OC</div>
+        <div class="brand-text">
+          <strong>OPERA CFG</strong>
+          <span>Configuration Manager</span>
+        </div>
+      </div>
+      <nav id="sideMenu" class="side-menu"></nav>
+    </aside>
+
+    <main class="main-content page-main">
+      <header class="page-header hero-card">
+        <div>
+          <h1>Administración de usuarios</h1>
+          <p>Usuarios, roles y acceso explícito por cadena u hotel.</p>
+        </div>
+        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Salir</button>
+      </header>
+
+      <section class="card page-card">
+        <div class="section-header card-header">
+          <div>
+            <h2>Usuarios</h2>
+            <p>Un rol define qué puede hacer el usuario. El acceso indica sobre qué cadenas u hoteles puede hacerlo.</p>
+          </div>
+          <button id="newUserBtn" type="button" class="btn btn-primary">Nuevo usuario</button>
+        </div>
+
+        <div class="toolbar table-toolbar">
+          <input id="userSearch" class="form-control" type="search" placeholder="Buscar por usuario, nombre, email, estado o rol">
+        </div>
+
+        <div class="table-wrapper">
+          <table class="table data-table">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Roles</th>
+                <th>Acceso</th>
+                <th>Último acceso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody">
+              <tr><td colspan="8">Cargando usuarios...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="userDetailPanel" class="card page-card user-access-panel" hidden>
+        <div class="section-header card-header">
+          <div>
+            <h2 id="userDetailTitle">Detalle de usuario</h2>
+            <p>Asigna roles y define el alcance de acceso por cadena u hotel.</p>
+          </div>
+          <button id="closeUserDetailBtn" type="button" class="btn btn-secondary">Cerrar</button>
+        </div>
+
+        <div class="tabs access-tabs">
+          <button type="button" class="tab-button active" data-tab="basic">Datos</button>
+          <button type="button" class="tab-button" data-tab="roles">Roles</button>
+          <button type="button" class="tab-button" data-tab="chains">Cadenas autorizadas</button>
+          <button type="button" class="tab-button" data-tab="hotels">Hoteles autorizados</button>
+          <button type="button" class="tab-button" data-tab="permissions">Permisos técnicos</button>
+        </div>
+
+        <div id="tabBasic" class="tab-panel">
+          <div class="form-grid">
+            <label>Usuario<input id="detailUsername" class="form-control" disabled></label>
+            <label>Nombre<input id="detailFullName" class="form-control" disabled></label>
+            <label>Email<input id="detailEmail" class="form-control" disabled></label>
+            <label>Estado<input id="detailStatus" class="form-control" disabled></label>
+          </div>
+          <p class="access-help">Nota: ADMIN solo administra la aplicación. Para operar cadenas u hoteles hay que asignar CHAIN_MANAGER u HOTEL_MANAGER y marcar las cadenas/hoteles concretos.</p>
+        </div>
+
+        <div id="tabRoles" class="tab-panel" hidden>
+          <div id="rolesChecklist" class="check-list"></div>
+          <div class="actions-row">
+            <button id="saveRolesBtn" type="button" class="btn btn-primary">Guardar roles</button>
+          </div>
+        </div>
+
+        <div id="tabChains" class="tab-panel" hidden>
+          <div class="access-header-row">
+            <div>
+              <h3>Cadenas autorizadas</h3>
+              <p>Selecciona las cadenas sobre las que el usuario puede operar como gestor de cadena.</p>
+            </div>
+            <label class="inline-check"><input id="chainsReadOnly" type="checkbox"> Solo lectura</label>
+          </div>
+          <div class="toolbar table-toolbar">
+            <input id="chainSearch" class="form-control" type="search" placeholder="Buscar cadena">
+          </div>
+          <div id="chainsChecklist" class="access-check-grid"></div>
+          <div class="actions-row">
+            <button id="saveChainsBtn" type="button" class="btn btn-primary">Guardar cadenas autorizadas</button>
+          </div>
+        </div>
+
+        <div id="tabHotels" class="tab-panel" hidden>
+          <div class="access-header-row">
+            <div>
+              <h3>Hoteles autorizados</h3>
+              <p>Selecciona los hoteles concretos sobre los que el usuario puede operar como gestor de hotel.</p>
+            </div>
+            <label class="inline-check"><input id="hotelsReadOnly" type="checkbox"> Solo lectura</label>
+          </div>
+          <div class="toolbar table-toolbar">
+            <input id="hotelSearch" class="form-control" type="search" placeholder="Buscar hotel o cadena">
+          </div>
+          <div id="hotelsChecklist" class="access-check-grid"></div>
+          <div class="actions-row">
+            <button id="saveHotelsBtn" type="button" class="btn btn-primary">Guardar hoteles autorizados</button>
+          </div>
+        </div>
+
+        <div id="tabPermissions" class="tab-panel" hidden>
+          <h3>Permisos técnicos actuales</h3>
+          <p class="access-help">Vista de bajo nivel de OPERA_CFG_USER_PERMISSIONS.</p>
+          <div id="permissionsList" class="permission-list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/admin-users.js"></script>
+</body>
+</html>
