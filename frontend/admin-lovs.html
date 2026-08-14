@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Administración de LOVs - OPERA CFG</title>
+  <title>LOVs - OPERA CFG</title>
   <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/sidebar-collapsible.css">
+  <link rel="stylesheet" href="assets/css/admin-lovs.css">
 </head>
 <body>
   <div class="app-shell app-layout app-container">
@@ -19,48 +21,124 @@
       <nav id="sideMenu" class="side-menu"></nav>
     </aside>
 
-    <main class="main-content page-main">
-      <header class="page-header hero-card">
+    <main class="main-content page-main lovs-page">
+      <header class="page-header hero-card lovs-hero">
         <div>
-          <h1>Administración de LOVs</h1>
-          <p>Gestión de listas de valores reutilizables para plantillas, atributos y despliegues.</p>
+          <h1>LOVs</h1>
+          <p>Administra listas de valores configurables, dependencias y valores activos o inactivos.</p>
         </div>
         <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Salir</button>
       </header>
 
-      <section class="card page-card">
-        <div class="section-header card-header">
-          <div>
-            <h2>LOVs</h2>
-            <p>Consulta y mantenimiento de catálogos de valores reutilizables.</p>
+      <section id="lovsLayout" class="lovs-layout lovs-layout-empty">
+        <div class="card page-card lovs-panel">
+          <div class="section-header card-header lovs-card-header">
+            <div>
+              <h2>Listas</h2>
+              <p>Click selecciona la LOV. Doble click abre sus valores.</p>
+            </div>
+            <button id="newLovBtn" type="button" class="btn btn-primary">Nueva LOV</button>
           </div>
-          <button id="newLovBtn" type="button" class="btn btn-primary">Nueva LOV</button>
+
+          <div class="lovs-toolbar lovs-list-toolbar">
+            <input id="lovSearch" class="form-control" type="search" placeholder="Buscar por código, nombre, descripción o padre...">
+            <label class="lovs-check"><input id="showInactiveLovs" type="checkbox" checked> Ver inactivas</label>
+          </div>
+
+          <div class="table-wrapper lovs-table-wrapper">
+            <table class="table data-table lovs-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Depende de</th>
+                  <th>Estado</th>
+                  <th>Valores</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="lovsBody"><tr><td colspan="6">Cargando LOVs...</td></tr></tbody>
+            </table>
+          </div>
         </div>
 
-        <div class="toolbar table-toolbar">
-          <input id="lovSearch" class="form-control" type="search" placeholder="Buscar por código, nombre o estado">
-        </div>
+        <div id="lovValuesPanel" class="card page-card lov-values-panel" hidden>
+          <div class="section-header card-header lovs-card-header">
+            <div>
+              <h2 id="selectedLovTitle">Valores</h2>
+              <p id="selectedLovSubtitle">Selecciona una LOV para editar sus valores.</p>
+            </div>
+            <div class="lov-values-actions"><button id="newValueBtn" type="button" class="btn btn-primary" disabled>Nuevo valor</button></div>
+          </div>
 
-        <div class="table-wrapper">
-          <table class="table data-table">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Valores</th>
-                <th>Estado</th>
-                <th>Actualizado</th>
-              </tr>
-            </thead>
-            <tbody id="lovsBody">
-              <tr>
-                <td colspan="5">Cargando LOVs...</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="lovs-toolbar values-toolbar">
+            <label id="parentValueFilterLabel" class="parent-filter-label" hidden>
+              Valor padre
+              <select id="parentValueFilter" class="form-control"><option value="">Todos</option></select>
+            </label>
+            <label class="lovs-check values-inactive-check"><input id="showInactiveValues" type="checkbox" checked> Ver inactivos</label>
+          </div>
+
+          <div class="table-wrapper lov-values-table-wrapper">
+            <table class="table data-table lov-values-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Etiqueta</th>
+                  <th>Padre</th>
+                  <th>Orden</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="valuesBody"><tr><td colspan="6">No hay LOV seleccionada.</td></tr></tbody>
+            </table>
+          </div>
         </div>
       </section>
     </main>
+  </div>
+
+  <div id="lovModal" class="lovs-modal" hidden>
+    <div class="lovs-modal-card">
+      <div class="lovs-modal-header">
+        <h2 id="lovModalTitle">LOV</h2>
+        <button id="closeLovModalBtn" type="button" class="btn btn-secondary">Cerrar</button>
+      </div>
+      <div class="lov-form-grid">
+        <label>Código *<input id="lovCodeInput" class="form-control" type="text" maxlength="80"></label>
+        <label>Nombre *<input id="lovNameInput" class="form-control" type="text" maxlength="200"></label>
+        <label>Depende de LOV<select id="lovParentInput" class="form-control"><option value="">Sin dependencia</option></select></label>
+        <label>Estado<select id="lovStatusInput" class="form-control"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
+        <label class="full">Descripción<textarea id="lovDescriptionInput" class="form-control" maxlength="1000" rows="4"></textarea></label>
+      </div>
+      <div id="lovFormMessage" class="form-message"></div>
+      <div class="lovs-modal-actions">
+        <button id="saveLovBtn" type="button" class="btn btn-primary">Guardar</button>
+        <button id="cancelLovBtn" type="button" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="valueModal" class="lovs-modal" hidden>
+    <div class="lovs-modal-card">
+      <div class="lovs-modal-header">
+        <h2 id="valueModalTitle">Valor LOV</h2>
+        <button id="closeValueModalBtn" type="button" class="btn btn-secondary">Cerrar</button>
+      </div>
+      <div class="lov-form-grid">
+        <label>Código *<input id="valueCodeInput" class="form-control" type="text" maxlength="120"></label>
+        <label>Etiqueta *<input id="valueLabelInput" class="form-control" type="text" maxlength="300"></label>
+        <label id="valueParentBox" hidden>Valor padre<select id="valueParentInput" class="form-control"><option value="">Sin padre</option></select></label>
+        <label>Orden<input id="valueSortInput" class="form-control" type="number" value="10"></label>
+        <label>Estado<select id="valueStatusInput" class="form-control"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
+      </div>
+      <div id="valueFormMessage" class="form-message"></div>
+      <div class="lovs-modal-actions">
+        <button id="saveValueBtn" type="button" class="btn btn-primary">Guardar</button>
+        <button id="cancelValueBtn" type="button" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
   </div>
 
   <script src="assets/js/api.js"></script>

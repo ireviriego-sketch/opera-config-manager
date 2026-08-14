@@ -1,0 +1,377 @@
+.lovs-page { padding-bottom: 32px; }
+.lovs-hero { align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+.lovs-layout { display: grid; grid-template-columns: minmax(640px, 0.95fr) minmax(680px, 1.05fr); gap: 16px; align-items: start; }
+.lovs-panel, .lov-values-panel { min-width: 0; }
+.lovs-card-header { align-items: center; padding: 18px 20px; }
+.lovs-card-header h2 { margin-bottom: 4px; }
+.lovs-card-header p { margin: 0; color: #64748b; }
+.lovs-toolbar { display: flex; gap: 12px; padding: 14px 20px; border-top: 1px solid #e2e8f0; align-items: center; min-height: 70px; }
+.lovs-list-toolbar input[type="search"] { flex: 1; min-height: 42px; }
+.values-toolbar { justify-content: space-between; }
+.parent-filter-label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; color: #334155; min-width: 340px; max-width: 520px; flex: 1; }
+.parent-filter-label[hidden] { display: none; }
+.lovs-check { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; color: #475569; font-weight: 700; margin-left: auto; }
+.lovs-table-wrapper, .lov-values-table-wrapper { border-top: 1px solid #e2e8f0; }
+.lovs-table, .lov-values-table { table-layout: fixed; width: 100%; }
+.lovs-table th:nth-child(1), .lovs-table td:nth-child(1) { width: 145px; }
+.lovs-table th:nth-child(3), .lovs-table td:nth-child(3) { width: 120px; }
+.lovs-table th:nth-child(4), .lovs-table td:nth-child(4) { width: 100px; }
+.lovs-table th:nth-child(5), .lovs-table td:nth-child(5) { width: 72px; text-align: center; }
+.lovs-table th:nth-child(6), .lovs-table td:nth-child(6) { width: 160px; }
+.lov-values-table th:nth-child(1), .lov-values-table td:nth-child(1) { width: 150px; }
+.lov-values-table th:nth-child(3), .lov-values-table td:nth-child(3) { width: 145px; }
+.lov-values-table th:nth-child(4), .lov-values-table td:nth-child(4) { width: 70px; text-align: center; }
+.lov-values-table th:nth-child(5), .lov-values-table td:nth-child(5) { width: 100px; }
+.lov-values-table th:nth-child(6), .lov-values-table td:nth-child(6) { width: 160px; }
+.lovs-table td, .lov-values-table td { vertical-align: middle; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lovs-table tbody tr { cursor: pointer; }
+.lovs-table tbody tr:hover { background: #f8fafc; }
+.selected-row, .lovs-table tbody tr.selected-row:hover { background: #eff6ff; }
+.numeric-cell { text-align: center; }
+.row-actions { display: flex; gap: 6px; justify-content: flex-end; }
+.lov-status { display: inline-flex; border-radius: 999px; padding: 3px 8px; font-weight: 800; font-size: .78rem; }
+.lov-status-active { background: #dcfce7; color: #166534; }
+.lov-status-inactive { background: #fee2e2; color: #991b1b; }
+.btn-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.lovs-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, .45); z-index: 6000; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.lovs-modal[hidden] { display: none; }
+.lovs-modal-card { width: min(820px, 96vw); max-height: 90vh; overflow: auto; background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 24px 60px rgba(15, 23, 42, .28); }
+.lovs-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px; }
+.lov-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.lov-form-grid label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; color: #334155; }
+.lov-form-grid .full { grid-column: 1 / -1; }
+.lov-form-grid input, .lov-form-grid select, .lov-form-grid textarea { min-height: 42px; }
+.form-message { min-height: 22px; color: #991b1b; font-weight: 700; margin-top: 10px; }
+.lovs-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+@media (max-width: 1400px) { .lovs-layout { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .lov-form-grid { grid-template-columns: 1fr; } .lovs-toolbar { flex-direction: column; align-items: stretch; } .lovs-check { margin-left: 0; } .lovs-table, .lov-values-table { table-layout: auto; } }
+
+
+/* LOVs V3 UX: adaptive master-detail layout */
+.lovs-layout {
+  display: grid;
+  gap: 16px;
+  align-items: start;
+  transition: grid-template-columns .28s ease;
+}
+
+.lovs-layout-empty {
+  grid-template-columns: minmax(760px, 1fr);
+}
+
+.lovs-layout-selected {
+  grid-template-columns: minmax(430px, .36fr) minmax(760px, .64fr);
+}
+
+.lovs-layout-empty .lovs-panel {
+  width: min(1280px, 100%);
+}
+
+.lov-values-panel {
+  opacity: 0;
+  transform: translateX(14px);
+  transition: opacity .22s ease, transform .22s ease;
+}
+
+.lov-values-panel.panel-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.lov-values-panel[hidden] {
+  display: none;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(2),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(2),
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(3),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(3) {
+  display: none;
+}
+
+.lovs-layout-selected .lovs-table th:nth-child(1),
+.lovs-layout-selected .lovs-table td:nth-child(1) { width: 150px; }
+.lovs-layout-selected .lovs-table th:nth-child(4),
+.lovs-layout-selected .lovs-table td:nth-child(4) { width: 96px; }
+.lovs-layout-selected .lovs-table th:nth-child(5),
+.lovs-layout-selected .lovs-table td:nth-child(5) { width: 70px; }
+.lovs-layout-selected .lovs-table th:nth-child(6),
+.lovs-layout-selected .lovs-table td:nth-child(6) { width: 190px; }
+
+.row-actions .btn {
+  min-width: 82px;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.lovs-layout-selected .row-actions {
+  gap: 8px;
+}
+
+.lov-values-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.values-toolbar {
+  min-height: 64px;
+}
+
+.lovs-layout-empty .lovs-table th:nth-child(6),
+.lovs-layout-empty .lovs-table td:nth-child(6) {
+  width: 190px;
+}
+
+.lovs-layout-empty .row-actions {
+  gap: 8px;
+}
+
+@media (max-width: 1400px) {
+  .lovs-layout-empty,
+  .lovs-layout-selected {
+    grid-template-columns: 1fr;
+  }
+
+  .lovs-layout-selected .lovs-panel .lovs-table th:nth-child(2),
+  .lovs-layout-selected .lovs-panel .lovs-table td:nth-child(2),
+  .lovs-layout-selected .lovs-panel .lovs-table th:nth-child(3),
+  .lovs-layout-selected .lovs-panel .lovs-table td:nth-child(3) {
+    display: table-cell;
+  }
+}
+
+
+/* LOVs V4 UX overrides: wider initial list, compact selected list, no back button */
+.lovs-layout-empty {
+  grid-template-columns: minmax(960px, 1fr) !important;
+}
+
+.lovs-layout-empty .lovs-panel {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.lovs-layout-selected {
+  grid-template-columns: minmax(360px, 420px) minmax(900px, 1fr) !important;
+}
+
+/* In compact mode the left panel behaves like a list selector: code + name only. */
+.lovs-layout-selected .lovs-panel .lovs-toolbar,
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(3),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(3),
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(4),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(4),
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(5),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(5),
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(6),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(6) {
+  display: none !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(2),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(2) {
+  display: table-cell !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(1),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(1) {
+  width: 150px !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(2),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(2) {
+  width: auto !important;
+}
+
+.lovs-layout-selected .lovs-card-header {
+  padding: 16px 18px;
+}
+
+.lovs-layout-selected .lovs-card-header .btn,
+.lovs-layout-selected #newLovBtn {
+  display: none;
+}
+
+.lovs-layout-selected .lovs-card-header p {
+  font-size: .85rem;
+}
+
+/* Values table gets priority and enough action width. */
+.lov-values-table th:nth-child(1), .lov-values-table td:nth-child(1) { width: 160px !important; }
+.lov-values-table th:nth-child(3), .lov-values-table td:nth-child(3) { width: 160px !important; }
+.lov-values-table th:nth-child(4), .lov-values-table td:nth-child(4) { width: 80px !important; text-align: center; }
+.lov-values-table th:nth-child(5), .lov-values-table td:nth-child(5) { width: 110px !important; }
+.lov-values-table th:nth-child(6), .lov-values-table td:nth-child(6) { width: 230px !important; }
+
+.row-actions {
+  gap: 10px !important;
+  justify-content: flex-end;
+  overflow: visible !important;
+}
+
+.row-actions .btn,
+.lov-values-actions .btn {
+  min-width: 104px !important;
+  padding-inline: 14px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+.lov-values-actions {
+  justify-content: flex-end;
+}
+
+.lov-values-panel {
+  min-width: 0;
+}
+
+.lov-values-table td,
+.lov-values-table th {
+  overflow: visible;
+}
+
+.lov-message-cell,
+.lovs-table td,
+.lov-values-table td {
+  line-height: 1.25;
+}
+
+@media (max-width: 1400px) {
+  .lovs-layout-selected {
+    grid-template-columns: 1fr !important;
+  }
+
+  .lovs-layout-selected .lovs-panel .lovs-toolbar,
+  .lovs-layout-selected .lovs-panel .lovs-table th:nth-child(3),
+  .lovs-layout-selected .lovs-panel .lovs-table td:nth-child(3),
+  .lovs-layout-selected .lovs-panel .lovs-table th:nth-child(4),
+  .lovs-layout-selected .lovs-panel .lovs-table td:nth-child(4),
+  .lovs-layout-selected .lovs-panel .lovs-table th:nth-child(5),
+  .lovs-layout-selected .lovs-panel .lovs-table td:nth-child(5),
+  .lovs-layout-selected .lovs-panel .lovs-table th:nth-child(6),
+  .lovs-layout-selected .lovs-panel .lovs-table td:nth-child(6) {
+    display: initial !important;
+  }
+
+  .lovs-layout-selected .lovs-panel .lovs-table th,
+  .lovs-layout-selected .lovs-panel .lovs-table td {
+    display: table-cell !important;
+  }
+
+  .lovs-layout-selected #newLovBtn {
+    display: inline-flex;
+  }
+}
+
+
+/* LOVs V5 UX: single click focuses, double click opens values */
+.lovs-table tbody tr {
+  cursor: pointer;
+}
+
+.lovs-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.selected-row,
+.lovs-table tbody tr.selected-row:hover {
+  background: #eaf2ff !important;
+}
+
+/* Wider initial list so action buttons are never clipped. */
+.lovs-layout-empty {
+  grid-template-columns: minmax(1080px, 1fr) !important;
+}
+
+.lovs-layout-empty .lovs-panel {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.lovs-layout-empty .lovs-table th:nth-child(6),
+.lovs-layout-empty .lovs-table td:nth-child(6) {
+  width: 250px !important;
+}
+
+/* Compact master list only when values are open. */
+.lovs-layout-selected {
+  grid-template-columns: minmax(360px, 430px) minmax(980px, 1fr) !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(1),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(1) {
+  width: 155px !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(2),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(2) {
+  width: auto !important;
+  display: table-cell !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(3),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(3),
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(4),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(4),
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(5),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(5),
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(6),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(6) {
+  display: none !important;
+}
+
+/* Values actions get enough room. */
+.lov-values-table th:nth-child(6),
+.lov-values-table td:nth-child(6) {
+  width: 260px !important;
+  min-width: 260px !important;
+}
+
+.row-actions {
+  display: flex !important;
+  gap: 10px !important;
+  justify-content: flex-end !important;
+  overflow: visible !important;
+  min-width: 230px;
+}
+
+.row-actions .btn,
+.lov-values-actions .btn {
+  min-width: 112px !important;
+  padding-inline: 14px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+.lov-values-table,
+.lovs-table {
+  overflow: visible;
+}
+
+.lov-values-table td,
+.lov-values-table th,
+.lovs-table td,
+.lovs-table th {
+  overflow: visible;
+}
+
+@media (max-width: 1500px) {
+  .lovs-layout-selected {
+    grid-template-columns: minmax(330px, 390px) minmax(760px, 1fr) !important;
+  }
+}
+
+@media (max-width: 1400px) {
+  .lovs-layout-empty,
+  .lovs-layout-selected {
+    grid-template-columns: 1fr !important;
+  }
+
+  .lovs-layout-selected .lovs-panel .lovs-table th,
+  .lovs-layout-selected .lovs-panel .lovs-table td {
+    display: table-cell !important;
+  }
+}

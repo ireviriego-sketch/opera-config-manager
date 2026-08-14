@@ -21,6 +21,7 @@ const adminSecurityRoutes = require('./routes/adminSecurity.routes');
 const passwordResetRoutes = require('./routes/passwordReset.routes');
 const auditRoutes = require('./routes/audit.routes');
 const appLogsRoutes = require('./routes/appLogs.routes');
+const lovsRoutes = require('./routes/lovs.routes');
 const appLogger = require('./utils/appLogger');
 const { requireAnyRole } = require('./middleware/requireRole');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
@@ -31,9 +32,6 @@ function createApp() {
   app.use(helmet());
   app.use(cors({ origin: env.corsOrigin }));
   app.use(express.json({ limit: '10mb' }));
-
-  // V2 logging control:
-  // morgan noise is only enabled from level 3 upwards.
   app.use(morgan('dev', { skip: appLogger.shouldSkipMorgan }));
 
   app.use('/api/health', healthRoutes);
@@ -44,6 +42,7 @@ function createApp() {
   app.use('/api/admin', requireAnyRole(['ADMIN']), adminSecurityRoutes);
   app.use('/api/audit', requireAnyRole(['ADMIN']), auditRoutes);
   app.use('/api/logs', requireAnyRole(['ADMIN']), appLogsRoutes);
+  app.use('/api/lovs', requireAnyRole(['ADMIN']), lovsRoutes);
 
   app.use('/api/templates', requireAnyRole(['CONFIG_OPERATOR']), templateRoutes);
   app.use('/api/template-versions', requireAnyRole(['CONFIG_OPERATOR']), templateVersionRoutes);
