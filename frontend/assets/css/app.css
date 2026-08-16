@@ -331,3 +331,236 @@ a#logoutBtn.button-link.secondary:hover {
   background: #d1d5db !important;
   color: var(--text) !important;
 }
+
+/* ==========================================================================
+   Action Buttons Standardization
+   Scope: common action buttons across home, CRUD, detail, canvas and modals.
+   Does not change sidebar, footer, navigation, tables or page layout.
+   ========================================================================== */
+:root {
+  --action-btn-height: 40px;
+  --action-btn-radius: 10px;
+  --action-btn-padding-x: 14px;
+  --action-btn-gap: 10px;
+  --action-primary-bg: #2563eb;
+  --action-primary-hover: #1d4ed8;
+  --action-primary-text: #ffffff;
+  --action-secondary-bg: #e5e7eb;
+  --action-secondary-hover: #d1d5db;
+  --action-secondary-text: #111827;
+  --action-danger-bg: #fee2e2;
+  --action-danger-hover: #fecaca;
+  --action-danger-text: #991b1b;
+  --action-border: #d1d5db;
+}
+
+/* Shared action zones */
+.actions-right,
+.page-actions,
+.form-actions,
+.modal-footer,
+.card-header,
+.section-header,
+.toolbar-right,
+.toolbar-left,
+.subsection-header {
+  gap: var(--action-btn-gap);
+}
+
+/* Base button normalization */
+button,
+a.button-link,
+.btn,
+.action-button,
+.table-action,
+.link-button,
+.icon-button {
+  min-height: var(--action-btn-height);
+  border-radius: var(--action-btn-radius) !important;
+  padding: 10px var(--action-btn-padding-x);
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+/* Primary action buttons */
+button.primary,
+.btn-primary,
+a.button-link.primary,
+.action-button.primary,
+.table-action.primary,
+button[id^="new" i],
+button[id*="New"],
+button[id^="add" i],
+button[id*="Add"],
+button[id^="save" i],
+button[id*="Save"],
+button[id^="import" i],
+button[id*="Import"],
+button[id^="export" i],
+button[id*="Export"],
+button[id^="create" i],
+button[id*="Create"],
+button[id^="apply" i],
+button[id*="Apply"],
+button[id^="run" i],
+button[id*="Run"] {
+  background: var(--action-primary-bg) !important;
+  color: var(--action-primary-text) !important;
+  border: 1px solid var(--action-primary-bg) !important;
+}
+
+button.primary:hover,
+.btn-primary:hover,
+a.button-link.primary:hover,
+.action-button.primary:hover,
+.table-action.primary:hover,
+button[id^="new" i]:hover,
+button[id*="New"]:hover,
+button[id^="add" i]:hover,
+button[id*="Add"]:hover,
+button[id^="save" i]:hover,
+button[id*="Save"]:hover,
+button[id^="import" i]:hover,
+button[id*="Import"]:hover,
+button[id^="export" i]:hover,
+button[id*="Export"]:hover,
+button[id^="create" i]:hover,
+button[id*="Create"]:hover,
+button[id^="apply" i]:hover,
+button[id*="Apply"]:hover,
+button[id^="run" i]:hover,
+button[id*="Run"]:hover {
+  background: var(--action-primary-hover) !important;
+  border-color: var(--action-primary-hover) !important;
+  color: var(--action-primary-text) !important;
+}
+
+/* Secondary/navigation action buttons */
+button.secondary,
+.btn-secondary,
+a.button-link.secondary,
+.link-button,
+.logout-btn,
+#logoutBtn,
+#backBtn,
+#backToTemplate,
+#backToTemplates,
+button[id^="back" i],
+button[id*="Back"],
+button[id^="cancel" i],
+button[id*="Cancel"],
+button[id^="close" i],
+button[id*="Close"],
+button[id^="collapse" i],
+button[id*="Collapse"],
+button[id^="expand" i],
+button[id*="Expand"],
+button[id^="reset" i],
+button[id*="Reset"],
+button[id^="refresh" i],
+button[id*="Refresh"],
+button[id^="clear" i],
+button[id*="Clear"] {
+  background: var(--action-secondary-bg) !important;
+  color: var(--action-secondary-text) !important;
+  border: 1px solid var(--action-border) !important;
+}
+
+button.secondary:hover,
+.btn-secondary:hover,
+a.button-link.secondary:hover,
+.link-button:hover,
+.logout-btn:hover,
+#logoutBtn:hover,
+#backBtn:hover,
+#backToTemplate:hover,
+#backToTemplates:hover,
+button[id^="back" i]:hover,
+button[id*="Back"]:hover,
+button[id^="cancel" i]:hover,
+button[id*="Cancel"]:hover,
+button[id^="close" i]:hover,
+button[id*="Close"]:hover,
+button[id^="collapse" i]:hover,
+button[id*="Collapse"]:hover,
+button[id^="expand" i]:hover,
+button[id*="Expand"]:hover,
+button[id^="reset" i]:hover,
+button[id*="Reset"]:hover,
+button[id^="refresh" i]:hover,
+button[id*="Refresh"]:hover,
+button[id^="clear" i]:hover,
+button[id*="Clear"]:hover {
+  background: var(--action-secondary-hover) !important;
+  color: var(--action-secondary-text) !important;
+  border-color: var(--action-border) !important;
+}
+
+/* Destructive actions */
+.btn-danger,
+button.btn-danger,
+button.danger,
+button[id^="delete" i],
+button[id*="Delete"],
+button[id^="remove" i],
+button[id*="Remove"] {
+  background: var(--action-danger-bg) !important;
+  color: var(--action-danger-text) !important;
+  border: 1px solid #fecaca !important;
+}
+
+.btn-danger:hover,
+button.btn-danger:hover,
+button.danger:hover,
+button[id^="delete" i]:hover,
+button[id*="Delete"]:hover,
+button[id^="remove" i]:hover,
+button[id*="Remove"]:hover {
+  background: var(--action-danger-hover) !important;
+  color: var(--action-danger-text) !important;
+  border-color: #fecaca !important;
+}
+
+/* Compact table/list action buttons */
+.table-action,
+.data-table .btn,
+.data-table button,
+.table button,
+.lovs-table button,
+.logs-table button,
+.audit-table button {
+  min-height: 34px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* Icon-only buttons keep square shape */
+.icon-button,
+button.icon-button,
+button[aria-label]:not(.side-menu-link):not(.nav-link):not(.nav-parent):not(.sidebar-pin-button):not(.sidebar-logout-button) {
+  width: 40px;
+  min-width: 40px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Exclusions for sidebar and tab controls */
+.sidebar button,
+.side-menu button,
+.side-menu-link,
+.nav-link,
+.nav-parent,
+.sidebar-pin-button,
+.sidebar-logout-button,
+.tab,
+.tab-button,
+.access-tabs .tab-button,
+.tabs .tab {
+  min-height: initial;
+}

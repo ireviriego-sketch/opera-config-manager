@@ -30,6 +30,66 @@
     await loadLovSelects(); await loadAll();
   }
 
+
+  function setSelectOptions(selectId, values, selectedValue) {
+    const select = $(selectId);
+    if (!select) return;
+    const currentValue = selectedValue !== undefined ? selectedValue : select.value;
+    select.innerHTML = values.map(item => {
+      const value = typeof item === 'string' ? item : item.value;
+      const label = typeof item === 'string' ? item : item.label;
+      return `<option value="${escapeHtml(value)}">${escapeHtml(label || value)}</option>`;
+    }).join('');
+    if (currentValue && Array.from(select.options).some(option => option.value === currentValue)) {
+      select.value = currentValue;
+    }
+  }
+
+  async function populateStatusSelect(selectId, defaultValue) {
+    const select = $(selectId);
+    if (!select) return;
+    const fallback = [
+      { value: 'ACTIVE', label: 'ACTIVE' },
+      { value: 'INACTIVE', label: 'INACTIVE' }
+    ];
+    if (window.LovsClient && typeof window.LovsClient.populateSelect === 'function') {
+      try {
+        await window.LovsClient.populateSelect(select, 'STATUS', { defaultValue });
+        if (select.options.length) return;
+      } catch (err) {
+        console.warn(`No se pudo cargar LOV STATUS para ${selectId}. Se usan valores por defecto.`, err);
+      }
+    }
+    setSelectOptions(selectId, fallback, defaultValue);
+  }
+
+  async function populateDeploymentStatusSelect(defaultValue) {
+    const select = $('deploymentStatusInput');
+    if (!select) return;
+    const fallback = [
+      { value: 'DRAFT', label: 'DRAFT' },
+      { value: 'ACTIVE', label: 'ACTIVE' },
+      { value: 'INACTIVE', label: 'INACTIVE' }
+    ];
+    if (window.LovsClient && typeof window.LovsClient.populateSelect === 'function') {
+      try {
+        await window.LovsClient.populateSelect(select, 'DEPLOYMENT_STATUS', { defaultValue, includeInactive: true });
+        if (select.options.length) return;
+      } catch (err) {
+        console.warn('No se pudo cargar LOV DEPLOYMENT_STATUS. Se usan valores por defecto.', err);
+      }
+    }
+    setSelectOptions('deploymentStatusInput', fallback, defaultValue || 'DRAFT');
+  }
+
+  async function loadLovSelects() {
+    await Promise.all([
+      populateStatusSelect('chainStatusInput', 'ACTIVE'),
+      populateStatusSelect('hotelStatusInput', 'ACTIVE'),
+      populateDeploymentStatusSelect('DRAFT')
+    ]);
+  }
+
   async function loadAll() {
     try {
       state.chain = (await api.getChain(state.chainId)).chain;

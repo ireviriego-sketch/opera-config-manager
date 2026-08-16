@@ -1,0 +1,336 @@
+/* OPERA CFG - Canvas and Modeling visual unification
+   Scope: model canvas, editable canvas, relationship canvas, visual model explorer, deployment designer.
+   Does not change sidebar/footer/navigation logic. */
+
+:root {
+  --model-card-bg: #ffffff;
+  --model-soft-bg: #f8fafc;
+  --model-page-bg: #f3f6fb;
+  --model-border: #d8dee9;
+  --model-muted: #64748b;
+  --model-text: #111827;
+  --model-primary: #2563eb;
+  --model-primary-hover: #1d4ed8;
+  --model-radius: 18px;
+  --model-shadow: 0 12px 32px rgba(15, 23, 42, .08);
+}
+
+.canvas-main,
+.visual-page,
+.designer-page,
+.main {
+  padding-top: 24px !important;
+  padding-bottom: 84px !important;
+}
+
+.canvas-topbar,
+.visual-topbar,
+.designer-topbar,
+.topbar {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin: 0 0 18px !important;
+  padding: 18px 22px !important;
+  background: var(--model-card-bg) !important;
+  border: 1px solid var(--model-border) !important;
+  border-radius: var(--model-radius) !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, .04) !important;
+}
+
+.canvas-topbar h1,
+.visual-topbar h1,
+.designer-topbar h1,
+.topbar h1 {
+  margin: 0 !important;
+  font-size: 28px !important;
+  line-height: 1.15 !important;
+  color: var(--model-text) !important;
+}
+
+.canvas-topbar p,
+.visual-topbar p,
+.designer-topbar p,
+.topbar p {
+  margin: 6px 0 0 !important;
+  color: var(--model-muted) !important;
+  line-height: 1.35 !important;
+}
+
+.canvas-topbar .actions-right,
+.visual-topbar .actions-right,
+.designer-topbar .actions-right,
+.topbar .actions-right,
+.topbar .page-actions {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  margin: 0 !important;
+}
+
+.canvas-toolbar,
+.visual-toolbar,
+.designer-toolbar,
+.page-actions,
+.card,
+.canvas-shell,
+.visual-sidebar-card,
+.visual-main-card,
+.content-grid-page,
+.entity-page,
+.relationships-layout,
+.editable-layout,
+.canvas-panel,
+.modeling-panel {
+  background: var(--model-card-bg) !important;
+  border: 1px solid var(--model-border) !important;
+  border-radius: var(--model-radius) !important;
+  box-shadow: var(--model-shadow) !important;
+  box-sizing: border-box !important;
+}
+
+.canvas-toolbar,
+.visual-toolbar,
+.designer-toolbar,
+.page-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 18px 22px !important;
+  margin: 0 0 18px !important;
+}
+
+.toolbar-left,
+.toolbar-right,
+.actions-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+.toolbar-left,
+.canvas-toolbar > div:first-child,
+.page-actions > div:first-child {
+  min-width: 0 !important;
+}
+
+.toolbar-left strong,
+.page-actions h2,
+.card-header h3,
+.card-header h2 {
+  color: var(--model-text) !important;
+  line-height: 1.2 !important;
+}
+
+.toolbar-left span,
+.page-actions p,
+.card-header p,
+.visual-help p {
+  color: var(--model-muted) !important;
+  line-height: 1.35 !important;
+}
+
+.canvas-shell,
+.visual-main-card,
+.visual-sidebar-card,
+.content-grid-page,
+.entity-page {
+  padding: 18px !important;
+  margin-top: 18px !important;
+  overflow: hidden !important;
+}
+
+.canvas-grid,
+.canvas-workspace,
+.relationships-canvas,
+.editable-canvas,
+.model-explorer,
+.entity-content,
+.content-grid,
+.designer-canvas {
+  min-height: 520px !important;
+  border: 1px solid var(--model-border) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(180deg, #ffffff, #f8fafc) !important;
+  box-sizing: border-box !important;
+}
+
+.canvas-links,
+.relationship-links,
+.model-links {
+  pointer-events: none !important;
+}
+
+.canvas-box,
+.entity-box,
+.domain-box,
+.attribute-box,
+.relationship-box,
+.model-node,
+.explorer-node,
+.draggable-box {
+  border: 1px solid var(--model-border) !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, .07) !important;
+  color: var(--model-text) !important;
+}
+
+.canvas-box-header,
+.entity-box-header,
+.domain-box-header,
+.attribute-box-header,
+.relationship-box-header,
+.node-header {
+  border-bottom: 1px solid var(--model-border) !important;
+  background: var(--model-soft-bg) !important;
+  border-radius: 14px 14px 0 0 !important;
+  padding: 10px 12px !important;
+  font-weight: 800 !important;
+  color: var(--model-text) !important;
+}
+
+.canvas-select,
+.search-input,
+.input,
+.form-control,
+select,
+input[type="search"],
+input[type="text"] {
+  min-height: 38px !important;
+  border: 1px solid var(--model-border) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: var(--model-text) !important;
+  box-sizing: border-box !important;
+}
+
+button,
+.button-link,
+a.button-link {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button),
+.primary,
+.btn-primary {
+  background: var(--model-primary) !important;
+  color: #fff !important;
+  border: 1px solid var(--model-primary) !important;
+}
+
+button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button):hover,
+.primary:hover,
+.btn-primary:hover {
+  background: var(--model-primary-hover) !important;
+  border-color: var(--model-primary-hover) !important;
+}
+
+.secondary,
+.btn-secondary,
+.link-button,
+#logoutBtn,
+#backToTemplate,
+#backToTemplates,
+#backBtn {
+  background: #e5e7eb !important;
+  color: var(--model-text) !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.secondary:hover,
+.btn-secondary:hover,
+.link-button:hover,
+#logoutBtn:hover,
+#backToTemplate:hover,
+#backToTemplates:hover,
+#backBtn:hover {
+  background: #d1d5db !important;
+  color: var(--model-text) !important;
+}
+
+.visual-layout,
+.relationships-layout,
+.editable-layout,
+.designer-layout,
+.content-grid-page {
+  display: grid !important;
+  gap: 18px !important;
+}
+
+.visual-layout {
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) !important;
+}
+
+.visual-stats,
+.stats-grid,
+.summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.detail-item,
+.stat-card,
+.summary-card {
+  border: 1px solid var(--model-border) !important;
+  background: var(--model-soft-bg) !important;
+  border-radius: 12px !important;
+  padding: 12px !important;
+}
+
+.card-header,
+.section-header,
+.panel-header,
+.canvas-section-header {
+  padding: 16px 18px !important;
+  border-bottom: 1px solid var(--model-border) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+}
+
+.empty-state {
+  color: var(--model-muted) !important;
+  background: var(--model-soft-bg) !important;
+  border-radius: 12px !important;
+}
+
+@media (max-width: 1000px) {
+  .visual-layout,
+  .relationships-layout,
+  .editable-layout,
+  .designer-layout,
+  .content-grid-page {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .canvas-topbar,
+  .visual-topbar,
+  .designer-topbar,
+  .topbar,
+  .canvas-toolbar,
+  .visual-toolbar,
+  .designer-toolbar,
+  .page-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .toolbar-left,
+  .toolbar-right,
+  .actions-right {
+    justify-content: flex-start !important;
+  }
+}

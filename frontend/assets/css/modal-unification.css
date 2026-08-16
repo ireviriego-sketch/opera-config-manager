@@ -1,0 +1,353 @@
+/* OPERA CFG - Modal visual unification
+   Scope: modal overlays, modal cards, modal headers, modal bodies, modal footers and modal buttons.
+   Does not modify sidebar, footer, navigation, page headers or CRUD tables. */
+
+:root {
+  --modal-radius: 18px;
+  --modal-border: #d8dee9;
+  --modal-muted: #64748b;
+  --modal-soft: #f8fafc;
+  --modal-text: #111827;
+  --modal-primary: #2563eb;
+  --modal-primary-hover: #1d4ed8;
+  --modal-secondary: #e5e7eb;
+  --modal-secondary-hover: #d1d5db;
+  --modal-danger-bg: #fee2e2;
+  --modal-danger-text: #991b1b;
+  --modal-danger-border: #fecaca;
+  --modal-shadow: 0 28px 80px rgba(15, 23, 42, .28);
+}
+
+/* Overlay/backdrop */
+.modal,
+.modal-backdrop,
+.admin-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 6000 !important;
+  background: rgba(15, 23, 42, .48) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px !important;
+  box-sizing: border-box !important;
+}
+
+.modal.hidden,
+.modal-backdrop.hidden,
+.admin-modal.hidden,
+.hidden.modal,
+.hidden.modal-backdrop,
+.hidden.admin-modal {
+  display: none !important;
+}
+
+/* Modal card containers */
+.modal-card,
+.modal .modal-card,
+.modal-backdrop .modal,
+.modal-backdrop .modal-card,
+.admin-modal-card,
+.modal-dialog,
+.modal-content {
+  width: min(760px, calc(100vw - 48px)) !important;
+  max-height: calc(100vh - 48px) !important;
+  overflow: auto !important;
+  background: #fff !important;
+  color: var(--modal-text) !important;
+  border: 1px solid var(--modal-border) !important;
+  border-radius: var(--modal-radius) !important;
+  box-shadow: var(--modal-shadow) !important;
+  box-sizing: border-box !important;
+}
+
+.modal-card-wide,
+.modal-wide,
+.wide-modal,
+.modal-card.modal-card-wide {
+  width: min(1100px, calc(100vw - 48px)) !important;
+}
+
+/* Avoid double-modal cards when app.css uses .modal as the card for modal-backdrop */
+.modal-backdrop > .modal {
+  position: static !important;
+  inset: auto !important;
+  display: block !important;
+  padding: 0 !important;
+  background: #fff !important;
+}
+
+/* Header */
+.modal-header,
+.admin-modal-header,
+.modal-card-header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 20px 22px !important;
+  border-bottom: 1px solid var(--modal-border) !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
+}
+
+.modal-header h2,
+.modal-header h3,
+.admin-modal-header h2,
+.admin-modal-header h3,
+.modal-card-header h2,
+.modal-card-header h3 {
+  margin: 0 !important;
+  color: var(--modal-text) !important;
+  line-height: 1.2 !important;
+  font-size: 22px !important;
+}
+
+.modal-header p,
+.admin-modal-header p,
+.modal-card-header p {
+  margin: 6px 0 0 !important;
+  color: var(--modal-muted) !important;
+  line-height: 1.35 !important;
+}
+
+/* Body/footer */
+.modal-body,
+.admin-modal-body,
+.modal-card-body {
+  padding: 20px 22px !important;
+  box-sizing: border-box !important;
+}
+
+.modal-footer,
+.admin-modal-footer,
+.modal-card-footer,
+.form-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  padding: 16px 22px !important;
+  border-top: 1px solid var(--modal-border) !important;
+  background: var(--modal-soft) !important;
+  box-sizing: border-box !important;
+}
+
+/* Forms inside modals */
+.modal-card .form-grid,
+.admin-modal-card .form-grid,
+.modal .form-grid,
+.modal-backdrop .form-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 14px !important;
+  padding: 20px 22px !important;
+  box-sizing: border-box !important;
+}
+
+.modal-card label,
+.admin-modal-card label,
+.modal label,
+.modal-backdrop label {
+  color: #334155 !important;
+  font-weight: 750 !important;
+}
+
+.modal-card input,
+.modal-card select,
+.modal-card textarea,
+.admin-modal-card input,
+.admin-modal-card select,
+.admin-modal-card textarea,
+.modal input,
+.modal select,
+.modal textarea,
+.modal-backdrop input,
+.modal-backdrop select,
+.modal-backdrop textarea {
+  min-height: 38px !important;
+  border: 1px solid var(--modal-border) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: var(--modal-text) !important;
+  box-sizing: border-box !important;
+}
+
+.modal-card textarea,
+.admin-modal-card textarea,
+.modal textarea,
+.modal-backdrop textarea {
+  min-height: 96px !important;
+  resize: vertical !important;
+}
+
+/* Buttons */
+.modal button,
+.modal-backdrop button,
+.admin-modal button,
+.modal-card button,
+.admin-modal-card button,
+.modal a.button-link,
+.modal-backdrop a.button-link,
+.admin-modal a.button-link {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+.modal button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button),
+.modal-backdrop button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button),
+.admin-modal button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button),
+.modal-card button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button),
+.admin-modal-card button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button),
+.modal .btn-primary,
+.modal-backdrop .btn-primary,
+.admin-modal .btn-primary,
+.modal-card .btn-primary,
+.admin-modal-card .btn-primary {
+  background: var(--modal-primary) !important;
+  color: #fff !important;
+  border: 1px solid var(--modal-primary) !important;
+}
+
+.modal button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button):hover,
+.modal-backdrop button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button):hover,
+.admin-modal button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button):hover,
+.modal-card button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button):hover,
+.admin-modal-card button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button):hover,
+.modal .btn-primary:hover,
+.modal-backdrop .btn-primary:hover,
+.admin-modal .btn-primary:hover,
+.modal-card .btn-primary:hover,
+.admin-modal-card .btn-primary:hover {
+  background: var(--modal-primary-hover) !important;
+  border-color: var(--modal-primary-hover) !important;
+}
+
+.modal .secondary,
+.modal .btn-secondary,
+.modal .link-button,
+.modal-backdrop .secondary,
+.modal-backdrop .btn-secondary,
+.modal-backdrop .link-button,
+.admin-modal .secondary,
+.admin-modal .btn-secondary,
+.admin-modal .link-button,
+.modal-card .secondary,
+.modal-card .btn-secondary,
+.modal-card .link-button,
+.admin-modal-card .secondary,
+.admin-modal-card .btn-secondary,
+.admin-modal-card .link-button,
+.modal-close,
+.icon-button {
+  background: var(--modal-secondary) !important;
+  color: var(--modal-text) !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.modal .secondary:hover,
+.modal .btn-secondary:hover,
+.modal .link-button:hover,
+.modal-backdrop .secondary:hover,
+.modal-backdrop .btn-secondary:hover,
+.modal-backdrop .link-button:hover,
+.admin-modal .secondary:hover,
+.admin-modal .btn-secondary:hover,
+.admin-modal .link-button:hover,
+.modal-card .secondary:hover,
+.modal-card .btn-secondary:hover,
+.modal-card .link-button:hover,
+.admin-modal-card .secondary:hover,
+.admin-modal-card .btn-secondary:hover,
+.admin-modal-card .link-button:hover,
+.modal-close:hover,
+.icon-button:hover {
+  background: var(--modal-secondary-hover) !important;
+  color: var(--modal-text) !important;
+}
+
+.modal .btn-danger,
+.modal-backdrop .btn-danger,
+.admin-modal .btn-danger,
+.modal-card .btn-danger,
+.admin-modal-card .btn-danger {
+  background: var(--modal-danger-bg) !important;
+  color: var(--modal-danger-text) !important;
+  border: 1px solid var(--modal-danger-border) !important;
+}
+
+/* Audit modal details and JSON blocks */
+.audit-detail-grid,
+.detail-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 10px !important;
+  padding: 12px 0 !important;
+}
+
+.audit-detail-item,
+.detail-item {
+  border: 1px solid var(--modal-border) !important;
+  background: var(--modal-soft) !important;
+  border-radius: 10px !important;
+  padding: 12px !important;
+}
+
+.audit-json,
+pre,
+code {
+  border-radius: 10px !important;
+}
+
+.modal-card pre,
+.admin-modal-card pre,
+.modal pre,
+.modal-backdrop pre {
+  max-height: 280px !important;
+  overflow: auto !important;
+  padding: 14px !important;
+  background: #0f172a !important;
+  color: #e5eefc !important;
+  border: 1px solid #1e293b !important;
+}
+
+@media (max-width: 760px) {
+  .modal,
+  .modal-backdrop,
+  .admin-modal {
+    padding: 12px !important;
+  }
+
+  .modal-card,
+  .modal .modal-card,
+  .modal-backdrop .modal,
+  .modal-backdrop .modal-card,
+  .admin-modal-card,
+  .modal-dialog,
+  .modal-content,
+  .modal-card-wide,
+  .modal-wide,
+  .wide-modal,
+  .modal-card.modal-card-wide {
+    width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+  }
+
+  .modal-header,
+  .admin-modal-header,
+  .modal-card-header,
+  .modal-footer,
+  .admin-modal-footer,
+  .modal-card-footer,
+  .form-actions {
+    padding: 14px 16px !important;
+  }
+
+  .modal-card .form-grid,
+  .admin-modal-card .form-grid,
+  .modal .form-grid,
+  .modal-backdrop .form-grid {
+    grid-template-columns: 1fr !important;
+    padding: 16px !important;
+  }
+}

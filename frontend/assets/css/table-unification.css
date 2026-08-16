@@ -1,0 +1,360 @@
+/* OPERA CFG - Tables Fix
+   Safer table normalization. Fixes LOV text overlap by preserving table geometry
+   instead of forcing aggressive global widths/flex behavior. */
+
+:root {
+  --table-border: #d8dee9;
+  --table-border-soft: #edf2f7;
+  --table-head-bg: #f8fafc;
+  --table-row-hover: #f8fafc;
+  --table-text: #111827;
+  --table-muted: #64748b;
+  --table-action-bg: #e5e7eb;
+  --table-action-hover: #d1d5db;
+  --table-primary-bg: #2563eb;
+  --table-primary-hover: #1d4ed8;
+  --table-success-bg: #dcfce7;
+  --table-success-text: #166534;
+  --table-muted-bg: #e5e7eb;
+  --table-muted-text: #374151;
+}
+
+/* Generic table containers */
+.table-wrapper,
+.table-wrap,
+.logs-table-wrap,
+.lovs-table-wrapper,
+.lov-values-table-wrapper,
+.audit-table-wrap,
+.table-container,
+.results-table-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  background: #fff !important;
+  box-sizing: border-box !important;
+}
+
+/* Generic tables: keep auto layout, do not force fixed widths globally. */
+.table,
+.data-table,
+table.data-table,
+.table-wrapper table,
+.table-wrap table,
+.logs-table-wrap table,
+.audit-table-wrap table,
+.content-card table,
+.card table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 14px !important;
+  color: var(--table-text) !important;
+  background: #fff !important;
+  table-layout: auto !important;
+}
+
+.table thead th,
+.data-table thead th,
+table.data-table thead th,
+.table-wrapper table thead th,
+.table-wrap table thead th,
+.logs-table-wrap table thead th,
+.audit-table-wrap table thead th,
+.content-card table thead th,
+.card table thead th {
+  text-align: left !important;
+  background: var(--table-head-bg) !important;
+  color: #334155 !important;
+  font-size: 12px !important;
+  letter-spacing: .035em !important;
+  text-transform: uppercase !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid var(--table-border) !important;
+  white-space: nowrap !important;
+  font-weight: 850 !important;
+}
+
+.table tbody td,
+.data-table tbody td,
+table.data-table tbody td,
+.table-wrapper table tbody td,
+.table-wrap table tbody td,
+.logs-table-wrap table tbody td,
+.audit-table-wrap table tbody td,
+.content-card table tbody td,
+.card table tbody td {
+  padding: 13px 16px !important;
+  border-bottom: 1px solid var(--table-border-soft) !important;
+  vertical-align: middle !important;
+  color: var(--table-text) !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+
+.table tbody tr:hover td,
+.data-table tbody tr:hover td,
+table.data-table tbody tr:hover td,
+.table-wrapper table tbody tr:hover td,
+.table-wrap table tbody tr:hover td,
+.logs-table-wrap table tbody tr:hover td,
+.audit-table-wrap table tbody tr:hover td,
+.content-card table tbody tr:hover td,
+.card table tbody tr:hover td {
+  background: var(--table-row-hover) !important;
+}
+
+/* LOV tables need explicit geometry because column 1 contains long codes. */
+.lovs-table-wrapper,
+.lov-values-table-wrapper {
+  border-top: 1px solid var(--table-border-soft) !important;
+}
+
+.lovs-table,
+.lov-values-table {
+  width: 100% !important;
+  min-width: 980px !important;
+  table-layout: fixed !important;
+  border-collapse: collapse !important;
+}
+
+.lovs-table th,
+.lovs-table td,
+.lov-values-table th,
+.lov-values-table td {
+  padding: 13px 16px !important;
+  border-bottom: 1px solid var(--table-border-soft) !important;
+  line-height: 1.35 !important;
+  vertical-align: middle !important;
+}
+
+.lovs-table th:nth-child(1),
+.lovs-table td:nth-child(1) {
+  width: 230px !important;
+  min-width: 230px !important;
+  max-width: 230px !important;
+  overflow-wrap: anywhere !important;
+}
+
+.lovs-table th:nth-child(2),
+.lovs-table td:nth-child(2) {
+  width: auto !important;
+  min-width: 240px !important;
+  overflow-wrap: anywhere !important;
+}
+
+.lovs-table th:nth-child(3),
+.lovs-table td:nth-child(3) { width: 150px !important; }
+.lovs-table th:nth-child(4),
+.lovs-table td:nth-child(4) { width: 110px !important; }
+.lovs-table th:nth-child(5),
+.lovs-table td:nth-child(5) { width: 80px !important; text-align: center !important; }
+.lovs-table th:nth-child(6),
+.lovs-table td:nth-child(6) { width: 180px !important; }
+
+/* In selected split view, keep the left LOV list readable and scroll horizontally if needed. */
+.lovs-layout-selected .lovs-panel .lovs-table {
+  min-width: 520px !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(1),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(1) {
+  width: 230px !important;
+  min-width: 230px !important;
+}
+
+.lovs-layout-selected .lovs-panel .lovs-table th:nth-child(2),
+.lovs-layout-selected .lovs-panel .lovs-table td:nth-child(2) {
+  min-width: 260px !important;
+}
+
+.lov-values-table { min-width: 1120px !important; }
+.lov-values-table th:nth-child(1), .lov-values-table td:nth-child(1) { width: 180px !important; }
+.lov-values-table th:nth-child(2), .lov-values-table td:nth-child(2) { min-width: 240px !important; }
+.lov-values-table th:nth-child(3), .lov-values-table td:nth-child(3) { width: 170px !important; }
+.lov-values-table th:nth-child(4), .lov-values-table td:nth-child(4) { width: 90px !important; text-align: center !important; }
+.lov-values-table th:nth-child(5), .lov-values-table td:nth-child(5) { width: 120px !important; }
+.lov-values-table th:nth-child(6), .lov-values-table td:nth-child(6) { width: 220px !important; }
+
+/* Row actions: do not turn table cells into flex containers. Only flex inner action wrappers. */
+.row-actions,
+.table-actions,
+.actions-cell {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+td.row-actions,
+td.table-actions,
+td.actions-cell {
+  display: table-cell !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
+
+/* Compact table buttons */
+.table button,
+.data-table button,
+table.data-table button,
+.table-action,
+.row-actions button,
+.table-actions button,
+.actions-cell button,
+.row-actions a.button-link,
+.table-actions a.button-link,
+.actions-cell a.button-link {
+  min-height: 34px !important;
+  padding: 8px 12px !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+  background: var(--table-action-bg) !important;
+  color: var(--table-text) !important;
+  border: 1px solid #d1d5db !important;
+  white-space: nowrap !important;
+}
+
+.table button:hover,
+.data-table button:hover,
+table.data-table button:hover,
+.table-action:hover,
+.row-actions button:hover,
+.table-actions button:hover,
+.actions-cell button:hover,
+.row-actions a.button-link:hover,
+.table-actions a.button-link:hover,
+.actions-cell a.button-link:hover {
+  background: var(--table-action-hover) !important;
+  color: var(--table-text) !important;
+}
+
+.table button.primary,
+.data-table button.primary,
+table.data-table button.primary,
+.table-action.primary,
+.row-actions button.primary,
+.table-actions button.primary,
+.actions-cell button.primary {
+  background: var(--table-primary-bg) !important;
+  color: #fff !important;
+  border-color: var(--table-primary-bg) !important;
+}
+
+.table button.primary:hover,
+.data-table button.primary:hover,
+table.data-table button.primary:hover,
+.table-action.primary:hover,
+.row-actions button.primary:hover,
+.table-actions button.primary:hover,
+.actions-cell button.primary:hover {
+  background: var(--table-primary-hover) !important;
+  border-color: var(--table-primary-hover) !important;
+}
+
+/* Status badges/chips */
+.table .badge,
+.data-table .badge,
+table.data-table .badge,
+.table .status-badge,
+.data-table .status-badge,
+.table .lov-status,
+.data-table .lov-status,
+.table .chip,
+.data-table .chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  padding: 4px 9px !important;
+  min-height: 22px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+.table .badge.ACTIVE,
+.data-table .badge.ACTIVE,
+.badge-success,
+.lov-status-active,
+.status-active {
+  background: var(--table-success-bg) !important;
+  color: var(--table-success-text) !important;
+}
+
+.table .badge.INACTIVE,
+.data-table .badge.INACTIVE,
+.badge-muted,
+.lov-status-inactive,
+.status-inactive {
+  background: var(--table-muted-bg) !important;
+  color: var(--table-muted-text) !important;
+}
+
+.empty-state,
+.table-empty,
+.loading-state {
+  padding: 28px !important;
+  color: var(--table-muted) !important;
+  text-align: center !important;
+  background: #fff !important;
+}
+
+.table-toolbar,
+.toolbar,
+.filter-row,
+.logs-filter-row,
+.audit-filter-row,
+.lovs-filter-row,
+.lovs-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.table-toolbar input,
+.toolbar input,
+.filter-row input,
+.filter-row select,
+.logs-filter-row input,
+.logs-filter-row select,
+.audit-filter-row input,
+.audit-filter-row select,
+.lovs-filter-row input,
+.lovs-filter-row select,
+.lovs-toolbar input,
+.lovs-toolbar select {
+  min-height: 38px !important;
+  border: 1px solid var(--table-border) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+}
+
+@media (max-width: 900px) {
+  .table tbody td,
+  .data-table tbody td,
+  table.data-table tbody td,
+  .table-wrapper table tbody td,
+  .table-wrap table tbody td,
+  .content-card table tbody td,
+  .card table tbody td {
+    padding: 12px !important;
+  }
+
+  .table thead th,
+  .data-table thead th,
+  table.data-table thead th,
+  .table-wrapper table thead th,
+  .table-wrap table thead th,
+  .content-card table thead th,
+  .card table thead th {
+    padding: 11px 12px !important;
+  }
+}

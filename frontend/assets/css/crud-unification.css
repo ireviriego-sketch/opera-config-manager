@@ -1,0 +1,338 @@
+/* OPERA CFG - CRUD internal pages unification
+   Scope: admin CRUD and configuration pages only.
+   Does not touch sidebar, footer, navigation logic or global home/cards. */
+
+:root {
+  --crud-card-radius: 18px;
+  --crud-card-border: #d8dee9;
+  --crud-card-shadow: 0 12px 32px rgba(15, 23, 42, .08);
+  --crud-muted: #64748b;
+  --crud-soft: #f8fafc;
+  --crud-primary: #2563eb;
+  --crud-primary-hover: #1d4ed8;
+  --crud-secondary: #e5e7eb;
+  --crud-secondary-hover: #d1d5db;
+  --crud-danger-bg: #fee2e2;
+  --crud-danger-text: #991b1b;
+  --crud-danger-border: #fecaca;
+}
+
+/* Common page rhythm */
+.page-main,
+.main-content.page-main,
+.general-admin-page,
+.logs-page,
+.lovs-page {
+  padding-top: 24px !important;
+  padding-bottom: 84px !important;
+}
+
+/* Header card consistency */
+.page-header,
+.hero-card,
+.logs-hero,
+.lovs-hero {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 0 18px 0 !important;
+  padding: 18px 22px !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  background: #fff !important;
+  border: 1px solid var(--crud-card-border) !important;
+  border-radius: var(--crud-card-radius) !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, .04) !important;
+}
+
+.page-header h1,
+.hero-card h1,
+.logs-hero h1,
+.lovs-hero h1 {
+  margin: 0 !important;
+  font-size: 28px !important;
+  line-height: 1.15 !important;
+  color: #111827 !important;
+}
+
+.page-header p,
+.hero-card p,
+.logs-hero p,
+.lovs-hero p {
+  margin: 6px 0 0 !important;
+  color: var(--crud-muted) !important;
+  line-height: 1.35 !important;
+}
+
+/* Main panels */
+.page-card,
+.card.page-card,
+.general-admin-card,
+.logs-card,
+.lovs-card,
+.audit-card,
+.users-card,
+.roles-card {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  background: #fff !important;
+  border: 1px solid var(--crud-card-border) !important;
+  border-radius: var(--crud-card-radius) !important;
+  box-shadow: var(--crud-card-shadow) !important;
+  overflow: hidden !important;
+  margin-top: 18px !important;
+}
+
+/* Card headers */
+.section-header,
+.card-header,
+.subsection-header,
+.logs-toolbar,
+.lovs-toolbar,
+.audit-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.card-header,
+.section-header {
+  padding: 18px 22px !important;
+  border-bottom: 1px solid var(--crud-card-border) !important;
+  background: #fff !important;
+}
+
+.card-header h2,
+.card-header h3,
+.section-header h2,
+.section-header h3,
+.subsection-header h3 {
+  margin: 0 0 4px !important;
+  line-height: 1.2 !important;
+  color: #111827 !important;
+}
+
+.card-header p,
+.section-header p,
+.subsection-header p {
+  margin: 0 !important;
+  color: var(--crud-muted) !important;
+  line-height: 1.35 !important;
+}
+
+/* Toolbars and filters */
+.toolbar,
+.table-toolbar,
+.filter-row,
+.logs-filter-row,
+.audit-filter-row,
+.lovs-filter-row,
+.footer-links-editor,
+.settings-grid {
+  padding: 14px 18px !important;
+  border-bottom: 1px solid var(--crud-card-border) !important;
+  background: var(--crud-soft) !important;
+  box-sizing: border-box !important;
+}
+
+.toolbar input,
+.table-toolbar input,
+.filter-row input,
+.filter-row select,
+.logs-filter-row input,
+.logs-filter-row select,
+.audit-filter-row input,
+.audit-filter-row select,
+.lovs-filter-row input,
+.lovs-filter-row select,
+.form-control,
+.input {
+  min-height: 38px !important;
+  border: 1px solid var(--crud-card-border) !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  color: #111827 !important;
+  box-sizing: border-box !important;
+}
+
+/* Tables */
+.table-wrapper,
+.table-wrap,
+.logs-table-wrap,
+.lovs-table-wrap,
+.audit-table-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  background: #fff !important;
+}
+
+.table,
+.data-table,
+table.data-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 14px !important;
+}
+
+.table th,
+.data-table th,
+table.data-table th {
+  text-align: left !important;
+  background: var(--crud-soft) !important;
+  color: #334155 !important;
+  font-size: 12px !important;
+  letter-spacing: .03em !important;
+  text-transform: uppercase !important;
+  padding: 12px 16px !important;
+  border-bottom: 1px solid var(--crud-card-border) !important;
+  white-space: nowrap !important;
+}
+
+.table td,
+.data-table td,
+table.data-table td {
+  padding: 14px 16px !important;
+  border-bottom: 1px solid #edf2f7 !important;
+  vertical-align: middle !important;
+}
+
+.table tr:hover td,
+.data-table tr:hover td,
+table.data-table tr:hover td {
+  background: #f8fafc !important;
+}
+
+/* Buttons */
+.btn,
+button,
+a.button-link,
+.table-action,
+.action-button {
+  border-radius: 10px !important;
+  font-weight: 700 !important;
+}
+
+.btn-primary,
+button.primary,
+button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button),
+.table-action.primary,
+.action-button.primary {
+  background: var(--crud-primary) !important;
+  color: #fff !important;
+  border: 1px solid var(--crud-primary) !important;
+}
+
+.btn-primary:hover,
+button.primary:hover,
+button:not(.secondary):not(.btn-secondary):not(.btn-danger):not(.link-button):not(.icon-button):hover,
+.table-action.primary:hover,
+.action-button.primary:hover {
+  background: var(--crud-primary-hover) !important;
+  border-color: var(--crud-primary-hover) !important;
+}
+
+.btn-secondary,
+button.secondary,
+a.button-link.secondary,
+.logout-btn,
+#logoutBtn {
+  background: var(--crud-secondary) !important;
+  color: #111827 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.btn-secondary:hover,
+button.secondary:hover,
+a.button-link.secondary:hover,
+.logout-btn:hover,
+#logoutBtn:hover {
+  background: var(--crud-secondary-hover) !important;
+  color: #111827 !important;
+}
+
+.btn-danger,
+button.btn-danger,
+.footer-link-row .btn-danger {
+  background: var(--crud-danger-bg) !important;
+  color: var(--crud-danger-text) !important;
+  border: 1px solid var(--crud-danger-border) !important;
+}
+
+/* Badges and chips */
+.badge,
+.role-badge,
+.status-badge,
+.chip,
+.pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  border-radius: 999px !important;
+  padding: 4px 9px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+}
+
+/* General administration editor */
+.footer-links-editor {
+  background: #fff !important;
+}
+
+.footer-links-rows {
+  gap: 10px !important;
+}
+
+.footer-link-row {
+  border: 1px solid var(--crud-card-border) !important;
+  background: var(--crud-soft) !important;
+  border-radius: 14px !important;
+  padding: 12px !important;
+}
+
+.footer-preview-box {
+  margin: 18px 20px 20px !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 14px !important;
+  background: var(--crud-soft) !important;
+}
+
+/* Modals */
+.admin-modal-card,
+.modal-card,
+.modal,
+.modal-dialog {
+  border-radius: 18px !important;
+  border: 1px solid var(--crud-card-border) !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, .24) !important;
+}
+
+.admin-modal-header,
+.modal-header {
+  border-bottom: 1px solid var(--crud-card-border) !important;
+}
+
+@media (max-width: 900px) {
+  .page-header,
+  .hero-card,
+  .logs-hero,
+  .lovs-hero,
+  .section-header,
+  .card-header,
+  .subsection-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .toolbar,
+  .table-toolbar,
+  .filter-row,
+  .logs-filter-row,
+  .audit-filter-row,
+  .lovs-filter-row {
+    padding: 12px !important;
+  }
+}
