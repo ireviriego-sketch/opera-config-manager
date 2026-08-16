@@ -183,3 +183,151 @@ body.sidebar-ready:not(.sidebar-pinned) .sidebar:not(.sidebar-expanded) .app-bra
   max-width: none;
   box-sizing: border-box;
 }
+
+/* ==========================================================================
+   STEP 2 - Header visual unification
+   Reference visual pattern: templates.html topbar.
+   Scope: header/card look only. Does not touch menu, footer or navigation logic.
+   ========================================================================== */
+
+.main,
+.main-content,
+.page-main {
+  padding-top: 24px;
+}
+
+.topbar,
+.page-header,
+.hero-card,
+.page-header.hero-card {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  margin: 0 0 18px 0;
+  padding: 18px 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, .04);
+}
+
+.topbar > div:first-child,
+.page-header > div:first-child,
+.hero-card > div:first-child,
+.page-header.hero-card > div:first-child {
+  min-width: 0;
+}
+
+.topbar h1,
+.page-header h1,
+.hero-card h1,
+.page-header.hero-card h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.topbar p,
+.page-header p,
+.hero-card p,
+.page-header.hero-card p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.topbar .page-actions,
+.page-header .page-actions,
+.hero-card .page-actions {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+#logoutBtn,
+.logout-btn {
+  flex: 0 0 auto;
+  min-width: 90px;
+  white-space: nowrap;
+}
+
+.card,
+.page-card,
+.content-card {
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+.section-header,
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.section-header h2,
+.card-header h2,
+.card-header h3 {
+  margin-top: 0;
+  line-height: 1.2;
+}
+
+.section-header p,
+.card-header p {
+  line-height: 1.35;
+}
+
+@media (max-width: 860px) {
+  .topbar,
+  .page-header,
+  .hero-card,
+  .page-header.hero-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px;
+  }
+
+  .topbar .page-actions,
+  .page-header .page-actions,
+  .hero-card .page-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+/* ==========================================================================
+   Volver/Home button consistency
+   ========================================================================== */
+button.btn-secondary,
+.btn.btn-secondary,
+.logout-btn,
+#logoutBtn.secondary,
+button#logoutBtn,
+a#logoutBtn.button-link.secondary {
+  background: #e5e7eb !important;
+  color: var(--text) !important;
+  border-color: #d1d5db !important;
+}
+
+button.btn-secondary:hover,
+.btn.btn-secondary:hover,
+.logout-btn:hover,
+#logoutBtn.secondary:hover,
+button#logoutBtn:hover,
+a#logoutBtn.button-link.secondary:hover {
+  background: #d1d5db !important;
+  color: var(--text) !important;
+}

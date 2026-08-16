@@ -1,0 +1,3 @@
+.main,.main-content,.page-main{padding-left:24px!important}
+.topbar,.page-header,.hero-card{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.sidebar-bottom-actions{margin-top:auto}
