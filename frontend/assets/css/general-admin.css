@@ -1,0 +1,145 @@
+.general-admin-page {
+  padding-bottom: 72px;
+}
+
+.general-admin-card {
+  margin-bottom: 24px;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 14px;
+  padding: 18px 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.settings-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.settings-grid .check-line {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  align-self: end;
+}
+
+.full-row {
+  grid-column: 1 / -1;
+}
+
+.footer-links-editor {
+  padding: 18px 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.subsection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.subsection-header h3 {
+  margin: 0 0 4px;
+}
+
+.subsection-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.footer-links-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-link-row {
+  display: grid;
+  grid-template-columns: 180px minmax(260px, 1fr) 90px 110px;
+  gap: 10px;
+  align-items: end;
+}
+
+.footer-link-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.footer-link-row .btn-danger {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.form-message {
+  min-height: 22px;
+  padding: 0 20px 12px;
+  color: #166534;
+  font-weight: 700;
+}
+
+.footer-preview-box {
+  margin: 8px 20px 20px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f8fafc;
+}
+
+.footer-preview-box h3 {
+  margin: 0 0 10px;
+}
+
+.footer-preview {
+  min-height: 42px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.footer-preview a {
+  color: #8a00ff;
+  font-weight: 700;
+  text-decoration: none;
+  margin-right: 16px;
+}
+
+.footer-preview-copy {
+  text-align: center;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .settings-grid,
+  .footer-link-row {
+    grid-template-columns: 1fr;
+  }
+
+  .subsection-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .footer-preview {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding: 8px;
+  }
+}

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>General Administration - OPERA CFG</title>
+  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/sidebar-collapsible.css">
+  <link rel="stylesheet" href="assets/css/general-admin.css">
+  <link rel="stylesheet" href="assets/css/footer.css">
+</head>
+<body>
+  <div class="app-shell app-layout app-container">
+    <aside class="sidebar">
+      <div class="brand app-brand">
+        <div class="brand-logo app-logo">OC</div>
+        <div class="brand-text">
+          <strong>OPERA CFG</strong>
+          <span>Configuration Manager</span>
+        </div>
+      </div>
+      <nav id="sideMenu" class="side-menu"></nav>
+    </aside>
+
+    <main class="main-content page-main general-admin-page">
+      <header class="page-header hero-card">
+        <div>
+          <h1>General Administration</h1>
+          <p>Configure global application settings such as the common footer.</p>
+        </div>
+        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Salir</button>
+      </header>
+
+      <section class="card page-card general-admin-card">
+        <div class="section-header card-header">
+          <div>
+            <h2>Footer settings</h2>
+            <p>Manage footer links displayed across the application.</p>
+          </div>
+          <button id="saveFooterBtn" type="button" class="btn btn-primary">Guardar</button>
+        </div>
+
+        <div class="footer-links-editor">
+          <div class="subsection-header">
+            <div>
+              <h3>Footer links</h3>
+              <p>Añade, elimina o reordena enlaces. El año del copyright se calcula automáticamente.</p>
+            </div>
+            <button id="addFooterLinkBtn" type="button" class="btn btn-secondary">Añadir link</button>
+          </div>
+          <div id="footerLinksRows" class="footer-links-rows"></div>
+        </div>
+
+        <div id="footerMessage" class="form-message"></div>
+
+        <section class="footer-preview-box">
+          <h3>Preview</h3>
+          <div id="footerPreview" class="footer-preview"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/general-admin.js"></script>
+  <script src="assets/js/footer.js"></script>
+</body>
+</html>

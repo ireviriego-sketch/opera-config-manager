@@ -1,0 +1,76 @@
+:root {
+  --app-footer-height: 42px;
+  --app-footer-bg: #ffffff;
+  --app-footer-border: #e2e8f0;
+  --app-footer-link: #8a00ff;
+  --app-footer-text: #64748b;
+}
+
+body {
+  padding-bottom: var(--app-footer-height);
+}
+
+.app-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: var(--app-footer-height);
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  background: var(--app-footer-bg);
+  border-top: 1px solid var(--app-footer-border);
+  color: var(--app-footer-text);
+  font-size: 12px;
+  z-index: 3500;
+  box-shadow: 0 -4px 14px rgba(15, 23, 42, .04);
+}
+
+.app-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.app-footer-link {
+  color: var(--app-footer-link);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.app-footer-link:hover {
+  text-decoration: underline;
+}
+
+.app-footer-copy {
+  text-align: center;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.app-footer-spacer {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .app-footer {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    height: auto;
+    padding: 8px 14px;
+    row-gap: 4px;
+  }
+
+  .app-footer-copy {
+    white-space: normal;
+  }
+
+  .app-footer-spacer {
+    display: none;
+  }
+}

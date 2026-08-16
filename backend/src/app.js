@@ -25,6 +25,7 @@ const lovsRoutes = require('./routes/lovs.routes');
 const appLogger = require('./utils/appLogger');
 const { requireAnyRole } = require('./middleware/requireRole');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
+const appSettingsRoutes = require('./routes/app-settings.routes');
 
 function createApp() {
   const app = express();
@@ -43,6 +44,8 @@ function createApp() {
   app.use('/api/audit', requireAnyRole(['ADMIN']), auditRoutes);
   app.use('/api/logs', requireAnyRole(['ADMIN']), appLogsRoutes);
   app.use('/api/lovs', requireAnyRole(['ADMIN']), lovsRoutes);
+
+  app.use('/api/app-settings',appSettingsRoutes);
 
   app.use('/api/templates', requireAnyRole(['CONFIG_OPERATOR']), templateRoutes);
   app.use('/api/template-versions', requireAnyRole(['CONFIG_OPERATOR']), templateVersionRoutes);
