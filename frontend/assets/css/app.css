@@ -102,3 +102,84 @@ label { display: block; font-size: 13px; font-weight: 750; color: #334155; margi
   .actions-right { flex-direction: column; align-items: stretch; }
   .search-input { width: 100%; }
 }
+
+/* ==========================================================================
+   UI Recovery - menu + footer stable baseline
+   Keeps the real sidebar-collapsible behavior. Does not override footer styles.
+   ========================================================================== */
+:root {
+  --sidebar-collapsed-width: 56px;
+  --sidebar-expanded-width: 260px;
+  --content-gutter: 24px;
+}
+
+/* Legacy pages use <main class="main">, so they must also follow sidebar width. */
+body.sidebar-ready .main {
+  margin-left: var(--current-sidebar-width, var(--sidebar-collapsed-width));
+  width: calc(100% - var(--current-sidebar-width, var(--sidebar-collapsed-width)));
+  min-height: 100vh;
+  padding: 24px 24px 84px var(--content-gutter);
+  transition: margin-left 180ms ease, width 180ms ease;
+}
+
+body.sidebar-ready.sidebar-pinned .main {
+  margin-left: var(--sidebar-expanded-width);
+  width: calc(100% - var(--sidebar-expanded-width));
+}
+
+/* One single blue tile: Accenture-style mark + OC in the same box. */
+.brand-mark,
+.brand-logo,
+.app-logo {
+  width: 38px !important;
+  height: 48px !important;
+  min-width: 38px !important;
+  border-radius: 13px !important;
+  background: var(--primary) !important;
+  color: #fff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  font-weight: 900 !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  letter-spacing: -.3px !important;
+  overflow: hidden !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.14), 0 8px 18px rgba(37,99,235,.22) !important;
+}
+
+.brand-mark::before,
+.brand-logo::before,
+.app-logo::before {
+  content: '';
+  width: 22px;
+  height: 15px;
+  display: block;
+  background: url('../img/accenture-greater.svg') center / contain no-repeat;
+  margin-bottom: 1px;
+}
+
+/* Avoid ugly clipped text in collapsed sidebar, but keep expansion on hover/pin. */
+body.sidebar-ready:not(.sidebar-pinned) .sidebar:not(.sidebar-expanded) .brand h2,
+body.sidebar-ready:not(.sidebar-pinned) .sidebar:not(.sidebar-expanded) .brand span,
+body.sidebar-ready:not(.sidebar-pinned) .sidebar:not(.sidebar-expanded) .brand-text {
+  display: none !important;
+}
+
+body.sidebar-ready:not(.sidebar-pinned) .sidebar:not(.sidebar-expanded) .brand,
+body.sidebar-ready:not(.sidebar-pinned) .sidebar:not(.sidebar-expanded) .app-brand {
+  justify-content: center;
+  gap: 0;
+}
+
+.topbar,
+.page-actions,
+.card,
+.page-header,
+.hero-card,
+.page-card {
+  max-width: none;
+  box-sizing: border-box;
+}
