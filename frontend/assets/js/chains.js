@@ -16,7 +16,8 @@
 
   const error = err => message('Validación', `<p>${escapeHtml(err.message || err)}</p>`);
 
-  document.addEventListener('DOMContentLoaded', init);
+  async function loadChainLovs(){if(!window.LovsClient)return;await window.LovsClient.populateSelect('#chainStatusInput','STATUS',{defaultValue:'ACTIVE'});}
+document.addEventListener('DOMContentLoaded', init);
 
   async function init() {
     if ($('refreshBtn')) $('refreshBtn').onclick = loadChains;
@@ -29,7 +30,7 @@
     if ($('closeMessageBtn')) $('closeMessageBtn').onclick = () => hide($('messageModal'));
     if ($('searchInput')) $('searchInput').oninput = renderChains;
     if ($('chainForm')) $('chainForm').onsubmit = saveChain;
-    await loadChains();
+    await loadChainLovs(); await loadChains();
   }
 
   async function loadChains() {

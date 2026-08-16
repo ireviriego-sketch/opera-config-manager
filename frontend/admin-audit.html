@@ -44,35 +44,13 @@
             <input id="auditSearch" class="form-control" type="search" placeholder="Usuario, entidad, resumen...">
           </label>
           <label>Entidad
-            <select id="entityTypeFilter" class="form-control">
-              <option value="">Todas</option>
-              <option value="CHAIN">Cadenas</option>
-              <option value="HOTEL">Hoteles</option>
-              <option value="TEMPLATE">Plantillas</option>
-              <option value="USER">Usuarios</option>
-              <option value="USER_PERMISSION">Permisos</option>
-            </select>
+            <select id="entityTypeFilter" class="form-control"></select>
           </label>
           <label>Acción
-            <select id="actionFilter" class="form-control">
-              <option value="">Todas</option>
-              <option value="CREATE">CREATE</option>
-              <option value="UPDATE">UPDATE</option>
-              <option value="DELETE">DELETE</option>
-              <option value="CREATE_USER">CREATE_USER</option>
-              <option value="ASSIGN_ROLE">ASSIGN_ROLE</option>
-              <option value="ASSIGN_SCOPE">ASSIGN_SCOPE</option>
-              <option value="RESET_PASSWORD">RESET_PASSWORD</option>
-              <option value="IMPORT">IMPORT</option>
-            </select>
+            <select id="actionFilter" class="form-control"></select>
           </label>
           <label>Estado
-            <select id="resultStatusFilter" class="form-control">
-              <option value="">Todos</option>
-              <option value="SUCCESS">SUCCESS</option>
-              <option value="FAILED">FAILED</option>
-              <option value="WARNING">WARNING</option>
-            </select>
+            <select id="resultStatusFilter" class="form-control"></select>
           </label>
           <label>Desde
             <input id="fromDateFilter" class="form-control" type="date">
@@ -117,6 +95,7 @@
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/layout.js"></script>
+  <script src="assets/js/lovs-client.js"></script>
   <script src="assets/js/admin-audit.js"></script>
 </body>
 </html>

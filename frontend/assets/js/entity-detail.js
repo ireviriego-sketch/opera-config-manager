@@ -79,10 +79,10 @@ async function loadAttributes() {
 }
 
 async function loadDataTypes() {
-  const data = await apiFetch('/api/attributes/data-types');
   const select = document.getElementById('dataTypeCode');
   select.innerHTML = '';
-  (data.dataTypes || []).forEach(dt => {
+  const dataTypes = window.LovsClient ? await window.LovsClient.dataTypes() : (await apiFetch('/api/attributes/data-types')).dataTypes || [];
+  dataTypes.forEach(dt => {
     const option = document.createElement('option');
     option.value = dt.DATA_TYPE_CODE;
     option.textContent = dt.DATA_TYPE_NAME;

@@ -5,34 +5,11 @@
   const body = $('auditBody');
   let auditItems = [];
 
-  const EXTRA_ACTIONS = [
-    'CREATE_DEPLOYMENT_RECORD', 'UPDATE_DEPLOYMENT_RECORD', 'DELETE_DEPLOYMENT_RECORD',
-    'DELETE_DEPLOYMENT_ENTITY_RECORDS', 'IMPORT_DEPLOYMENT_DOMAIN_EXCEL',
-    'CREATE_CHAIN', 'UPDATE_CHAIN', 'DELETE_CHAIN',
-    'CREATE_HOTEL', 'UPDATE_HOTEL', 'DELETE_HOTEL', 'IMPORT_HOTELS',
-    'CREATE_TEMPLATE', 'UPDATE_TEMPLATE',
-    'CREATE_VERSION', 'UPDATE_VERSION', 'ACTIVATE_VERSION',
-    'CREATE_RELATIONSHIP', 'UPDATE_RELATIONSHIP', 'DELETE_RELATIONSHIP',
-    'CREATE_USER', 'ASSIGN_ROLE', 'ASSIGN_SCOPE', 'RESET_PASSWORD'
-  ];
 
   function esc(value) {
     return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
-  function ensureActionOptions() {
-    const select = $('actionFilter');
-    if (!select) return;
-    const existing = new Set(Array.from(select.options).map(option => option.value));
-    EXTRA_ACTIONS.forEach(action => {
-      if (!existing.has(action)) {
-        const option = document.createElement('option');
-        option.value = action;
-        option.textContent = action;
-        select.appendChild(option);
-      }
-    });
-  }
 
   async function requestJson(url, options = {}) {
     const token = localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
@@ -49,6 +26,16 @@
     try { payload = text ? JSON.parse(text) : null; } catch { payload = { raw: text }; }
     if (!response.ok) throw new Error(payload?.message || payload?.error || text || `HTTP ${response.status}`);
     return payload;
+  }
+
+
+  async function loadAuditLovFilters() {
+    if (!window.LovsClient) return;
+    await Promise.all([
+      window.LovsClient.populateSelect('#entityTypeFilter', 'AUDIT_ENTITY_TYPE', { emptyLabel: 'Todas' }),
+      window.LovsClient.populateSelect('#actionFilter', 'AUDIT_ACTION', { emptyLabel: 'Todas' }),
+      window.LovsClient.populateSelect('#resultStatusFilter', 'AUDIT_RESULT_STATUS', { emptyLabel: 'Todos' })
+    ]);
   }
 
   function buildQuery() {
@@ -147,6 +134,5 @@
   $('refreshAuditBtn')?.addEventListener('click', loadAudit);
   $('closeAuditModalBtn')?.addEventListener('click', () => { $('auditDetailModal').hidden = true; });
 
-  ensureActionOptions();
-  loadAudit();
+  loadAuditLovFilters().finally(loadAudit);
 })();

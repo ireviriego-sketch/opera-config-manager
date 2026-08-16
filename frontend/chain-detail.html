@@ -38,10 +38,7 @@
         <label>CHAIN_CODE *<input id="chainCodeInput" class="input" maxlength="50" /></label>
         <label>CHAIN_NAME *<input id="chainNameInput" class="input" maxlength="200" /></label>
         <label>STATUS *
-          <select id="chainStatusInput" class="input">
-            <option value="ACTIVE">ACTIVE</option>
-            <option value="INACTIVE">INACTIVE</option>
-          </select>
+          <select id="chainStatusInput" class="input"></select>
         </label>
       </form>
     </section>
@@ -69,10 +66,7 @@
           <label>HOTEL_CODE *<input id="hotelCodeInput" class="input" maxlength="50" /></label>
           <label>HOTEL_NAME *<input id="hotelNameInput" class="input" maxlength="200" /></label>
           <label>STATUS *
-            <select id="hotelStatusInput" class="input">
-              <option value="ACTIVE">ACTIVE</option>
-              <option value="INACTIVE">INACTIVE</option>
-            </select>
+            <select id="hotelStatusInput" class="input"></select>
           </label>
           <div class="form-actions">
             <button class="primary" type="submit">Guardar hotel</button>
@@ -106,13 +100,7 @@
         <input id="deploymentIdInput" type="hidden" />
         <label>DEPLOYMENT_NAME *<input id="deploymentNameInput" class="input" maxlength="200" /></label>
         <label>STATUS *
-          <select id="deploymentStatusInput" class="input">
-            <option value="DRAFT">DRAFT</option>
-            <option value="READY">READY</option>
-            <option value="SENT_OK">SENT_OK</option>
-            <option value="SENT_ERROR">SENT_ERROR</option>
-            <option value="CANCELLED">CANCELLED</option>
-          </select>
+          <select id="deploymentStatusInput" class="input"></select>
         </label>
         <label class="span-2">Versión plantilla origen
           <select id="sourceTemplateVersionInput" class="input">
@@ -154,6 +142,7 @@
   <script src="assets/js/layout.js"></script>
   <script src="assets/js/chains-api.js"></script>
   <script src="assets/js/deployments-api.js"></script>
+  <script src="assets/js/lovs-client.js"></script>
   <script src="assets/js/chain-detail.js"></script>
   <script src="assets/js/deployment-content-link.js"></script>
 </body>

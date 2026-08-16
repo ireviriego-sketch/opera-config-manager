@@ -58,7 +58,7 @@
       <header class="modal-header"><div><h2>Crear relación</h2><p id="relationshipPreview">Confirma la relación entre atributos.</p></div><button id="closeRelationshipModal" class="icon-button">×</button></header>
       <div class="modal-body">
         <label for="relationshipType">Tipo de relación</label>
-        <select id="relationshipType"><option value="REFERENCE">Reference</option><option value="LOOKUP">Lookup</option><option value="PARENT_CHILD">Parent-child</option><option value="DEPENDENCY">Dependency</option><option value="VALIDATION">Validation</option></select>
+        <select id="relationshipType"></select>
         <label for="relationshipLabel">Etiqueta</label><input id="relationshipLabel" placeholder="Ej. Room Type" />
         <div id="relationshipMessage" class="message"></div>
       </div>
@@ -72,7 +72,7 @@
       <div class="modal-body">
         <label for="manualSourceAttribute">Atributo origen</label><select id="manualSourceAttribute"></select>
         <label for="manualTargetAttribute">Atributo destino</label><select id="manualTargetAttribute"></select>
-        <label for="manualRelationshipType">Tipo</label><select id="manualRelationshipType"><option value="REFERENCE">Reference</option><option value="LOOKUP">Lookup</option><option value="PARENT_CHILD">Parent-child</option><option value="DEPENDENCY">Dependency</option><option value="VALIDATION">Validation</option></select>
+        <label for="manualRelationshipType">Tipo</label><select id="manualRelationshipType"></select>
         <label for="manualRelationshipLabel">Etiqueta</label><input id="manualRelationshipLabel" />
         <div id="manualRelationshipMessage" class="message"></div>
       </div>
@@ -102,6 +102,7 @@
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/layout.js"></script>
+  <script src="assets/js/lovs-client.js"></script>
   <script src="assets/js/model-canvas-relationships.js"></script>
 </body>
 </html>

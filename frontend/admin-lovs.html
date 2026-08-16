@@ -109,7 +109,7 @@
         <label>Código *<input id="lovCodeInput" class="form-control" type="text" maxlength="80"></label>
         <label>Nombre *<input id="lovNameInput" class="form-control" type="text" maxlength="200"></label>
         <label>Depende de LOV<select id="lovParentInput" class="form-control"><option value="">Sin dependencia</option></select></label>
-        <label>Estado<select id="lovStatusInput" class="form-control"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
+        <label>Estado<select id="lovStatusInput" class="form-control"></select></label>
         <label class="full">Descripción<textarea id="lovDescriptionInput" class="form-control" maxlength="1000" rows="4"></textarea></label>
       </div>
       <div id="lovFormMessage" class="form-message"></div>
@@ -131,7 +131,7 @@
         <label>Etiqueta *<input id="valueLabelInput" class="form-control" type="text" maxlength="300"></label>
         <label id="valueParentBox" hidden>Valor padre<select id="valueParentInput" class="form-control"><option value="">Sin padre</option></select></label>
         <label>Orden<input id="valueSortInput" class="form-control" type="number" value="10"></label>
-        <label>Estado<select id="valueStatusInput" class="form-control"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
+        <label>Estado<select id="valueStatusInput" class="form-control"></select></label>
       </div>
       <div id="valueFormMessage" class="form-message"></div>
       <div class="lovs-modal-actions">
@@ -143,6 +143,7 @@
 
   <script src="assets/js/api.js"></script>
   <script src="assets/js/layout.js"></script>
+  <script src="assets/js/lovs-client.js"></script>
   <script src="assets/js/admin-lovs.js"></script>
 </body>
 </html>

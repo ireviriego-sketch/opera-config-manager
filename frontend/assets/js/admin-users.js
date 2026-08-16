@@ -262,7 +262,7 @@
             <label>Usuario<input id="newUsername" class="form-control" required></label>
             <label>Nombre<input id="newFullName" class="form-control"></label>
             <label>Email<input id="newEmail" class="form-control" type="email"></label>
-            <label>Estado<select id="newStatus" class="form-control"><option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option></select></label>
+            <label>Estado<select id="newStatus" class="form-control"></select></label>
             <div class="full-row"><h3>Roles iniciales</h3><div id="newUserRolesChecklist" class="check-list"></div></div>
             <div class="actions-row full-row"><button type="submit" class="btn btn-primary">Crear usuario y copiar enlace</button></div>
           </form>
@@ -275,7 +275,7 @@
   async function openCreateUser() {
     await loadCatalogs(); ensureCreateUserModal();
     $('newUserRolesChecklist').innerHTML = roles.map(role => `<label class="check-row"><input type="checkbox" value="${esc(pick(role, 'roleId', 'ROLE_ID'))}"><strong>${esc(pick(role, 'roleCode', 'ROLE_CODE'))}</strong><span>${esc(pick(role, 'roleName', 'ROLE_NAME', ''))}</span></label>`).join('');
-    $('newUsername').value = ''; $('newFullName').value = ''; $('newEmail').value = ''; $('newStatus').value = 'ACTIVE';
+    $('newUsername').value = ''; $('newFullName').value = ''; $('newEmail').value = ''; if (window.LovsClient) await window.LovsClient.populateSelect('#newStatus', 'STATUS', { defaultValue: 'ACTIVE' }); else $('newStatus').innerHTML = '<option value="ACTIVE">ACTIVE</option><option value="INACTIVE">INACTIVE</option>'; $('newStatus').value = 'ACTIVE';
     $('createUserModal').classList.remove('hidden');
   }
 

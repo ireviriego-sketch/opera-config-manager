@@ -32,7 +32,7 @@
     return payload;
   }
 
-  function statusBadge(status) {
+  function loadStatusOptions(){if(!window.LovsClient)return Promise.resolve();return Promise.all([window.LovsClient.populateSelect('#lovStatusInput','STATUS',{defaultValue:'ACTIVE'}),window.LovsClient.populateSelect('#valueStatusInput','STATUS',{defaultValue:'ACTIVE'})]);} function statusBadge(status) {
     const active = String(status || '').toUpperCase() === 'ACTIVE';
     return `<span class="lov-status ${active ? 'lov-status-active' : 'lov-status-inactive'}">${esc(status || '-')}</span>`;
   }
@@ -374,7 +374,7 @@
   $('showInactiveValues').addEventListener('change', renderValues);
   $('parentValueFilter').addEventListener('change', renderValues);
 
-  loadLovs(false).then(renderValues).catch(error => {
+  loadStatusOptions().finally(() => loadLovs(false).then(renderValues)).catch(error => {
     $('lovsBody').innerHTML = `<tr><td colspan="6">No se han podido cargar LOVs. ${esc(error.message || '')}</td></tr>`;
   });
 })();

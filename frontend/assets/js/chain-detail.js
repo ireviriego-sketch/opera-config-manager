@@ -27,7 +27,7 @@
     $('downloadContentBtn').onclick = downloadCurrentContent;
     $('deploymentForm').onsubmit = saveDeployment;
     document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => switchTab(tab.dataset.tab));
-    await loadAll();
+    await loadLovSelects(); await loadAll();
   }
 
   async function loadAll() {

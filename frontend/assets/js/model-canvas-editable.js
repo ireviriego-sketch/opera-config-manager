@@ -61,8 +61,11 @@ async function loadVersionHeader() {
 }
 
 async function loadDataTypes() {
-  const data = await apiFetch('/api/attributes/data-types');
-  dataTypes = data.dataTypes || [];
+  if (window.LovsClient) dataTypes = await window.LovsClient.dataTypes();
+  else {
+    const data = await apiFetch('/api/attributes/data-types');
+    dataTypes = data.dataTypes || [];
+  }
 }
 
 async function loadModel() {
