@@ -1,3 +1,6 @@
+@import url("./theme.css");
+@import url("./components.css");
+
  :root {
   --bg: #f3f6fb;
   --panel: #ffffff;

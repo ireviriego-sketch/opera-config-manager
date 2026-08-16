@@ -3,7 +3,7 @@
   const state = { hotels: [], search: '' };
   const $ = id => document.getElementById(id);
 
-  const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+  const escapeHtml = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])));
   const show = element => element.classList.remove('hidden');
   const hide = element => element.classList.add('hidden');
   const badge = status => `<span class="badge ${status}">${status}</span>`;

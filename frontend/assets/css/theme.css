@@ -1,0 +1,80 @@
+/* OPERA CFG - Theme Foundation
+   Step 1: central design tokens.
+   This file intentionally does not style components directly.
+   Purpose: provide a single source of truth for future CSS refactors while keeping the current UI unchanged. */
+
+:root {
+  /* Core surfaces */
+  --color-bg: #f3f6fb;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f8fafc;
+  --color-surface-muted: #eef2f7;
+
+  /* Text */
+  --color-text: #111827;
+  --color-text-strong: #0f172a;
+  --color-muted: #64748b;
+  --color-muted-strong: #334155;
+
+  /* Borders */
+  --color-border: #d8dee9;
+  --color-border-soft: #edf2f7;
+  --color-border-strong: #cbd5e1;
+
+  /* Brand and semantic colors */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-soft: #eef4ff;
+  --color-accent: #7c3aed;
+  --color-accent-hover: #6d28d9;
+
+  --color-success-bg: #dcfce7;
+  --color-success-text: #166534;
+  --color-warning-bg: #fef3c7;
+  --color-warning-text: #92400e;
+  --color-danger-bg: #fee2e2;
+  --color-danger-text: #991b1b;
+  --color-danger-border: #fecaca;
+
+  /* Component sizes */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 8px 22px rgba(15, 23, 42, .04);
+  --shadow-md: 0 12px 32px rgba(15, 23, 42, .08);
+  --shadow-lg: 0 24px 70px rgba(15, 23, 42, .24);
+
+  /* Layout tokens */
+  --sidebar-collapsed-width: 56px;
+  --sidebar-expanded-width: 260px;
+  --sidebar-content-gap: 16px;
+  --footer-height: 32px;
+
+  /* Action tokens */
+  --action-height: 40px;
+  --action-height-compact: 34px;
+  --action-padding-x: 14px;
+  --action-gap: 10px;
+
+  /* Table tokens */
+  --table-head-bg: var(--color-surface-soft);
+  --table-row-hover: var(--color-surface-soft);
+  --table-cell-padding-y: 13px;
+  --table-cell-padding-x: 16px;
+
+  /* Legacy aliases: kept so current CSS can migrate gradually without visual changes. */
+  --bg: var(--color-bg);
+  --panel: var(--color-surface);
+  --panel-soft: var(--color-surface-soft);
+  --text: var(--color-text);
+  --muted: var(--color-muted);
+  --primary: var(--color-primary);
+  --primary-dark: var(--color-primary-hover);
+  --border: var(--color-border);
+  --success: var(--color-success-text);
+  --danger: var(--color-danger-text);
+  --shadow: var(--shadow-md);
+}

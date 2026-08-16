@@ -1,0 +1,208 @@
+/* OPERA CFG - Components Foundation
+   Step 2: reusable component classes and low-priority legacy mappings.
+
+   Important:
+   - This file is loaded before app.css declarations through @import.
+   - Most legacy mappings are wrapped in @layer components, so existing unlayered CSS wins.
+   - The goal is to create a shared foundation without changing the current UI. */
+
+@layer components {
+  /* Cards */
+  :where(.ui-card, .card, .page-card, .content-card, .module-card) {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    box-sizing: border-box;
+  }
+
+  :where(.ui-card-header, .card-header, .section-header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--action-gap);
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--color-border);
+    box-sizing: border-box;
+  }
+
+  :where(.ui-card-title, .card-header h2, .card-header h3, .section-header h2, .section-header h3) {
+    margin: 0 0 4px;
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  :where(.ui-card-description, .card-header p, .section-header p) {
+    margin: 0;
+    color: var(--color-muted);
+    line-height: 1.35;
+  }
+
+  /* Page headers */
+  :where(.ui-page-header, .topbar, .page-header, .hero-card) {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    box-sizing: border-box;
+  }
+
+  :where(.ui-page-title, .topbar h1, .page-header h1, .hero-card h1) {
+    margin: 0;
+    color: var(--color-text);
+    line-height: 1.15;
+  }
+
+  :where(.ui-page-subtitle, .topbar p, .page-header p, .hero-card p) {
+    margin: 6px 0 0;
+    color: var(--color-muted);
+    line-height: 1.35;
+  }
+
+  /* Buttons */
+  :where(.ui-button, .btn, .button-link, .action-button, .table-action) {
+    min-height: var(--action-height);
+    border-radius: var(--radius-md);
+    padding: 10px var(--action-padding-x);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+
+  :where(.ui-button-primary, .btn-primary, .primary) {
+    background: var(--color-primary);
+    color: #fff;
+    border: 1px solid var(--color-primary);
+  }
+
+  :where(.ui-button-primary, .btn-primary, .primary):hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+  }
+
+  :where(.ui-button-secondary, .btn-secondary, .secondary, .link-button) {
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-strong);
+  }
+
+  :where(.ui-button-secondary, .btn-secondary, .secondary, .link-button):hover {
+    background: #d1d5db;
+    color: var(--color-text);
+  }
+
+  :where(.ui-button-danger, .btn-danger, .danger) {
+    background: var(--color-danger-bg);
+    color: var(--color-danger-text);
+    border: 1px solid var(--color-danger-border);
+  }
+
+  /* Inputs */
+  :where(.ui-input, .form-control, .input, input[type="text"], input[type="search"], input[type="email"], input[type="password"], select, textarea) {
+    min-height: 38px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-sizing: border-box;
+  }
+
+  :where(.ui-input, .form-control, .input, input, select, textarea):focus {
+    outline: 2px solid rgba(37, 99, 235, .20);
+    outline-offset: 1px;
+    border-color: var(--color-primary);
+  }
+
+  /* Badges and chips */
+  :where(.ui-badge, .badge, .status-badge, .chip, .pill, .lov-status, .role-badge) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    padding: 4px 9px;
+    min-height: 22px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  :where(.ui-badge-success, .badge-success, .status-active, .lov-status-active, .badge.ACTIVE) {
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+  }
+
+  :where(.ui-badge-muted, .badge-muted, .status-inactive, .lov-status-inactive, .badge.INACTIVE) {
+    background: var(--color-surface-muted);
+    color: var(--color-muted-strong);
+  }
+
+  /* Toolbars */
+  :where(.ui-toolbar, .toolbar, .table-toolbar, .filter-row, .page-actions, .actions-right, .toolbar-left, .toolbar-right) {
+    display: flex;
+    align-items: center;
+    gap: var(--action-gap);
+    flex-wrap: wrap;
+    box-sizing: border-box;
+  }
+
+  /* Modal primitives */
+  :where(.ui-modal-card, .modal-card, .admin-modal-card, .modal-content) {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    color: var(--color-text);
+    box-sizing: border-box;
+  }
+
+  :where(.ui-modal-header, .modal-header, .admin-modal-header, .modal-card-header) {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--action-gap);
+    border-bottom: 1px solid var(--color-border);
+    box-sizing: border-box;
+  }
+
+  :where(.ui-modal-footer, .modal-footer, .admin-modal-footer, .modal-card-footer, .form-actions) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--action-gap);
+    background: var(--color-surface-soft);
+    border-top: 1px solid var(--color-border);
+    box-sizing: border-box;
+  }
+
+  /* Tables */
+  :where(.ui-table, .table, .data-table) {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--color-text);
+  }
+
+  :where(.ui-table, .table, .data-table) th {
+    background: var(--table-head-bg);
+    color: var(--color-muted-strong);
+    font-size: 12px;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+    font-weight: 850;
+  }
+
+  :where(.ui-table, .table, .data-table) td,
+  :where(.ui-table, .table, .data-table) th {
+    border-bottom: 1px solid var(--color-border-soft);
+    vertical-align: middle;
+  }
+
+  :where(.ui-empty-state, .empty-state, .table-empty, .loading-state) {
+    color: var(--color-muted);
+    text-align: center;
+  }
+}

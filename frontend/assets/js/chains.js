@@ -4,7 +4,7 @@
   const $ = id => document.getElementById(id);
   const show = element => element && element.classList.remove('hidden');
   const hide = element => element && element.classList.add('hidden');
-  const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+  const escapeHtml = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c])));
   const badge = status => `<span class="badge">${escapeHtml(status || '')}</span>`;
 
   const message = (title, html) => {

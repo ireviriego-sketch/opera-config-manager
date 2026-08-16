@@ -11,9 +11,7 @@
   let userDetail = null;
   let currentUserId = null;
 
-  function esc(value) {
-    return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  }
+  const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
   function pick(row, camel, upper, fallback = '') {
     return row?.[camel] ?? row?.[upper] ?? fallback;

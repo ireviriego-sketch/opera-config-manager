@@ -5,7 +5,7 @@
   const $ = id => document.getElementById(id);
   const show = el => el.classList.remove('hidden');
   const hide = el => el.classList.add('hidden');
-  const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+  const escapeHtml = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char])));
   const badge = status => `<span class="badge ${status}">${status}</span>`;
   const message = (title, html) => { $('messageTitle').textContent = title; $('messageBody').innerHTML = html; openGenericModal('messageModal'); };
   const error = err => message('Validación', `<ul class="error-list"><li>${escapeHtml(err.message || err)}</li></ul>`);
@@ -193,5 +193,5 @@
   async function viewContent(id) { try { const data = await deploymentsApi.getContent(id); state.currentContent = data.content; state.currentContentDeploymentId = id; $('deploymentContentPre').textContent = JSON.stringify(data.content, null, 2); openGenericModal('contentModal'); } catch (err) { error(err); } }
   async function exportJson(id) { try { const data = await deploymentsApi.exportJson(id); downloadJson(data.content, `deployment-${id}.json`); } catch (err) { error(err); } }
   function downloadCurrentContent() { if (!state.currentContent) return; downloadJson(state.currentContent, `deployment-${state.currentContentDeploymentId || 'content'}.json`); }
-  function downloadJson(content, filename) { const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+  function downloadJson(content, filename) { if (window.AppUtils?.downloadJson) return window.AppUtils.downloadJson(content, filename); const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
 })();
