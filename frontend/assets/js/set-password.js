@@ -24,9 +24,9 @@
   });
 
   async function validate() {
-    if (!token) throw new Error('El enlace no contiene token.');
+    if (!token) throw new Error('The link does not contain a token.');
     const result = await requestJson(`/api/password-reset/validate/${encodeURIComponent(token)}`);
-    status.textContent = `Enlace válido para ${result.user?.username || 'usuario'}.`;
+    status.textContent = `Valid link for ${result.user?.username || 'user'}.`;
     form.hidden = false;
   }
 
@@ -36,11 +36,11 @@
     const passwordConfirm = document.getElementById('passwordConfirm').value;
 
     if (password.length < 8) {
-      message.textContent = 'La contraseña debe tener al menos 8 caracteres.';
+      message.textContent = 'Password must be at least 8 characters.';
       return;
     }
     if (password !== passwordConfirm) {
-      message.textContent = 'Las contraseñas no coinciden.';
+      message.textContent = 'Passwords do not match.';
       return;
     }
 
@@ -50,8 +50,8 @@
         body: JSON.stringify({ token, password })
       });
       form.hidden = true;
-      status.textContent = 'Contraseña creada correctamente.';
-      message.textContent = 'Ya puedes iniciar sesión con tu nueva contraseña.';
+      status.textContent = 'Password created successfully.';
+      message.textContent = 'You can now sign in with your new password.';
       loginLink.hidden = false;
     } catch (error) {
       message.textContent = error.message;

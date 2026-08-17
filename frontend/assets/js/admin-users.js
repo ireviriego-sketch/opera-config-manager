@@ -13,7 +13,7 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
-  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });
+  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'An error occurred'); });
 
   function pick(row, camel, upper, fallback = '') {
     return row?.[camel] ?? row?.[upper] ?? fallback;
@@ -95,15 +95,15 @@
     const hotelCount = Number(pick(user, 'hotelPermissionCount', 'HOTEL_PERMISSION_COUNT', 0));
     const globalCount = Number(pick(user, 'globalPermissionCount', 'GLOBAL_PERMISSION_COUNT', 0));
     const parts = [];
-    if (chainCount) parts.push(`${chainCount} cadenas`);
-    if (hotelCount) parts.push(`${hotelCount} hoteles`);
-    if (globalCount) parts.push(`${globalCount} globales`);
-    return parts.length ? parts.join(' · ') : 'Sin permisos';
+    if (chainCount) parts.push(`${chainCount} chains`);
+    if (hotelCount) parts.push(`${hotelCount} hotels`);
+    if (globalCount) parts.push(`${globalCount} global`);
+    return parts.length ? parts.join(' · ') : 'No permissions';
   }
 
   function renderUsers(rows) {
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="8">No hay usuarios para mostrar.</td></tr>';
+      body.innerHTML = '<tr><td colspan="8">No hay users para mostrar.</td></tr>';
       return;
     }
     body.innerHTML = rows.map(u => {
@@ -118,15 +118,15 @@
           <td>${esc(accessSummary(u))}</td>
           <td>${esc(pick(u, 'lastLoginAt', 'LAST_LOGIN_AT', '-'))}</td>
           <td class="user-actions">
-            <button type="button" class="btn btn-secondary btn-sm" data-edit-user="${esc(userId)}">Editar acceso</button>
-            <button type="button" class="btn btn-secondary btn-sm" data-reset-user="${esc(userId)}">Reset password</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-edit-user="${esc(userId)}">Edit Access</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-reset-user="${esc(userId)}">Reset Password</button>
           </td>
         </tr>`;
     }).join('');
   }
 
   async function loadUsers() {
-    body.innerHTML = '<tr><td colspan="8">Cargando usuarios...</td></tr>';
+    body.innerHTML = '<tr><td colspan="8">Loading users...</td></tr>';
     const payload = await requestJson('/api/admin/users');
     users = list(payload, 'users');
     renderUsers(users);
@@ -174,7 +174,7 @@
   function renderRoles() {
     const selectedRoleIds = new Set((userDetail.roles || []).map(r => Number(pick(r, 'roleId', 'ROLE_ID'))));
     $('rolesChecklist').innerHTML = `
-      <div id="roleAccessWarning" class="access-warning">Para ver la asignación de cadenas u hoteles, marca primero CHAIN_MANAGER u HOTEL_MANAGER.</div>
+      <div id="roleAccessWarning" class="access-warning">To view chain or hotel assignments, select CHAIN_MANAGER or HOTEL_MANAGER first.</div>
       ${roles.map(role => {
         const roleId = pick(role, 'roleId', 'ROLE_ID');
         const roleCode = pick(role, 'roleCode', 'ROLE_CODE');
@@ -219,14 +219,14 @@
       const role = pick(p, 'roleCode', 'ROLE_CODE'); const scope = pick(p, 'scopeType', 'SCOPE_TYPE');
       const name = pick(p, 'chainName', 'CHAIN_NAME') || pick(p, 'hotelName', 'HOTEL_NAME') || 'GLOBAL';
       const readOnly = pick(p, 'isReadOnly', 'IS_READ_ONLY', 'N');
-      return `<div class="permission-row"><strong>${esc(role)}</strong><span>${esc(scope)}</span><span>${esc(name)}</span><span>${readOnly === 'Y' ? 'Solo lectura' : 'Edición'}</span></div>`;
+      return `<div class="permission-row"><strong>${esc(role)}</strong><span>${esc(scope)}</span><span>${esc(name)}</span><span>${readOnly === 'Y' ? 'Read Only' : 'Edit'}</span></div>`;
     }).join('');
   }
 
   async function openUser(userId) {
     currentUserId = Number(userId); await loadCatalogs();
     const payload = await requestJson(`/api/admin/users/${currentUserId}`); userDetail = item(payload, 'user');
-    $('userDetailTitle').textContent = `Detalle de ${pick(userDetail, 'username', 'USERNAME')}`;
+    $('userDetailTitle').textContent = `Details for ${pick(userDetail, 'username', 'USERNAME')}`;
     $('detailUsername').value = pick(userDetail, 'username', 'USERNAME', '');
     $('detailFullName').value = pick(userDetail, 'fullName', 'FULL_NAME', '');
     $('detailEmail').value = pick(userDetail, 'email', 'EMAIL', '');
@@ -238,18 +238,18 @@
   async function saveRoles() {
     const roleIds = Array.from(document.querySelectorAll('#rolesChecklist input:checked')).map(input => Number(input.value));
     await requestJson(`/api/admin/users/${currentUserId}/roles`, { method: 'PUT', body: JSON.stringify({ roleIds }) });
-    await loadUsers(); await openUser(currentUserId); showToast('Roles actualizados correctamente');
+    await loadUsers(); await openUser(currentUserId); showToast('Roles updated successfully');
   }
 
   async function saveScope(scopeType, checklistId, roleCode, readOnlyId) {
-    if (scopeType === 'CHAIN' && !hasSelectedRole('CHAIN_MANAGER')) { showError('Marca primero el rol CHAIN_MANAGER.'); return; }
-    if (scopeType === 'HOTEL' && !hasSelectedRole('HOTEL_MANAGER')) { showError('Marca primero el rol HOTEL_MANAGER.'); return; }
+    if (scopeType === 'CHAIN' && !hasSelectedRole('CHAIN_MANAGER')) { showError('Select the CHAIN_MANAGER role first.'); return; }
+    if (scopeType === 'HOTEL' && !hasSelectedRole('HOTEL_MANAGER')) { showError('Select the HOTEL_MANAGER role first.'); return; }
     const ids = Array.from(document.querySelectorAll(`#${checklistId} input:checked`)).map(input => Number(input.value));
-    const roleId = roleIdByCode(roleCode); if (!roleId) { showError(`No existe el rol ${roleCode}.`); return; }
+    const roleId = roleIdByCode(roleCode); if (!roleId) { showError(`Role does not exist ${roleCode}.`); return; }
     const url = scopeType === 'CHAIN' ? `/api/admin/users/${currentUserId}/permissions/chains` : `/api/admin/users/${currentUserId}/permissions/hotels`;
     const payload = scopeType === 'CHAIN' ? { roleId, chainIds: ids, isReadOnly: $(readOnlyId).checked ? 'Y' : 'N' } : { roleId, hotelIds: ids, isReadOnly: $(readOnlyId).checked ? 'Y' : 'N' };
     await requestJson(url, { method: 'PUT', body: JSON.stringify(payload) });
-    await loadUsers(); await openUser(currentUserId); showToast(scopeType === 'CHAIN' ? 'Cadenas autorizadas actualizadas correctamente' : 'Hoteles autorizados actualizados correctamente');
+    await loadUsers(); await openUser(currentUserId); showToast(scopeType === 'CHAIN' ? 'Authorized chains updated successfully' : 'Authorized hotels updated successfully');
   }
 
   function ensureCreateUserModal() {
@@ -257,14 +257,14 @@
     document.body.insertAdjacentHTML('beforeend', `
       <div id="createUserModal" class="admin-modal hidden">
         <div class="admin-modal-card">
-          <div class="admin-modal-header"><h2>Nuevo usuario</h2><button id="closeCreateUserModal" type="button" class="modal-close">Cerrar</button></div>
+          <div class="admin-modal-header"><h2>New User</h2><button id="closeCreateUserModal" type="button" class="modal-close">Close</button></div>
           <form id="createUserForm" class="form-grid">
-            <label>Usuario<input id="newUsername" class="form-control" required></label>
-            <label>Nombre<input id="newFullName" class="form-control"></label>
+            <label>User<input id="newUsername" class="form-control" required></label>
+            <label>Name<input id="newFullName" class="form-control"></label>
             <label>Email<input id="newEmail" class="form-control" type="email"></label>
-            <label>Estado<select id="newStatus" class="form-control"></select></label>
-            <div class="full-row"><h3>Roles iniciales</h3><div id="newUserRolesChecklist" class="check-list"></div></div>
-            <div class="actions-row full-row"><button type="submit" class="btn btn-primary">Crear usuario y copiar enlace</button></div>
+            <label>Status<select id="newStatus" class="form-control"></select></label>
+            <div class="full-row"><h3>Initial Roles</h3><div id="newUserRolesChecklist" class="check-list"></div></div>
+            <div class="actions-row full-row"><button type="submit" class="btn btn-primary">Create User and Copy Link</button></div>
           </form>
         </div>
       </div>`);
@@ -286,13 +286,13 @@
     const response = await requestJson('/api/admin/users', { method: 'POST', body: JSON.stringify(payload) });
     $('createUserModal').classList.add('hidden');
     await copyText(response.resetUrl);
-    await loadUsers(); showToast('Usuario creado. Enlace de contraseña copiado al portapapeles');
+    await loadUsers(); showToast('User created. Password link copied to clipboard');
   }
 
   async function resetPassword(userId) {
     const response = await requestJson(`/api/admin/users/${userId}/password-reset`, { method: 'POST', body: JSON.stringify({}) });
     await copyText(response.resetUrl);
-    showToast('Enlace de reseteo copiado al portapapeles');
+    showToast('Reset link copied to clipboard');
   }
 
   document.addEventListener('click', event => {
@@ -310,5 +310,5 @@
   $('saveHotelsBtn')?.addEventListener('click', () => saveScope('HOTEL', 'hotelsChecklist', 'HOTEL_MANAGER', 'hotelsReadOnly').catch(showError));
   $('newUserBtn')?.addEventListener('click', () => openCreateUser().catch(showError));
 
-  loadUsers().catch(error => { console.error(error); body.innerHTML = `<tr><td colspan="8">No se han podido cargar los usuarios. ${esc(error.message)}</td></tr>`; });
+  loadUsers().catch(error => { console.error(error); body.innerHTML = `<tr><td colspan="8">No se han podido cargar los users. ${esc(error.message)}</td></tr>`; });
 })();

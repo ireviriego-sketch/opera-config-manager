@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Usuarios - OPERA CFG</title>
+  <title>Users - OPERA CFG</title>
   <link rel="stylesheet" href="assets/css/app.css">
   <link rel="stylesheet" href="assets/css/admin-access.css">
   <link rel="stylesheet" href="assets/css/footer.css">
@@ -25,41 +25,41 @@
     <main class="main-content page-main">
       <header class="page-header hero-card">
         <div>
-          <h1>Administración de usuarios</h1>
-          <p>Usuarios, roles y acceso explícito por cadena u hotel.</p>
+          <h1>User Administration</h1>
+          <p>Users, roles, and explicit access by chain or hotel.</p>
         </div>
-        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Volver</button>
+        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Back</button>
       </header>
 
       <section class="card page-card">
         <div class="section-header card-header">
           <div>
-            <h2>Usuarios</h2>
-            <p>Un rol define qué puede hacer el usuario. El acceso indica sobre qué cadenas u hoteles puede hacerlo.</p>
+            <h2>Users</h2>
+            <p>A role defines what the user can do. Access defines which chains or hotels the user can operate on.</p>
           </div>
-          <button id="newUserBtn" type="button" class="btn btn-primary">Nuevo usuario</button>
+          <button id="newUserBtn" type="button" class="btn btn-primary">New User</button>
         </div>
 
         <div class="toolbar table-toolbar">
-          <input id="userSearch" class="form-control" type="search" placeholder="Buscar por usuario, nombre, email, estado o rol">
+          <input id="userSearch" class="form-control" type="search" placeholder="Search por user, nombre, email, estado o rol">
         </div>
 
         <div class="table-wrapper">
           <table class="table data-table">
             <thead>
               <tr>
-                <th>Usuario</th>
-                <th>Nombre</th>
+                <th>User</th>
+                <th>Name</th>
                 <th>Email</th>
-                <th>Estado</th>
+                <th>Status</th>
                 <th>Roles</th>
-                <th>Acceso</th>
-                <th>Último acceso</th>
-                <th>Acciones</th>
+                <th>Access</th>
+                <th>Last Access</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="usersBody">
-              <tr><td colspan="8">Cargando usuarios...</td></tr>
+              <tr><td colspan="8">Loading users...</td></tr>
             </tbody>
           </table>
         </div>
@@ -68,74 +68,74 @@
       <section id="userDetailPanel" class="card page-card user-access-panel" hidden>
         <div class="section-header card-header">
           <div>
-            <h2 id="userDetailTitle">Detalle de usuario</h2>
-            <p>Asigna roles y define el alcance de acceso por cadena u hotel.</p>
+            <h2 id="userDetailTitle">User Details</h2>
+            <p>Assign roles and define the access scope by chain or hotel.</p>
           </div>
-          <button id="closeUserDetailBtn" type="button" class="btn btn-secondary">Cerrar</button>
+          <button id="closeUserDetailBtn" type="button" class="btn btn-secondary">Close</button>
         </div>
 
         <div class="tabs access-tabs">
-          <button type="button" class="tab-button active" data-tab="basic">Datos</button>
+          <button type="button" class="tab-button active" data-tab="basic">Details</button>
           <button type="button" class="tab-button" data-tab="roles">Roles</button>
-          <button type="button" class="tab-button" data-tab="chains">Cadenas autorizadas</button>
-          <button type="button" class="tab-button" data-tab="hotels">Hoteles autorizados</button>
-          <button type="button" class="tab-button" data-tab="permissions">Permisos técnicos</button>
+          <button type="button" class="tab-button" data-tab="chains">Authorized Chains</button>
+          <button type="button" class="tab-button" data-tab="hotels">Authorized Hotels</button>
+          <button type="button" class="tab-button" data-tab="permissions">Technical Permissions</button>
         </div>
 
         <div id="tabBasic" class="tab-panel">
           <div class="form-grid">
-            <label>Usuario<input id="detailUsername" class="form-control" disabled></label>
-            <label>Nombre<input id="detailFullName" class="form-control" disabled></label>
+            <label>User<input id="detailUsername" class="form-control" disabled></label>
+            <label>Name<input id="detailFullName" class="form-control" disabled></label>
             <label>Email<input id="detailEmail" class="form-control" disabled></label>
-            <label>Estado<input id="detailStatus" class="form-control" disabled></label>
+            <label>Status<input id="detailStatus" class="form-control" disabled></label>
           </div>
-          <p class="access-help">Nota: ADMIN solo administra la aplicación. Para operar cadenas u hoteles hay que asignar CHAIN_MANAGER u HOTEL_MANAGER y marcar las cadenas/hoteles concretos.</p>
+          <p class="access-help">Note: ADMIN only administers the application. To operate chains or hotels, assign CHAIN_MANAGER or HOTEL_MANAGER and select the specific chains/hotels.</p>
         </div>
 
         <div id="tabRoles" class="tab-panel" hidden>
           <div id="rolesChecklist" class="check-list"></div>
           <div class="actions-row">
-            <button id="saveRolesBtn" type="button" class="btn btn-primary">Guardar roles</button>
+            <button id="saveRolesBtn" type="button" class="btn btn-primary">Save Roles</button>
           </div>
         </div>
 
         <div id="tabChains" class="tab-panel" hidden>
           <div class="access-header-row">
             <div>
-              <h3>Cadenas autorizadas</h3>
-              <p>Selecciona las cadenas sobre las que el usuario puede operar como gestor de cadena.</p>
+              <h3>Authorized Chains</h3>
+              <p>Select the chains that the user can operate as chain manager.</p>
             </div>
-            <label class="inline-check"><input id="chainsReadOnly" type="checkbox"> Solo lectura</label>
+            <label class="inline-check"><input id="chainsReadOnly" type="checkbox"> Read Only</label>
           </div>
           <div class="toolbar table-toolbar">
-            <input id="chainSearch" class="form-control" type="search" placeholder="Buscar cadena">
+            <input id="chainSearch" class="form-control" type="search" placeholder="Search cadena">
           </div>
           <div id="chainsChecklist" class="access-check-grid"></div>
           <div class="actions-row">
-            <button id="saveChainsBtn" type="button" class="btn btn-primary">Guardar cadenas autorizadas</button>
+            <button id="saveChainsBtn" type="button" class="btn btn-primary">Save Authorized Chains</button>
           </div>
         </div>
 
         <div id="tabHotels" class="tab-panel" hidden>
           <div class="access-header-row">
             <div>
-              <h3>Hoteles autorizados</h3>
-              <p>Selecciona los hoteles concretos sobre los que el usuario puede operar como gestor de hotel.</p>
+              <h3>Authorized Hotels</h3>
+              <p>Select the specific hotels that the user can operate as hotel manager.</p>
             </div>
-            <label class="inline-check"><input id="hotelsReadOnly" type="checkbox"> Solo lectura</label>
+            <label class="inline-check"><input id="hotelsReadOnly" type="checkbox"> Read Only</label>
           </div>
           <div class="toolbar table-toolbar">
-            <input id="hotelSearch" class="form-control" type="search" placeholder="Buscar hotel o cadena">
+            <input id="hotelSearch" class="form-control" type="search" placeholder="Search hotel o cadena">
           </div>
           <div id="hotelsChecklist" class="access-check-grid"></div>
           <div class="actions-row">
-            <button id="saveHotelsBtn" type="button" class="btn btn-primary">Guardar hoteles autorizados</button>
+            <button id="saveHotelsBtn" type="button" class="btn btn-primary">Save Authorized Hotels</button>
           </div>
         </div>
 
         <div id="tabPermissions" class="tab-panel" hidden>
-          <h3>Permisos técnicos actuales</h3>
-          <p class="access-help">Vista de bajo nivel de OPERA_CFG_USER_PERMISSIONS.</p>
+          <h3>Current Technical Permissions</h3>
+          <p class="access-help">Low-level view of OPERA_CFG_USER_PERMISSIONS.</p>
           <div id="permissionsList" class="permission-list"></div>
         </div>
       </section>

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Canvas editable | OPERA Config Manager</title>
+  <title>Editable Canvas | OPERA Config Manager</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/model-canvas-2.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
@@ -25,26 +25,26 @@
   <main class="main canvas2-main">
     <header class="topbar canvas2-topbar">
       <div>
-        <h1>Canvas editable</h1>
-        <p id="canvasSubtitle">Modelo visual con edición rápida de atributos.</p>
+        <h1>Editable Canvas</h1>
+        <p id="canvasSubtitle">Visual model with quick attribute editing.</p>
       </div>
       <div class="actions-right">
-        <button id="backToTemplate" class="secondary">Volver a la plantilla</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToTemplate" class="secondary">Back to Template</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="canvas2-toolbar">
       <div class="canvas2-version">
-        <strong id="versionTitle">Cargando versión...</strong>
-        <span id="versionStats">Recuperando modelo desde Oracle.</span>
+        <strong id="versionTitle">Loading version...</strong>
+        <span id="versionStats">Retrieving model from Oracle.</span>
       </div>
       <div class="canvas2-controls">
-        <select id="domainFilter" class="canvas2-select"><option value="ALL">Todos los dominios</option></select>
-        <input id="canvasSearch" class="canvas2-search" placeholder="Buscar entidad o atributo..." />
-        <button id="btnFit" class="secondary">Reordenar</button>
-        <button id="btnCollapse" class="secondary">Colapsar</button>
-        <button id="btnExpand" class="secondary">Expandir</button>
+        <select id="domainFilter" class="canvas2-select"><option value="ALL">All Domains</option></select>
+        <input id="canvasSearch" class="canvas2-search" placeholder="Search entity o atributo..." />
+        <button id="btnFit" class="secondary">Rearrange</button>
+        <button id="btnCollapse" class="secondary">Collapse</button>
+        <button id="btnExpand" class="secondary">Expand</button>
         <button id="btnReset" class="secondary">Reset</button>
       </div>
     </section>
@@ -58,17 +58,17 @@
       <aside id="inspector" class="inspector-panel editable-inspector">
         <header>
           <div>
-            <h2 id="inspectorTitle">Selecciona una entidad</h2>
-            <p id="inspectorSubtitle">Verás sus atributos y podrás editarlos aquí.</p>
+            <h2 id="inspectorTitle">Select an entity</h2>
+            <p id="inspectorSubtitle">You will see its attributes and can edit them here.</p>
           </div>
           <button id="closeInspector" class="icon-button">×</button>
         </header>
         <section id="inspectorBody" class="inspector-body">
-          <div class="empty-state">Haz click en una caja para ver sus atributos. Pulsa Editar en un atributo para modificarlo.</div>
+          <div class="empty-state">Click a box to view its attributes. Click Edit on an attribute to modify it.</div>
         </section>
       </aside>
 
-      <div class="canvas2-help">Arrastra cajas. Click: inspector. +/-: expandir compacto. Doble click: detalle de entidad.</div>
+      <div class="canvas2-help">Drag boxes. Click: inspector. +/-: expand compact view. Double-click: entity detail.</div>
     </section>
   </main>
 
@@ -76,34 +76,34 @@
     <section class="modal attribute-edit-modal">
       <header class="modal-header">
         <div>
-          <h2>Editar atributo</h2>
-          <p id="attributeEditSubtitle">Actualiza la definición del atributo seleccionado.</p>
+          <h2>Edit Attribute</h2>
+          <p id="attributeEditSubtitle">Update the selected attribute definition.</p>
         </div>
         <button id="closeAttributeEditModal" class="icon-button">×</button>
       </header>
       <div class="modal-body">
         <input id="editAttributeId" type="hidden" />
-        <label for="editAttributeCode">Código</label>
+        <label for="editAttributeCode">Code</label>
         <input id="editAttributeCode" />
-        <label for="editAttributeName">Nombre</label>
+        <label for="editAttributeName">Name</label>
         <input id="editAttributeName" />
-        <label for="editAttributeDescription">Descripción</label>
+        <label for="editAttributeDescription">Description</label>
         <textarea id="editAttributeDescription" rows="3"></textarea>
-        <label for="editDataTypeCode">Tipo de dato</label>
+        <label for="editDataTypeCode">Data Type</label>
         <select id="editDataTypeCode"></select>
-        <label for="editMaxLength">Longitud máxima</label>
+        <label for="editMaxLength">Maximum Length</label>
         <input id="editMaxLength" type="number" />
-        <label for="editDefaultValue">Valor por defecto</label>
+        <label for="editDefaultValue">Default Value</label>
         <input id="editDefaultValue" />
-        <label><input id="editIsRequired" type="checkbox" /> Obligatorio</label>
-        <label><input id="editIsKeyAttribute" type="checkbox" /> Atributo clave</label>
-        <label for="editAttributeOrder">Orden</label>
+        <label><input id="editIsRequired" type="checkbox" /> Required</label>
+        <label><input id="editIsKeyAttribute" type="checkbox" /> Key Attribute</label>
+        <label for="editAttributeOrder">Order</label>
         <input id="editAttributeOrder" type="number" />
         <div id="attributeEditMessage" class="message"></div>
       </div>
       <footer class="modal-footer">
-        <button id="cancelAttributeEdit" class="secondary">Cancelar</button>
-        <button id="saveAttributeEdit">Guardar cambios</button>
+        <button id="cancelAttributeEdit" class="secondary">Cancel</button>
+        <button id="saveAttributeEdit">Save Changes</button>
       </footer>
     </section>
   </div>

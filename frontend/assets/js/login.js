@@ -13,6 +13,6 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     setToken(result.accessToken);
     window.location.href = 'index.html';
   } catch (error) {
-    message.textContent = 'No se ha podido iniciar sesión. Revisa usuario y contraseña.';
+    message.textContent = 'Unable to sign in. Check user and password.';
   }
 });

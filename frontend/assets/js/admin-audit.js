@@ -9,7 +9,7 @@
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
 
-  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });
+  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'An error occurred'); });
 
   const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
     const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
@@ -31,9 +31,9 @@
   async function loadAuditLovFilters() {
     if (!window.LovsClient) return;
     await Promise.all([
-      window.LovsClient.populateSelect('#entityTypeFilter', 'AUDIT_ENTITY_TYPE', { emptyLabel: 'Todas' }),
-      window.LovsClient.populateSelect('#actionFilter', 'AUDIT_ACTION', { emptyLabel: 'Todas' }),
-      window.LovsClient.populateSelect('#resultStatusFilter', 'AUDIT_RESULT_STATUS', { emptyLabel: 'Todos' })
+      window.LovsClient.populateSelect('#entityTypeFilter', 'AUDIT_ENTITY_TYPE', { emptyLabel: 'All' }),
+      window.LovsClient.populateSelect('#actionFilter', 'AUDIT_ACTION', { emptyLabel: 'All' }),
+      window.LovsClient.populateSelect('#resultStatusFilter', 'AUDIT_RESULT_STATUS', { emptyLabel: 'All' })
     ]);
   }
 
@@ -60,7 +60,7 @@
 
   function render(items) {
     if (!items.length) {
-      body.innerHTML = '<tr><td colspan="8">No hay eventos de auditoría para los filtros seleccionados.</td></tr>';
+      body.innerHTML = '<tr><td colspan="8">No audit events match the selected filters.</td></tr>';
       return;
     }
 
@@ -73,25 +73,25 @@
         <td>${esc(item.entityType || '-')}</td>
         <td>${esc(item.entityName || item.entityId || '-')}</td>
         <td>${esc(item.summary || '-')}</td>
-        <td><button type="button" class="btn btn-secondary btn-sm" data-audit-detail="${index}">Ver</button></td>
+        <td><button type="button" class="btn btn-secondary btn-sm" data-audit-detail="${index}">View</button></td>
       </tr>
     `).join('');
   }
 
   async function loadAudit() {
     try {
-      body.innerHTML = '<tr><td colspan="8">Cargando auditoría...</td></tr>';
+      body.innerHTML = '<tr><td colspan="8">Loading audit...</td></tr>';
       const payload = await requestJson(`/api/audit?${buildQuery()}`);
       auditItems = Array.isArray(payload?.items) ? payload.items : [];
       render(auditItems);
     } catch (error) {
       console.error('Error cargando auditoría', error);
-      body.innerHTML = `<tr><td colspan="8">No se ha podido cargar auditoría. ${esc(error.message || '')}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="8">Unable to load audit. ${esc(error.message || '')}</td></tr>`;
     }
   }
 
   function pretty(value) {
-    if (value === null || value === undefined || value === '') return '<span class="muted">Sin datos</span>';
+    if (value === null || value === undefined || value === '') return '<span class="muted">No data</span>';
     if (typeof value === 'string') {
       try { return `<pre>${esc(JSON.stringify(JSON.parse(value), null, 2))}</pre>`; } catch { return `<pre>${esc(value)}</pre>`; }
     }
@@ -103,20 +103,20 @@
     if (!item) return;
     $('auditDetailContent').innerHTML = `
       <div class="audit-detail-grid">
-        <div><strong>Fecha</strong><span>${esc(item.eventTime || '-')}</span></div>
-        <div><strong>Usuario</strong><span>${esc(item.username || '-')}</span></div>
-        <div><strong>Acción</strong><span>${esc(item.action || '-')}</span></div>
-        <div><strong>Estado</strong><span>${esc(item.resultStatus || '-')}</span></div>
-        <div><strong>Entidad</strong><span>${esc(item.entityType || '-')}</span></div>
+        <div><strong>Date</strong><span>${esc(item.eventTime || '-')}</span></div>
+        <div><strong>User</strong><span>${esc(item.username || '-')}</span></div>
+        <div><strong>Action</strong><span>${esc(item.action || '-')}</span></div>
+        <div><strong>Status</strong><span>${esc(item.resultStatus || '-')}</span></div>
+        <div><strong>Entity</strong><span>${esc(item.entityType || '-')}</span></div>
         <div><strong>ID</strong><span>${esc(item.entityId || '-')}</span></div>
-        <div class="full"><strong>Nombre</strong><span>${esc(item.entityName || '-')}</span></div>
-        <div class="full"><strong>Resumen</strong><span>${esc(item.summary || '-')}</span></div>
+        <div class="full"><strong>Name</strong><span>${esc(item.entityName || '-')}</span></div>
+        <div class="full"><strong>Summary</strong><span>${esc(item.summary || '-')}</span></div>
       </div>
       <h3>Diff</h3>${pretty(item.changeDiff)}
-      <h3>Antes</h3>${pretty(item.oldValues)}
-      <h3>Después</h3>${pretty(item.newValues)}
-      <h3>Detalles</h3>${pretty(item.details)}
-      <h3>Información técnica</h3>${pretty({ ipAddress: item.ipAddress, userAgent: item.userAgent })}
+      <h3>Before</h3>${pretty(item.oldValues)}
+      <h3>After</h3>${pretty(item.newValues)}
+      <h3>Details</h3>${pretty(item.details)}
+      <h3>Technical Information</h3>${pretty({ ipAddress: item.ipAddress, userAgent: item.userAgent })}
     `;
     $('auditDetailModal').hidden = false;
   }

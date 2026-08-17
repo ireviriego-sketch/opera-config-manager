@@ -44,8 +44,6 @@
       '/chains': 'chains.html',
       '/chain-detail': 'chain-detail.html',
       '/hotels': 'hotels.html',
-      '/imports': '#',
-      '/deployments': '#',
       '/audit': 'admin-audit.html',
       '/admin-audit': 'admin-audit.html',
       '/logs': 'admin-logs.html',
@@ -65,6 +63,45 @@
   function getDisplayOrder(item) { return Number(item.DISPLAY_ORDER ?? item.displayOrder ?? item.sortOrder ?? 0); }
   function getLabel(item) { return item.NAV_LABEL ?? item.navLabel ?? item.label ?? item.name ?? ''; }
   function getRoutePath(item) { return item.ROUTE_PATH ?? item.routePath ?? item.path ?? item.href ?? '#'; }
+  function translateNavigationLabel(label) {
+    const value = String(label || '').trim();
+    const normalized = value.toLowerCase();
+    const map = {
+      'inicio': 'Home',
+      'plantillas': 'Templates',
+      'cadenas': 'Chains',
+      'hoteles': 'Hotels',
+      'administración': 'Administration',
+      'administracion': 'Administration',
+      'usuarios': 'Users',
+      'roles': 'Roles',
+      'general administration': 'General Administration',
+      'lovs': 'LOVs',
+      'auditoría': 'Audit',
+      'auditoria': 'Audit',
+      'logs': 'Logs',
+      'importaciones': 'Imports',
+      'despliegues opera': 'OPERA Deployments'
+    };
+    return map[normalized] || value;
+  }
+
+  function isHiddenNavigationItem(item) {
+    const label = String(getLabel(item) || '').trim().toLowerCase();
+    const route = String(getRoutePath(item) || '').trim().toLowerCase();
+    const code = String(item.NAV_CODE ?? item.navCode ?? item.code ?? item.id ?? '').trim().toLowerCase();
+    return route === '/imports'
+      || route === '/deployments'
+      || route === 'imports.html'
+      || route === 'deployments.html'
+      || label === 'imports'
+      || label === 'opéra deployments'
+      || label === 'opera deployments'
+      || label === 'importaciones'
+      || label === 'despliegues opera'
+      || code === 'imports'
+      || code === 'deployments';
+  }
   function getIconName(item) { return String(item.ICON_NAME ?? item.iconName ?? item.icon ?? item.NAV_CODE ?? '').toLowerCase(); }
   function isActiveItem(item) { return (item.IS_ACTIVE ?? item.isActive ?? 'Y') !== 'N'; }
 
@@ -81,19 +118,17 @@
   function iconFor(item) {
     const iconName = getIconName(item);
     const label = getLabel(item).toLowerCase();
-    if (iconName.includes('home') || label.includes('inicio')) return '🏠';
-    if (iconName.includes('template') || label.includes('plantilla')) return '⚙️';
-    if (iconName.includes('business') || label.includes('cadena')) return '🏢';
+    if (iconName.includes('home') || label.includes('home')) return '🏠';
+    if (iconName.includes('template') || label.includes('template')) return '⚙️';
+    if (iconName.includes('business') || label.includes('chain')) return '🏢';
     if (iconName.includes('hotel') || label.includes('hotel')) return '🏨';
-    if (iconName.includes('upload') || label.includes('import')) return '📤';
-    if (iconName.includes('cloud') || label.includes('despliegue')) return '☁️';
-    if (iconName.includes('audit') || iconName.includes('history') || label.includes('auditor')) return '📋';
+        if (iconName.includes('audit') || iconName.includes('history') || label.includes('auditor')) return '📋';
     if (iconName.includes('log') || iconName.includes('error') || label.includes('log')) return '📜';
-    if (iconName.includes('user') || label.includes('usuario')) return '👤';
-    if (iconName.includes('role') || label.includes('rol')) return '•';
+    if (iconName.includes('user') || label.includes('user')) return '👤';
+    if (iconName.includes('role') || label.includes('role')) return '•';
     if (iconName.includes('list') || label.includes('lov')) return '📄';
     if (iconName.includes('setting') || label.includes('administr')) return '⚙️';
-    if (iconName.includes('logout') || label.includes('salir')) return '⎋';
+    if (iconName.includes('logout') || label.includes('sign out')) return '⎋';
     return '•';
   }
 
@@ -109,7 +144,7 @@
   function sortNavigation(items) { return items.sort((a, b) => getDisplayOrder(a) - getDisplayOrder(b)); }
 
   function buildNavigationTree(items) {
-    const activeItems = (items || []).filter(isActiveItem);
+    const activeItems = (items || []).filter(item => isActiveItem(item) && !isHiddenNavigationItem(item));
     const map = new Map();
     const roots = [];
     activeItems.forEach(item => {
@@ -139,18 +174,16 @@
 
   function fallbackNavigation() {
     return [
-      { id: 'home', label: 'Inicio', path: 'index.html', icon: 'home', displayOrder: 10 },
-      { id: 'templates', label: 'Plantillas', path: 'templates.html', icon: 'template', displayOrder: 20 },
-      { id: 'chains', label: 'Cadenas', path: 'chains.html', icon: 'business', displayOrder: 30 },
-      { id: 'hotels', label: 'Hoteles', path: 'hotels.html', icon: 'hotel', displayOrder: 40 },
-      { id: 'imports', label: 'Importaciones', path: '#', icon: 'upload', displayOrder: 50 },
-      { id: 'deployments', label: 'Despliegues OPERA', path: '#', icon: 'cloud', displayOrder: 60 },
-      { id: 'admin', label: 'Administración', path: '#', icon: 'setting', displayOrder: 70, children: [
-        { id: 'admin-users', label: 'Usuarios', path: 'admin-users.html', icon: 'user', displayOrder: 10 },
+      { id: 'home', label: 'Home', path: 'index.html', icon: 'home', displayOrder: 10 },
+      { id: 'templates', label: 'Templates', path: 'templates.html', icon: 'template', displayOrder: 20 },
+      { id: 'chains', label: 'Chains', path: 'chains.html', icon: 'business', displayOrder: 30 },
+      { id: 'hotels', label: 'Hotels', path: 'hotels.html', icon: 'hotel', displayOrder: 40 },
+      { id: 'admin', label: 'Administration', path: '#', icon: 'setting', displayOrder: 70, children: [
+        { id: 'admin-users', label: 'Users', path: 'admin-users.html', icon: 'user', displayOrder: 10 },
         { id: 'admin-roles', label: 'Roles', path: 'admin-roles.html', icon: 'role', displayOrder: 20 },
         { id: 'general-admin', label: 'General Administration', path: 'general-admin.html', icon: 'setting', displayOrder: 30 },
         { id: 'admin-lovs', label: 'LOVs', path: 'admin-lovs.html', icon: 'list', displayOrder: 40 },
-        { id: 'admin-audit', label: 'Auditoría', path: 'admin-audit.html', icon: 'audit', displayOrder: 50 },
+        { id: 'admin-audit', label: 'Audit', path: 'admin-audit.html', icon: 'audit', displayOrder: 50 },
         { id: 'admin-logs', label: 'Logs', path: 'admin-logs.html', icon: 'log', displayOrder: 60 }
       ] }
     ];
@@ -166,9 +199,10 @@
     const link = document.createElement('a');
     link.href = target;
     link.className = 'side-menu-link nav-link' + (active ? ' active' : '') + (target === '#' ? ' disabled' : '');
-    link.title = getLabel(item);
+    const visibleLabel = translateNavigationLabel(getLabel(item));
+    link.title = visibleLabel;
     link.style.marginLeft = level > 0 ? level * 4 + 'px' : '';
-    link.innerHTML = `<span class="nav-icon">${escapeHtml(iconFor(item))}</span><span class="nav-label">${escapeHtml(getLabel(item))}</span>`;
+    link.innerHTML = `<span class="nav-icon">${escapeHtml(iconFor(item))}</span><span class="nav-label">${escapeHtml(visibleLabel)}</span>`;
     if (target === '#') link.addEventListener('click', event => event.preventDefault());
     return link;
   }
@@ -180,10 +214,11 @@
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'side-menu-link nav-link nav-parent' + (isOpen ? ' active' : '');
-    button.title = getLabel(item);
+    const visibleLabel = translateNavigationLabel(getLabel(item));
+    button.title = visibleLabel;
     button.setAttribute('aria-expanded', String(isOpen));
     button.style.marginLeft = level > 0 ? level * 4 + 'px' : '';
-    button.innerHTML = `<span class="nav-icon">${escapeHtml(iconFor(item))}</span><span class="nav-label">${escapeHtml(getLabel(item))}</span><span class="nav-caret">${isOpen ? '▾' : '▸'}</span>`;
+    button.innerHTML = `<span class="nav-icon">${escapeHtml(iconFor(item))}</span><span class="nav-label">${escapeHtml(visibleLabel)}</span><span class="nav-caret">${isOpen ? '▾' : '▸'}</span>`;
     const children = document.createElement('div');
     children.className = 'side-menu-children nav-children';
     children.hidden = !isOpen;
@@ -254,7 +289,7 @@
     button.id = 'sidebarLogoutButton';
     button.type = 'button';
     button.className = 'sidebar-logout-button';
-    button.innerHTML = '<span class="nav-icon">⎋</span><span class="sidebar-logout-label">Salir</span>';
+    button.innerHTML = '<span class="nav-icon">⎋</span><span class="sidebar-logout-label">Sign out</span>';
     button.addEventListener('click', () => {
       if (typeof clearToken === 'function') clearToken();
       else localStorage.removeItem('operaCfgToken');
@@ -311,7 +346,7 @@
     if (!btn) return;
     const current = window.location.pathname.split('/').pop() || 'index.html';
     const isHome = current === 'index.html' || current === '';
-    btn.textContent = isHome ? 'Salir' : 'Volver';
+    btn.textContent = isHome ? 'Sign out' : 'Back';
     btn.classList.add('secondary');
     btn.addEventListener('click', event => {
       event.preventDefault();

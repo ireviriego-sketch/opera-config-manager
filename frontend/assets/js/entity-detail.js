@@ -17,7 +17,7 @@ function getParams() {
 function badge(value) {
   const normalized = value || 'N';
   return normalized === 'Y'
-    ? '<span class="badge badge-success">Sí</span>'
+    ? '<span class="badge badge-success">Yes</span>'
     : '<span class="badge badge-muted">No</span>';
 }
 
@@ -28,10 +28,10 @@ function statusBadge(status) {
 }
 
 function showEntity(entity) {
-  document.getElementById('entityTitle').textContent = entity.ENTITY_NAME || 'Detalle de entidad';
+  document.getElementById('entityTitle').textContent = entity.ENTITY_NAME || 'Entity Details';
   document.getElementById('entitySubtitle').textContent = entity.ENTITY_CODE || '';
   document.getElementById('entityCode').textContent = entity.ENTITY_CODE || '-';
-  document.getElementById('entityDescription').textContent = entity.ENTITY_DESCRIPTION || 'Sin descripción';
+  document.getElementById('entityDescription').textContent = entity.ENTITY_DESCRIPTION || 'No description';
   document.getElementById('entityStatus').innerHTML = statusBadge(entity.IS_ACTIVE);
 }
 
@@ -138,7 +138,7 @@ async function saveAttribute() {
   message.textContent = '';
 
   if (!code || !name || !dataTypeCode) {
-    message.textContent = 'Código, nombre y tipo de dato son obligatorios.';
+    message.textContent = 'Code, name, and data type are required.';
     return;
   }
 
@@ -163,7 +163,7 @@ async function saveAttribute() {
     closeAttributeModal();
     await loadAttributes();
   } catch (error) {
-    message.textContent = error.data?.error || 'No se ha podido guardar el atributo.';
+    message.textContent = error.data?.error || 'Unable to save the attribute.';
   }
 }
 

@@ -13,7 +13,7 @@
       const link = document.createElement('a');
       link.className = 'secondary small button-link';
       link.href = `deployment-content.html?id=${encodeURIComponent(deploymentId)}`;
-      link.textContent = 'Gestionar datos';
+      link.textContent = 'Manage Data';
       actionsCell.prepend(link);
       row.dataset.contentLinkReady = 'Y';
     });

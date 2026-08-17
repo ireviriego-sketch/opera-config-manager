@@ -19,10 +19,10 @@ function statusBadge(status) {
 }
 
 function showDomain(domain) {
-  document.getElementById('domainTitle').textContent = domain.DOMAIN_NAME || 'Detalle de dominio';
+  document.getElementById('domainTitle').textContent = domain.DOMAIN_NAME || 'Domain Details';
   document.getElementById('domainSubtitle').textContent = domain.DOMAIN_CODE || '';
   document.getElementById('domainCode').textContent = domain.DOMAIN_CODE || '-';
-  document.getElementById('domainDescription').textContent = domain.DOMAIN_DESCRIPTION || 'Sin descripción';
+  document.getElementById('domainDescription').textContent = domain.DOMAIN_DESCRIPTION || 'No description';
 }
 
 function renderEntities(entities) {
@@ -34,12 +34,12 @@ function renderEntities(entities) {
 
   if (!entities.length) {
     emptyState.classList.remove('hidden');
-    count.textContent = '0 entidades';
+    count.textContent = '0 entities';
     return;
   }
 
   emptyState.classList.add('hidden');
-  count.textContent = `${entities.length} entidad${entities.length === 1 ? '' : 'es'}`;
+  count.textContent = `${entities.length} entity${entities.length === 1 ? '' : 'es'}`;
 
   entities.forEach(e => {
     const row = document.createElement('tr');
@@ -50,7 +50,7 @@ function renderEntities(entities) {
       <td>${e.SOURCE_SECTION_NAME || ''}</td>
       <td>${e.DISPLAY_ORDER || 0}</td>
       <td>${statusBadge(e.IS_ACTIVE)}</td>
-      <td><button class="table-action view-entity" data-entity-id="${e.ENTITY_ID}">Ver</button></td>
+      <td><button class="table-action view-entity" data-entity-id="${e.ENTITY_ID}">View</button></td>
     `;
     tbody.appendChild(row);
   });
@@ -107,7 +107,7 @@ async function saveEntity() {
   message.textContent = '';
 
   if (!code || !name) {
-    message.textContent = 'Código y nombre son obligatorios.';
+    message.textContent = 'Code and name are required.';
     return;
   }
 
@@ -128,7 +128,7 @@ async function saveEntity() {
     closeEntityModal();
     await loadEntities();
   } catch (error) {
-    message.textContent = error.data?.error || 'No se ha podido guardar la entidad.';
+    message.textContent = error.data?.error || 'Unable to save the entity.';
   }
 }
 

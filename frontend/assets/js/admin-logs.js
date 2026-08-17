@@ -8,7 +8,7 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
-  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });
+  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'An error occurred'); });
 
   const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
     const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
@@ -38,7 +38,7 @@
     const levelSelect = $('logLevelSelect');
     const levelFilter = $('logsLevelFilter');
     levelSelect.innerHTML = '';
-    levelFilter.innerHTML = '<option value="">Todos</option>';
+    levelFilter.innerHTML = '<option value="">All</option>';
 
     levels.forEach(level => {
       const opt = document.createElement('option');
@@ -59,7 +59,7 @@
   function updateHelpText() {
     const selected = Number($('logLevelSelect')?.value || 1);
     const level = levels.find(item => Number(item.value) === selected);
-    $('logLevelHelp').textContent = level ? level.label : `Nivel ${selected}`;
+    $('logLevelHelp').textContent = level ? level.label : `Level ${selected}`;
   }
 
   async function loadConfig() {
@@ -84,7 +84,7 @@
 
   function render(items) {
     if (!items.length) {
-      body.innerHTML = '<tr><td colspan="7">No hay logs para los filtros seleccionados.</td></tr>';
+      body.innerHTML = '<tr><td colspan="7">No logs match the selected filters.</td></tr>';
       return;
     }
 
@@ -96,20 +96,20 @@
         <td><strong>${esc(log.eventCode || '-')}</strong></td>
         <td class="log-message-cell">${esc(log.message || '-')}</td>
         <td>${esc(log.username || '-')}</td>
-        <td><button type="button" class="btn btn-secondary btn-sm" data-log-detail="${index}">Ver</button></td>
+        <td><button type="button" class="btn btn-secondary btn-sm" data-log-detail="${index}">View</button></td>
       </tr>
     `).join('');
   }
 
   async function loadLogs() {
     try {
-      body.innerHTML = '<tr><td colspan="7">Cargando logs...</td></tr>';
+      body.innerHTML = '<tr><td colspan="7">Loading logs...</td></tr>';
       const payload = await requestJson(`/api/logs?${buildQuery()}`);
       logs = Array.isArray(payload?.items) ? payload.items : [];
       render(logs);
     } catch (error) {
       console.error('Error cargando logs', error);
-      body.innerHTML = `<tr><td colspan="7">No se han podido cargar logs. ${esc(error.message || '')}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="7">Unable to load logs. ${esc(error.message || '')}</td></tr>`;
     }
   }
 
@@ -121,7 +121,7 @@
   }
 
   function pretty(value) {
-    if (value === null || value === undefined || value === '') return '<span class="muted">Sin datos</span>';
+    if (value === null || value === undefined || value === '') return '<span class="muted">No data</span>';
     if (typeof value === 'string') {
       try { return `<pre>${esc(JSON.stringify(JSON.parse(value), null, 2))}</pre>`; } catch { return `<pre>${esc(value)}</pre>`; }
     }
@@ -133,16 +133,16 @@
     if (!log) return;
     $('logDetailContent').innerHTML = `
       <div class="log-detail-grid">
-        <div><strong>Fecha</strong><span>${esc(log.eventTime || '-')}</span></div>
-        <div><strong>Nivel</strong><span>${esc(log.levelNumber)} · ${esc(log.levelName)}</span></div>
+        <div><strong>Date</strong><span>${esc(log.eventTime || '-')}</span></div>
+        <div><strong>Level</strong><span>${esc(log.levelNumber)} · ${esc(log.levelName)}</span></div>
         <div><strong>Source</strong><span>${esc(log.source || '-')}</span></div>
-        <div><strong>Evento</strong><span>${esc(log.eventCode || '-')}</span></div>
-        <div><strong>Usuario</strong><span>${esc(log.username || '-')}</span></div>
+        <div><strong>Event</strong><span>${esc(log.eventCode || '-')}</span></div>
+        <div><strong>User</strong><span>${esc(log.username || '-')}</span></div>
         <div><strong>IP</strong><span>${esc(log.ipAddress || '-')}</span></div>
-        <div class="full"><strong>Mensaje</strong><span>${esc(log.message || '-')}</span></div>
+        <div class="full"><strong>Message</strong><span>${esc(log.message || '-')}</span></div>
       </div>
-      <h3>Detalles</h3>${pretty(log.details)}
-      <h3>Información técnica</h3>${pretty({ requestId: log.requestId, userAgent: log.userAgent })}
+      <h3>Details</h3>${pretty(log.details)}
+      <h3>Technical Information</h3>${pretty({ requestId: log.requestId, userAgent: log.userAgent })}
     `;
     $('logDetailModal').hidden = false;
   }

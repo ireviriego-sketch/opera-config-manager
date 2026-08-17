@@ -120,7 +120,7 @@ window.AppUtils.showSuccess = window.AppUtils.showSuccess || function showSucces
   if (options.silent !== true) console.info(text);
 };
 
-window.AppUtils.showError = window.AppUtils.showError || function showError(error, fallbackMessage = 'Se ha producido un error') {
+window.AppUtils.showError = window.AppUtils.showError || function showError(error, fallbackMessage = 'An error occurred') {
   const message = error?.message || error?.data?.message || error?.data?.error || error || fallbackMessage;
   const text = String(message ?? fallbackMessage);
   if (window.showToast && typeof window.showToast === 'function') {
@@ -133,7 +133,7 @@ window.AppUtils.showError = window.AppUtils.showError || function showError(erro
 
 window.AppUtils.showMessage = window.AppUtils.showMessage || function showMessage(message, options = {}) {
   const type = options.type || 'info';
-  if (type === 'error') return window.AppUtils.showError(message, options.fallbackMessage || 'Se ha producido un error');
+  if (type === 'error') return window.AppUtils.showError(message, options.fallbackMessage || 'An error occurred');
   if (type === 'success') return window.AppUtils.showSuccess(message, options);
   return window.AppUtils.showInfo(message, options);
 };

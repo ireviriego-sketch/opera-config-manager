@@ -36,7 +36,7 @@
       renderSearchBar();
       renderStructure();
       if (!state.structure.length) {
-        $('structureContainer').innerHTML = '<p class="muted">Este despliegue todavía no tiene estructura copiada.</p>';
+        $('structureContainer').innerHTML = '<p class="muted">This deployment does not have copied structure yet.</p>';
       }
     } catch (err) { error(err); }
   }
@@ -48,7 +48,7 @@
       <div class="global-search-bar">
         <span class="search-icon">🔍</span>
         <input id="globalSearchInput" class="global-search-input" type="text"
-          placeholder="Buscar entidad en todos los dominios..."
+          placeholder="Search entity en todos los domains..."
           value="${escapeHtml(state.searchTerm)}" autocomplete="off" />
         <button id="globalSearchClear" class="search-clear ${state.searchTerm ? '' : 'hidden'}" type="button">✕</button>
       </div>
@@ -67,7 +67,7 @@
     };
   }
 
-  // Determina la clase de color del botón de entidad según importStatus
+  // Determina la clase de color del botón de entity según importStatus
   function entityButtonClass(entity) {
     const count = Number(entity.recordCount || 0);
     if (count === 0) return '';
@@ -79,10 +79,10 @@
   // Tag de conteo con color según importStatus
   function entityCountTag(entity) {
     const count = Number(entity.recordCount || 0);
-    if (count === 0) return `<small class="count-empty">0 registros</small>`;
-    if (entity.importStatus === 'full') return `<small class="count-imported">${count} registros</small>`;
-    if (entity.importStatus === 'partial') return `<small class="count-partial">${entity.importedCount}/${count} importados</small>`;
-    return `<small class="count-pending">${count} registros</small>`;
+    if (count === 0) return `<small class="count-empty">0 records</small>`;
+    if (entity.importStatus === 'full') return `<small class="count-imported">${count} records</small>`;
+    if (entity.importStatus === 'partial') return `<small class="count-partial">${entity.importedCount}/${count} imported</small>`;
+    return `<small class="count-pending">${count} records</small>`;
   }
 
   function renderStructure() {
@@ -97,11 +97,11 @@
 
     const totalResults = term ? domains.reduce((sum, d) => sum + d.filteredEntities.length, 0) : null;
     $('searchResultsLabel').textContent = term && totalResults !== null
-      ? `${totalResults} entidad${totalResults !== 1 ? 'es' : ''} encontrada${totalResults !== 1 ? 's' : ''} en ${domains.length} dominio${domains.length !== 1 ? 's' : ''}`
+      ? `${totalResults} entity${totalResults !== 1 ? 'es' : ''} encontrada${totalResults !== 1 ? 's' : ''} en ${domains.length} domain${domains.length !== 1 ? 's' : ''}`
       : '';
 
     if (!domains.length && term) {
-      $('structureContainer').innerHTML = `<p class="muted">No se encontraron entidades para "<strong>${escapeHtml(term)}</strong>".</p>`;
+      $('structureContainer').innerHTML = `<p class="muted">No entities found for "<strong>${escapeHtml(term)}</strong>".</p>`;
       return;
     }
 
@@ -110,11 +110,11 @@
         <div class="domain-card-header">
           <h3>${escapeHtml(domain.domainName)}</h3>
           <div class="domain-card-actions">
-            <button class="import-domain-btn" data-domain-id="${domain.deploymentDomainId}" data-domain-name="${escapeHtml(domain.domainName)}">Importar</button>
+            <button class="import-domain-btn" data-domain-id="${domain.deploymentDomainId}" data-domain-name="${escapeHtml(domain.domainName)}">Import</button>
             <div class="delete-dropdown-wrap">
-              <button class="delete-domain-btn" data-domain-id="${domain.deploymentDomainId}">Borrar ▾</button>
+              <button class="delete-domain-btn" data-domain-id="${domain.deploymentDomainId}">Delete ▾</button>
               <div class="delete-dropdown hidden" id="dropdown-${domain.deploymentDomainId}">
-                <p class="dropdown-title">Borrar registros de:</p>
+                <p class="dropdown-title">Delete records from:</p>
                 ${(domain.entities || []).filter(e => Number(e.recordCount) > 0).map(entity => `
                   <button class="dropdown-item" data-entity-id="${entity.deploymentEntityId}" data-entity-name="${escapeHtml(entity.entityName)}" data-record-count="${entity.recordCount}">
                     ${escapeHtml(entity.entityName)}
@@ -122,9 +122,9 @@
                   </button>
                 `).join('')}
                 ${(domain.entities || []).filter(e => Number(e.recordCount) > 0).length === 0
-                  ? '<p class="dropdown-empty">No hay registros que borrar</p>'
+                  ? '<p class="dropdown-empty">No records to delete</p>'
                   : `<div class="dropdown-divider"></div>
-                     <button class="dropdown-item dropdown-item-all" data-domain-id="${domain.deploymentDomainId}" data-domain-name="${escapeHtml(domain.domainName)}">Borrar todos</button>`
+                     <button class="dropdown-item dropdown-item-all" data-domain-id="${domain.deploymentDomainId}" data-domain-name="${escapeHtml(domain.domainName)}">Delete all</button>`
                 }
               </div>
             </div>
@@ -143,7 +143,7 @@
           }).join('')}
         </div>
       </div>
-    `).join('') : '<p class="muted">No hay dominios copiados para este despliegue.</p>';
+    `).join('') : '<p class="muted">No domains copied for this deployment.</p>';
 
     document.querySelectorAll('.entity-button[data-entity-id]').forEach(button =>
       button.onclick = () => {
@@ -165,7 +165,7 @@
     document.querySelectorAll('.dropdown-item[data-entity-id]').forEach(button =>
       button.onclick = async (e) => {
         e.stopPropagation();
-        if (!confirm(`¿Borrar los ${button.dataset.recordCount} registros de "${button.dataset.entityName}"?`)) return;
+        if (!confirm(`Delete the ${button.dataset.recordCount} records from "${button.dataset.entityName}"?`)) return;
         await deleteEntityRecords(button.dataset.entityId, button.dataset.entityName);
       }
     );
@@ -177,10 +177,10 @@
         const entitiesWithRecords = (domain.entities || []).filter(e => Number(e.recordCount) > 0);
         if (!entitiesWithRecords.length) return;
         const total = entitiesWithRecords.reduce((sum, e) => sum + Number(e.recordCount), 0);
-        if (!confirm(`¿Borrar TODOS los registros del dominio "${button.dataset.domainName}" (${total} en total)?`)) return;
+        if (!confirm(`Delete ALL records from domain "${button.dataset.domainName}" (${total} in total)?`)) return;
         for (const entity of entitiesWithRecords) await deleteEntityRecords(entity.deploymentEntityId, entity.entityName, true);
         await loadStructure();
-        message('Completado', `<p>Se han borrado todos los registros del dominio <strong>${escapeHtml(button.dataset.domainName)}</strong>.</p>`);
+        message('Completed', `<p>All records have been deleted from domain <strong>${escapeHtml(button.dataset.domainName)}</strong>.</p>`);
       }
     );
   }
@@ -192,7 +192,7 @@
       if (!response.ok || body.ok === false) throw new Error(body.error || `HTTP ${response.status}`);
       if (!silent) {
         await loadStructure();
-        message('Registros borrados', `<p>Se han borrado <strong>${body.deleted}</strong> registros de <strong>${escapeHtml(entityName)}</strong>.</p>`);
+        message('Records Deleted', `<p>Deleted <strong>${body.deleted}</strong> records from <strong>${escapeHtml(entityName)}</strong>.</p>`);
       }
     } catch (err) { error(err); }
   }
@@ -200,7 +200,7 @@
   function openImportModal(domainId, domainName) {
     state.importDomainId = domainId;
     state.importDomainName = domainName;
-    $('importModalTitle').textContent = `Importar Excel — ${domainName}`;
+    $('importModalTitle').textContent = `Import Excel — ${domainName}`;
     $('importFileInput').value = '';
     $('importPreview').innerHTML = '';
     $('importStatus').textContent = '';
@@ -213,17 +213,17 @@
     if (!file) return;
     const formData = new FormData();
     formData.append('file', file);
-    $('importStatus').innerHTML = '<span style="color:#6b46c1">⏳ Importando, espera...</span>';
+    $('importStatus').innerHTML = '<span style="color:#6b46c1">⏳ Importing, please wait...</span>';
     $('importSubmitBtn').disabled = true;
     $('importPreview').innerHTML = '';
     try {
       const response = await fetch(`/api/opera-config/deployment-content/${state.deploymentId}/domains/${state.importDomainId}/import`, { method: 'POST', body: formData });
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body.ok === false) throw new Error(body.error || `HTTP ${response.status}`);
-      $('importStatus').innerHTML = `<span style="color:#027a48">✅ ${body.inserted} registros insertados, ${body.skipped} omitidos.</span>`;
+      $('importStatus').innerHTML = `<span style="color:#027a48">✅ ${body.inserted} records inserted, ${body.skipped} skipped.</span>`;
       let preview = '';
-      if (body.processedSheets?.length) preview += `<p style="margin-top:12px;font-size:13px;font-weight:700">Entidades importadas:</p><ul style="font-size:13px;margin:4px 0 0 16px">${body.processedSheets.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
-      if (body.errors?.length) preview += `<p style="margin-top:10px;font-size:13px;font-weight:700;color:#b54708">Avisos (${body.errors.length}):</p><ul style="font-size:12px;margin:4px 0 0 16px;color:#b54708">${body.errors.slice(0, 10).map(e => `<li>${escapeHtml(e)}</li>`).join('')}${body.errors.length > 10 ? `<li>...y ${body.errors.length - 10} más</li>` : ''}</ul>`;
+      if (body.processedSheets?.length) preview += `<p style="margin-top:12px;font-size:13px;font-weight:700">Imported entities:</p><ul style="font-size:13px;margin:4px 0 0 16px">${body.processedSheets.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>`;
+      if (body.errors?.length) preview += `<p style="margin-top:10px;font-size:13px;font-weight:700;color:#b54708">Warnings (${body.errors.length}):</p><ul style="font-size:12px;margin:4px 0 0 16px;color:#b54708">${body.errors.slice(0, 10).map(e => `<li>${escapeHtml(e)}</li>`).join('')}${body.errors.length > 10 ? `<li>...and ${body.errors.length - 10} more</li>` : ''}</ul>`;
       $('importPreview').innerHTML = preview;
       await loadStructure();
     } catch (err) {

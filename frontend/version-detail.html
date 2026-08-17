@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Detalle de versión | OPERA Config Manager</title>
+  <title>Version Details | OPERA Config Manager</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
   <link rel="stylesheet" href="assets/css/table-unification.css">
@@ -23,19 +23,19 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="versionTitle">Detalle de versión</h1>
-        <p id="versionSubtitle">Dominios funcionales de la versión seleccionada.</p>
+        <h1 id="versionTitle">Version Details</h1>
+        <p id="versionSubtitle">Functional domains for the selected version.</p>
       </div>
       <div class="actions-right">
-        <button id="backToTemplate" class="secondary">Volver a la plantilla</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToTemplate" class="secondary">Back to Template</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="page-actions">
       <div>
-        <h2 id="versionCode">Cargando versión...</h2>
-        <p id="versionDescription">Recuperando información desde Oracle.</p>
+        <h2 id="versionCode">Loading version...</h2>
+        <p id="versionDescription">Retrieving information from Oracle.</p>
       </div>
       <div id="versionStatus"></div>
     </section>
@@ -43,41 +43,41 @@
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Dominios funcionales</h3>
-          <p id="domainsCount">Cargando dominios...</p>
+          <h3>Functional Domains</h3>
+          <p id="domainsCount">Loading domains...</p>
         </div>
-        <button id="btnNewDomain">+ Nuevo dominio</button>
+        <button id="btnNewDomain">+ New Domain</button>
       </div>
 
       <div class="table-wrap">
         <table id="domainsTable" class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Orden</th>
-              <th>Acciones</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Order</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <div id="domainsEmptyState" class="empty-state hidden">Todavía no hay dominios funcionales para esta versión.</div>
+      <div id="domainsEmptyState" class="empty-state hidden">There are no functional domains for this version yet.</div>
     </section>
 
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Siguiente nivel</h3>
-          <p>Cuando los dominios estén definidos, el siguiente paso será asociar entidades de configuración.</p>
+          <h3>Next Level</h3>
+          <p>When domains are defined, the next step is to associate configuration entities.</p>
         </div>
       </div>
       <div class="module-grid">
-        <article class="module-card"><h4>Entidades</h4><p>Objetos de configuración incluidos en cada dominio.</p></article>
-        <article class="module-card"><h4>Atributos</h4><p>Campos, tipos de dato y obligatoriedad.</p></article>
-        <article class="module-card"><h4>Relaciones</h4><p>Dependencias entre entidades y atributos.</p></article>
+        <article class="module-card"><h4>Entities</h4><p>Configuration objects included in each domain.</p></article>
+        <article class="module-card"><h4>Attributes</h4><p>Fields, data types, and required status.</p></article>
+        <article class="module-card"><h4>Relationships</h4><p>Dependencies between entities and attributes.</p></article>
       </div>
     </section>
   </main>
@@ -86,25 +86,25 @@
     <section class="modal">
       <header class="modal-header">
         <div>
-          <h2>Nuevo dominio funcional</h2>
-          <p>Agrupa entidades relacionadas dentro de la versión seleccionada.</p>
+          <h2>New Functional Domain</h2>
+          <p>Group related entities within the selected version.</p>
         </div>
         <button id="closeDomainModal" class="icon-button">×</button>
       </header>
       <div class="modal-body">
-        <label for="domainCode">Código</label>
+        <label for="domainCode">Code</label>
         <input id="domainCode" placeholder="Ej. PMS_RESERVATIONS" />
-        <label for="domainName">Nombre</label>
+        <label for="domainName">Name</label>
         <input id="domainName" placeholder="Ej. Reservas" />
-        <label for="domainDescription">Descripción</label>
-        <textarea id="domainDescription" rows="3" placeholder="Descripción funcional del dominio"></textarea>
-        <label for="domainOrder">Orden</label>
+        <label for="domainDescription">Description</label>
+        <textarea id="domainDescription" rows="3" placeholder="Description funcional del domain"></textarea>
+        <label for="domainOrder">Order</label>
         <input id="domainOrder" type="number" value="0" />
         <div id="domainFormMessage" class="message"></div>
       </div>
       <footer class="modal-footer">
-        <button id="cancelDomain" class="secondary">Cancelar</button>
-        <button id="saveDomain">Guardar dominio</button>
+        <button id="cancelDomain" class="secondary">Cancel</button>
+        <button id="saveDomain">Save Domain</button>
       </footer>
     </section>
   </div>

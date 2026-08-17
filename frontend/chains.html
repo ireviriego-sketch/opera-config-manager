@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OPERA CFG - Cadenas</title>
+  <title>OPERA CFG - Chains</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/chains.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
@@ -24,19 +24,19 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1>Cadenas hoteleras</h1>
-        <p>Consulta, crea y gestiona cadenas hoteleras y sus hoteles asociados.</p>
+        <h1>Hotel Chains</h1>
+        <p>Review, create, and manage hotel chains and associated hotels.</p>
       </div>
       <div class="page-actions">
-        <button id="logoutBtn" class="secondary" type="button">Volver</button>
-        <button id="refreshBtn" class="secondary">Actualizar</button>
-        <button id="newChainBtn" class="primary">Nueva cadena</button>
+        <button id="logoutBtn" class="secondary" type="button">Back</button>
+        <button id="refreshBtn" class="secondary">Refresh</button>
+        <button id="newChainBtn" class="primary">New Chain</button>
       </div>
     </header>
 
     <section class="content-card">
       <div class="toolbar">
-        <input id="searchInput" class="input" placeholder="Buscar por código o nombre" />
+        <input id="searchInput" class="input" placeholder="Search by code or name" />
       </div>
       <div id="chainsContainer" class="chains-grid"></div>
     </section>
@@ -45,8 +45,8 @@
   <div id="chainModal" class="modal hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h2>Nueva cadena</h2>
-        <button id="closeModalBtn" class="link-button" type="button">Cerrar</button>
+        <h2>New Chain</h2>
+        <button id="closeModalBtn" class="link-button" type="button">Close</button>
       </div>
       <form id="chainForm" class="form-grid" novalidate>
         <label>CHAIN_CODE *<input id="chainCodeInput" class="input" maxlength="50" /></label>
@@ -55,7 +55,7 @@
           <select id="chainStatusInput" class="input"></select>
         </label>
         <div class="form-actions">
-          <button class="primary" type="submit">Guardar</button>
+          <button class="primary" type="submit">Save</button>
         </div>
       </form>
     </div>
@@ -64,8 +64,8 @@
   <div id="messageModal" class="modal hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="messageTitle">Aviso</h2>
-        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+        <h2 id="messageTitle">Notice</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Close</button>
       </div>
       <div id="messageBody"></div>
     </div>

@@ -52,7 +52,7 @@
     const year = new Date().getFullYear();
     const links = Array.isArray(config.links) ? config.links.filter(link => link && link.text && link.url) : [];
     footer.innerHTML = `
-      <nav class="app-footer-links" aria-label="Footer links">
+      <nav class="app-footer-links" aria-label="Footer Links">
         ${links.map(link => `<a class="app-footer-link" href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">${esc(link.text)}</a>`).join('')}
       </nav>
       <div class="app-footer-copy">© ${year} ${esc(config.copyrightText || '')}</div>

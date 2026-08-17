@@ -13,7 +13,7 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
-  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });
+  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'An error occurred'); });
 
   const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
     const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
@@ -75,7 +75,7 @@
     });
 
     if (!filtered.length) {
-      tbody.innerHTML = '<tr><td colspan="6">No hay LOVs para los filtros seleccionados.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6">No LOVs match the selected filters.</td></tr>';
       return;
     }
 
@@ -87,7 +87,7 @@
         <td>${statusBadge(lov.status)}</td>
         <td class="numeric-cell">${esc(lov.valueCount || 0)}</td>
         <td class="row-actions">
-          <button class="btn btn-secondary btn-sm" data-edit-lov="${lov.lovId}">Editar</button>
+          <button class="btn btn-secondary btn-sm" data-edit-lov="${lov.lovId}">Edit</button>
           <button class="btn btn-danger btn-sm" data-delete-lov="${lov.lovId}">Desactivar</button>
         </td>
       </tr>
@@ -107,12 +107,12 @@
 
     if (!selectedLov?.parentLovId) {
       label.hidden = true;
-      filter.innerHTML = '<option value="">Todos</option>';
+      filter.innerHTML = '<option value="">All</option>';
       return;
     }
 
     label.hidden = false;
-    filter.innerHTML = '<option value="">Todos</option>' + parentValues
+    filter.innerHTML = '<option value="">All</option>' + parentValues
       .map(v => `<option value="${v.lovValueId}">${esc(v.valueCode)} - ${esc(v.valueLabel)}</option>`)
       .join('');
   }
@@ -123,15 +123,15 @@
 
     if (!selectedLov) {
       updateLayoutState();
-      $('selectedLovTitle').textContent = 'Valores';
-      $('selectedLovSubtitle').textContent = 'Selecciona una LOV para editar sus valores.';
+      $('selectedLovTitle').textContent = 'Values';
+      $('selectedLovSubtitle').textContent = 'Select a LOV to edit its values.';
       $('parentValueFilterLabel').hidden = true;
-      tbody.innerHTML = '<tr><td colspan="6">No hay LOV seleccionada.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6">No LOV selected.</td></tr>';
       return;
     }
 
     updateLayoutState();
-    $('selectedLovTitle').textContent = `Valores de ${selectedLov.lovCode}`;
+    $('selectedLovTitle').textContent = `Values for ${selectedLov.lovCode}`;
     $('selectedLovSubtitle').textContent = selectedLov.parentLovCode
       ? `${selectedLov.lovName} · depende de ${selectedLov.parentLovCode}`
       : selectedLov.lovName || '';
@@ -145,7 +145,7 @@
     });
 
     if (!filtered.length) {
-      tbody.innerHTML = '<tr><td colspan="6">Esta LOV no tiene valores para el filtro seleccionado.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6">This LOV has no values for the selected filter.</td></tr>';
       return;
     }
 
@@ -157,7 +157,7 @@
         <td class="numeric-cell">${esc(value.sortOrder)}</td>
         <td>${statusBadge(value.status)}</td>
         <td class="row-actions">
-          <button class="btn btn-secondary btn-sm" data-edit-value="${value.lovValueId}">Editar</button>
+          <button class="btn btn-secondary btn-sm" data-edit-value="${value.lovValueId}">Edit</button>
           <button class="btn btn-danger btn-sm" data-delete-value="${value.lovValueId}">Desactivar</button>
         </td>
       </tr>
@@ -187,7 +187,7 @@
 
   function populateParentLovSelect(currentLovId = null, selectedParentId = null) {
     const select = $('lovParentInput');
-    select.innerHTML = '<option value="">Sin dependencia</option>' + lovs
+    select.innerHTML = '<option value="">No dependency</option>' + lovs
       .filter(lov => !currentLovId || lov.lovId !== Number(currentLovId))
       .map(lov => `<option value="${lov.lovId}">${esc(lov.lovCode)} - ${esc(lov.lovName)}</option>`)
       .join('');
@@ -196,7 +196,7 @@
 
   function openLovModal(lov = null) {
     editingLov = lov;
-    $('lovModalTitle').textContent = lov ? `Editar LOV ${lov.lovCode}` : 'Nueva LOV';
+    $('lovModalTitle').textContent = lov ? `Edit LOV ${lov.lovCode}` : 'New LOV';
     $('lovCodeInput').value = lov?.lovCode || '';
     $('lovNameInput').value = lov?.lovName || '';
     $('lovDescriptionInput').value = lov?.description || '';
@@ -223,7 +223,7 @@
       parentLovId: $('lovParentInput').value || null
     };
     if (!payload.lovCode || !payload.lovName) {
-      message.textContent = 'Código y nombre son obligatorios.';
+      message.textContent = 'Code and name are required.';
       return;
     }
 
@@ -234,7 +234,7 @@
       await loadLovs(true);
       if (selectedLov) await selectLov(selectedLov.lovId);
     } catch (error) {
-      message.textContent = error.message || 'No se ha podido guardar la LOV.';
+      message.textContent = error.message || 'Unable to save the LOV.';
     }
   }
 
@@ -243,11 +243,11 @@
     const select = $('valueParentInput');
     if (!selectedLov?.parentLovId) {
       box.hidden = true;
-      select.innerHTML = '<option value="">Sin padre</option>';
+      select.innerHTML = '<option value="">No parent</option>';
       return;
     }
     box.hidden = false;
-    select.innerHTML = '<option value="">Sin padre</option>' + parentValues
+    select.innerHTML = '<option value="">No parent</option>' + parentValues
       .map(v => `<option value="${v.lovValueId}">${esc(v.valueCode)} - ${esc(v.valueLabel)}</option>`)
       .join('');
     select.value = selectedParentValueId ? String(selectedParentValueId) : '';
@@ -256,7 +256,7 @@
   function openValueModal(value = null) {
     if (!selectedLov) return;
     editingValue = value;
-    $('valueModalTitle').textContent = value ? `Editar valor ${value.valueCode}` : `Nuevo valor en ${selectedLov.lovCode}`;
+    $('valueModalTitle').textContent = value ? `Edit valor ${value.valueCode}` : `New Value en ${selectedLov.lovCode}`;
     $('valueCodeInput').value = value?.valueCode || '';
     $('valueLabelInput').value = value?.valueLabel || '';
     $('valueSortInput').value = value?.sortOrder || 10;
@@ -283,7 +283,7 @@
       parentLovValueId: $('valueParentInput').value || null
     };
     if (!payload.valueCode || !payload.valueLabel) {
-      message.textContent = 'Código y etiqueta son obligatorios.';
+      message.textContent = 'Code and label are required.';
       return;
     }
 
@@ -294,7 +294,7 @@
       await selectLov(selectedLov.lovId);
       await loadLovs(true);
     } catch (error) {
-      message.textContent = error.message || 'No se ha podido guardar el valor.';
+      message.textContent = error.message || 'Unable to save the value.';
     }
   }
 
@@ -375,6 +375,6 @@
   $('parentValueFilter').addEventListener('change', renderValues);
 
   loadStatusOptions().finally(() => loadLovs(false).then(renderValues)).catch(error => {
-    $('lovsBody').innerHTML = `<tr><td colspan="6">No se han podido cargar LOVs. ${esc(error.message || '')}</td></tr>`;
+    $('lovsBody').innerHTML = `<tr><td colspan="6">Unable to load LOVs. ${esc(error.message || '')}</td></tr>`;
   });
 })();

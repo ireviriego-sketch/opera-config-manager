@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OPERA CFG - Detalle cadena</title>
+  <title>OPERA CFG - Chain Details</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/chain-detail.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
@@ -24,17 +24,17 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="pageTitle">Detalle de cadena</h1>
-        <p id="pageSubtitle">Cargando...</p>
+        <h1 id="pageTitle">Chain Details</h1>
+        <p id="pageSubtitle">Loading...</p>
       </div>
       <div class="page-actions">
-        <a id="logoutBtn" class="secondary button-link" href="chains.html">Volver</a>
-        <button id="saveChainBtn" class="primary" type="button">Guardar cadena</button>
+        <a id="logoutBtn" class="secondary button-link" href="chains.html">Back</a>
+        <button id="saveChainBtn" class="primary" type="button">Save Chain</button>
       </div>
     </header>
 
     <section class="content-card">
-      <h2>Datos de la cadena</h2>
+      <h2>Chain Data</h2>
       <form id="chainForm" class="form-grid" novalidate>
         <input id="chainIdInput" type="hidden" />
         <label>CHAIN_CODE *<input id="chainCodeInput" class="input" maxlength="50" /></label>
@@ -47,19 +47,19 @@
 
     <section class="content-card">
       <div class="tabs">
-        <button class="tab active" data-tab="hotelsPanel" type="button">Hoteles</button>
-        <button class="tab" data-tab="deploymentsPanel" type="button">Despliegues OPERA</button>
+        <button class="tab active" data-tab="hotelsPanel" type="button">Hotels</button>
+        <button class="tab" data-tab="deploymentsPanel" type="button">OPERA Deployments</button>
       </div>
 
       <section id="hotelsPanel" class="tab-panel">
         <div class="section-header">
           <div>
-            <h2>Hoteles</h2>
-            <p class="muted">Cada hotel pertenece a esta cadena.</p>
+            <h2>Hotels</h2>
+            <p class="muted">Each hotel belongs to this chain.</p>
           </div>
           <div class="page-actions">
-            <button id="importHotelsBtn" class="secondary" type="button">Importar desde Accenture Hospitality</button>
-            <button id="newHotelBtn" class="primary" type="button">Nuevo hotel</button>
+            <button id="importHotelsBtn" class="secondary" type="button">Import from Accenture Hospitality</button>
+            <button id="newHotelBtn" class="primary" type="button">New Hotel</button>
           </div>
         </div>
 
@@ -71,8 +71,8 @@
             <select id="hotelStatusInput" class="input"></select>
           </label>
           <div class="form-actions">
-            <button class="primary" type="submit">Guardar hotel</button>
-            <button id="cancelHotelBtn" class="link-button" type="button">Cancelar</button>
+            <button class="primary" type="submit">Save Hotel</button>
+            <button id="cancelHotelBtn" class="link-button" type="button">Cancel</button>
           </div>
         </form>
 
@@ -82,10 +82,10 @@
       <section id="deploymentsPanel" class="tab-panel hidden">
         <div class="section-header">
           <div>
-            <h2>Despliegues OPERA</h2>
-            <p class="muted">Despliegues de configuración OPERA asociados a esta cadena.</p>
+            <h2>OPERA Deployments</h2>
+            <p class="muted">OPERA configuration deployments associated with this chain.</p>
           </div>
-          <button id="newDeploymentBtn" class="primary" type="button">Nuevo despliegue OPERA</button>
+          <button id="newDeploymentBtn" class="primary" type="button">New OPERA Deployment</button>
         </div>
         <div id="deploymentsContainer" class="table-wrap"></div>
       </section>
@@ -95,8 +95,8 @@
   <div id="deploymentModal" class="modal hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="deploymentModalTitle">Nuevo despliegue OPERA</h2>
-        <button id="closeDeploymentModalBtn" class="link-button" type="button">Cerrar</button>
+        <h2 id="deploymentModalTitle">New OPERA Deployment</h2>
+        <button id="closeDeploymentModalBtn" class="link-button" type="button">Close</button>
       </div>
       <form id="deploymentForm" class="form-grid" novalidate>
         <input id="deploymentIdInput" type="hidden" />
@@ -104,14 +104,14 @@
         <label>STATUS *
           <select id="deploymentStatusInput" class="input"></select>
         </label>
-        <label class="span-2">Versión plantilla origen
+        <label class="span-2">Source Template Version
           <select id="sourceTemplateVersionInput" class="input">
-            <option value="">Sin versión origen</option>
+            <option value="">No source version</option>
           </select>
         </label>
         <label class="span-2">COMMENTS<textarea id="deploymentCommentsInput" class="input" rows="3" maxlength="1000"></textarea></label>
         <div class="form-actions">
-          <button class="primary" type="submit">Guardar despliegue</button>
+          <button class="primary" type="submit">Save Deployment</button>
         </div>
       </form>
     </div>
@@ -120,11 +120,11 @@
   <div id="contentModal" class="modal hidden">
     <div class="modal-card modal-card-wide">
       <div class="modal-header">
-        <h2>Contenido del despliegue</h2>
-        <button id="closeContentModalBtn" class="link-button" type="button">Cerrar</button>
+        <h2>Deployment Content</h2>
+        <button id="closeContentModalBtn" class="link-button" type="button">Close</button>
       </div>
       <div class="content-actions">
-        <button id="downloadContentBtn" class="secondary" type="button">Exportar JSON</button>
+        <button id="downloadContentBtn" class="secondary" type="button">Export JSON</button>
       </div>
       <pre id="deploymentContentPre" class="json-preview"></pre>
     </div>
@@ -133,8 +133,8 @@
   <div id="messageModal" class="modal hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="messageTitle">Aviso</h2>
-        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+        <h2 id="messageTitle">Notice</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Close</button>
       </div>
       <div id="messageBody"></div>
     </div>

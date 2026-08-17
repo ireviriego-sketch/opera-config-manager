@@ -17,11 +17,11 @@ function statusBadge(status) {
 }
 
 function showVersion(version) {
-  const label = version.VERSION_LABEL || `Versión ${version.VERSION_NUMBER}`;
+  const label = version.VERSION_LABEL || `Version ${version.VERSION_NUMBER}`;
   document.getElementById('versionTitle').textContent = label;
-  document.getElementById('versionSubtitle').textContent = `Versión ${version.VERSION_NUMBER}`;
-  document.getElementById('versionCode').textContent = `Versión ${version.VERSION_NUMBER}`;
-  document.getElementById('versionDescription').textContent = version.VERSION_LABEL || 'Sin etiqueta';
+  document.getElementById('versionSubtitle').textContent = `Version ${version.VERSION_NUMBER}`;
+  document.getElementById('versionCode').textContent = `Version ${version.VERSION_NUMBER}`;
+  document.getElementById('versionDescription').textContent = version.VERSION_LABEL || 'No label';
   document.getElementById('versionStatus').innerHTML = statusBadge(version.VERSION_STATUS);
 }
 
@@ -34,12 +34,12 @@ function renderDomains(domains) {
 
   if (!domains.length) {
     emptyState.classList.remove('hidden');
-    count.textContent = '0 dominios';
+    count.textContent = '0 domains';
     return;
   }
 
   emptyState.classList.add('hidden');
-  count.textContent = `${domains.length} dominio${domains.length === 1 ? '' : 's'}`;
+  count.textContent = `${domains.length} domain${domains.length === 1 ? '' : 's'}`;
 
   domains.forEach(d => {
     const row = document.createElement('tr');
@@ -48,7 +48,7 @@ function renderDomains(domains) {
       <td>${d.DOMAIN_NAME || ''}</td>
       <td>${d.DOMAIN_DESCRIPTION || ''}</td>
       <td>${d.DISPLAY_ORDER || 0}</td>
-      <td><button class="table-action view-domain" data-domain-id="${d.DOMAIN_ID}">Ver</button></td>
+      <td><button class="table-action view-domain" data-domain-id="${d.DOMAIN_ID}">View</button></td>
     `;
     tbody.appendChild(row);
   });
@@ -102,7 +102,7 @@ async function saveDomain() {
   message.textContent = '';
 
   if (!code || !name) {
-    message.textContent = 'Código y nombre son obligatorios.';
+    message.textContent = 'Code and name are required.';
     return;
   }
 
@@ -122,7 +122,7 @@ async function saveDomain() {
     closeDomainModal();
     await loadDomains();
   } catch (error) {
-    message.textContent = error.data?.error || 'No se ha podido guardar el dominio.';
+    message.textContent = error.data?.error || 'Unable to save the domain.';
   }
 }
 

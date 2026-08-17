@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Detalle de entidad | OPERA Config Manager</title>
+  <title>Entity Details | OPERA Config Manager</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
   <link rel="stylesheet" href="assets/css/table-unification.css">
@@ -23,19 +23,19 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="entityTitle">Detalle de entidad</h1>
-        <p id="entitySubtitle">Atributos de configuración de la entidad.</p>
+        <h1 id="entityTitle">Entity Details</h1>
+        <p id="entitySubtitle">Configuration attributes for the entity.</p>
       </div>
       <div class="actions-right">
-        <button id="backToDomain" class="secondary">Volver al dominio</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToDomain" class="secondary">Back to Domain</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="page-actions">
       <div>
-        <h2 id="entityCode">Cargando entidad...</h2>
-        <p id="entityDescription">Recuperando información desde Oracle.</p>
+        <h2 id="entityCode">Loading entity...</h2>
+        <p id="entityDescription">Retrieving information from Oracle.</p>
       </div>
       <div id="entityStatus"></div>
     </section>
@@ -43,43 +43,43 @@
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Atributos</h3>
-          <p id="attributesCount">Cargando atributos...</p>
+          <h3>Attributes</h3>
+          <p id="attributesCount">Loading attributes...</p>
         </div>
-        <button id="btnNewAttribute">+ Nuevo atributo</button>
+        <button id="btnNewAttribute">+ New Attribute</button>
       </div>
 
       <div class="table-wrap">
         <table id="attributesTable" class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Tipo</th>
-              <th>Obligatorio</th>
-              <th>Clave</th>
-              <th>Longitud</th>
-              <th>Orden</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Required</th>
+              <th>Key</th>
+              <th>Length</th>
+              <th>Order</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <div id="attributesEmptyState" class="empty-state hidden">Todavía no hay atributos para esta entidad.</div>
+      <div id="attributesEmptyState" class="empty-state hidden">There are no attributes for this entity yet.</div>
     </section>
 
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Siguiente nivel</h3>
-          <p>Después de crear atributos, el siguiente paso será definir relaciones entre entidades.</p>
+          <h3>Next Level</h3>
+          <p>After creating attributes, the next step is to define relationships between entities.</p>
         </div>
       </div>
       <div class="module-grid">
-        <article class="module-card"><h4>Relaciones</h4><p>Referencias padre-hijo y dependencias funcionales.</p></article>
-        <article class="module-card"><h4>Visual Designer</h4><p>Vista visual de entidades, atributos y relaciones.</p></article>
-        <article class="module-card"><h4>Validaciones</h4><p>Reglas para importación Excel y despliegue OPERA.</p></article>
+        <article class="module-card"><h4>Relationships</h4><p>Parent-child references and functional dependencies.</p></article>
+        <article class="module-card"><h4>Visual Designer</h4><p>Visual view of entities, attributes, and relationships.</p></article>
+        <article class="module-card"><h4>Validations</h4><p>Rules for Excel import and OPERA deployment.</p></article>
       </div>
     </section>
   </main>
@@ -88,33 +88,33 @@
     <section class="modal">
       <header class="modal-header">
         <div>
-          <h2>Nuevo atributo</h2>
-          <p>Crea un atributo dentro de la entidad seleccionada.</p>
+          <h2>New Attribute</h2>
+          <p>Create an attribute in the selected entity.</p>
         </div>
         <button id="closeAttributeModal" class="icon-button">×</button>
       </header>
       <div class="modal-body">
-        <label for="attributeCode">Código</label>
+        <label for="attributeCode">Code</label>
         <input id="attributeCode" placeholder="Ej. RESERVATION_TYPE_CODE" />
-        <label for="attributeName">Nombre</label>
-        <input id="attributeName" placeholder="Ej. Código de tipo de reserva" />
-        <label for="attributeDescription">Descripción</label>
-        <textarea id="attributeDescription" rows="3" placeholder="Descripción funcional del atributo"></textarea>
-        <label for="dataTypeCode">Tipo de dato</label>
+        <label for="attributeName">Name</label>
+        <input id="attributeName" placeholder="Ej. Code de tipo de reserva" />
+        <label for="attributeDescription">Description</label>
+        <textarea id="attributeDescription" rows="3" placeholder="Description funcional del atributo"></textarea>
+        <label for="dataTypeCode">Data Type</label>
         <select id="dataTypeCode"></select>
-        <label for="maxLength">Longitud máxima</label>
+        <label for="maxLength">Maximum Length</label>
         <input id="maxLength" type="number" placeholder="Ej. 30" />
-        <label for="defaultValue">Valor por defecto</label>
+        <label for="defaultValue">Default Value</label>
         <input id="defaultValue" placeholder="Opcional" />
-        <label><input id="isRequired" type="checkbox" /> Obligatorio</label>
-        <label><input id="isKeyAttribute" type="checkbox" /> Atributo clave</label>
-        <label for="attributeOrder">Orden</label>
+        <label><input id="isRequired" type="checkbox" /> Required</label>
+        <label><input id="isKeyAttribute" type="checkbox" /> Key Attribute</label>
+        <label for="attributeOrder">Order</label>
         <input id="attributeOrder" type="number" value="0" />
         <div id="attributeFormMessage" class="message"></div>
       </div>
       <footer class="modal-footer">
-        <button id="cancelAttribute" class="secondary">Cancelar</button>
-        <button id="saveAttribute">Guardar atributo</button>
+        <button id="cancelAttribute" class="secondary">Cancel</button>
+        <button id="saveAttribute">Save Attribute</button>
       </footer>
     </section>
   </div>

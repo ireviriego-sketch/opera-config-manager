@@ -58,7 +58,7 @@ async function loadVersionHeader() {
   const data = await apiFetch(`/api/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`);
   const version = (data.versions || []).find(v => String(v.VERSION_ID) === String(currentVersionId));
   if (!version) return;
-  document.getElementById('canvasVersionTitle').textContent = version.VERSION_LABEL || `Versión ${version.VERSION_NUMBER}`;
+  document.getElementById('canvasVersionTitle').textContent = version.VERSION_LABEL || `Version ${version.VERSION_NUMBER}`;
 }
 
 async function loadModel() {
@@ -89,7 +89,7 @@ async function loadModel() {
 
 function populateDomainFilter() {
   const select = document.getElementById('domainFilter');
-  select.innerHTML = '<option value="ALL">Todos los dominios</option>';
+  select.innerHTML = '<option value="ALL">All Domains</option>';
   model.forEach(domain => {
     const option = document.createElement('option');
     option.value = String(domain.DOMAIN_ID);
@@ -100,7 +100,7 @@ function populateDomainFilter() {
 
 function updateStats() {
   const attrCount = entities.reduce((total, entity) => total + entity.attributes.length, 0);
-  document.getElementById('canvasStats').textContent = `${model.length} dominios · ${entities.length} entidades · ${attrCount} atributos`;
+  document.getElementById('canvasStats').textContent = `${model.length} domains · ${entities.length} entities · ${attrCount} attributes`;
 }
 
 function applyFilters() {
@@ -176,12 +176,12 @@ function renderCanvas() {
           <h3>${entity.ENTITY_NAME || entity.ENTITY_CODE}</h3>
           <p>${entity.domain.DOMAIN_NAME || entity.domain.DOMAIN_CODE}</p>
         </div>
-        <button class="box-toggle" title="Expandir o colapsar">${collapsed ? '+' : '-'}</button>
+        <button class="box-toggle" title="Expand o colapsar">${collapsed ? '+' : '-'}</button>
       </header>
       <section class="canvas-box-body">
         <div class="canvas-box-meta">
           <span>${entity.ENTITY_CODE || ''}</span>
-          <span>${entity.attributes.length} atributos</span>
+          <span>${entity.attributes.length} attributes</span>
         </div>
         <div class="canvas-attributes">
           ${entity.attributes.slice(0, 20).map(attribute => `
@@ -332,7 +332,7 @@ async function setupCanvasPage() {
   currentVersionId = params.versionId;
 
   if (!currentTemplateId || !currentVersionId) {
-    document.getElementById('canvasStats').textContent = 'Faltan parámetros templateId y versionId.';
+    document.getElementById('canvasStats').textContent = 'Missing templateId and versionId parameters.';
     return;
   }
 

@@ -15,8 +15,6 @@
     '/chains': 'chains.html',
     '/chain-detail': 'chain-detail.html',
     '/hotels': 'hotels.html',
-    '/imports': '#',
-    '/deployments': '#',
     '/audit': 'admin-audit.html',
     '/admin-audit': 'admin-audit.html',
     '/logs': 'admin-logs.html',
@@ -48,13 +46,45 @@
     }[char]));
   }
 
+  function isHiddenHomeItem(item) {
+    const label = String(item.label || item.NAV_LABEL || item.navLabel || '').trim().toLowerCase();
+    const route = String(item.path || item.ROUTE_PATH || item.routePath || '').trim().toLowerCase();
+    return route === '/imports'
+      || route === '/deployments'
+      || route === 'imports.html'
+      || route === 'deployments.html'
+      || label === 'imports'
+      || label === 'opera deployments'
+      || label === 'importaciones'
+      || label === 'despliegues opera';
+  }
+
+  function translateHomeText(value) {
+    const text = String(value || '').trim();
+    const normalized = text.toLowerCase();
+    const map = {
+      'inicio': 'Home',
+      'plantillas': 'Templates',
+      'cadenas': 'Chains',
+      'hoteles': 'Hotels',
+      'importaciones': 'Imports',
+      'despliegues opera': 'OPERA Deployments',
+      'gestión de modelos de configuración opera cloud': 'Management of OPERA Cloud configuration models',
+      'gestión de cadenas hoteleras y hoteles': 'Management of hotel chains and hotels',
+      'gestión de hoteles': 'Management of hotels',
+      'configuración general de la aplicación': 'General application settings',
+      'listas de valores configurables': 'Configurable value lists'
+    };
+    return map[normalized] || text;
+  }
+
   function fallbackHomeItems() {
     return [
-      { label: 'Plantillas', path: 'templates.html', description: 'Gestión de modelos de configuración OPERA Cloud' },
-      { label: 'Cadenas', path: 'chains.html', description: 'Gestión de cadenas hoteleras y hoteles' },
-      { label: 'Hoteles', path: 'hotels.html', description: 'Gestión de hoteles' },
-      { label: 'LOVs', path: 'admin-lovs.html', description: 'Listas de valores configurables' },
-      { label: 'General Administration', path: 'general-admin.html', description: 'Configuración general de la aplicación' }
+      { label: 'Templates', path: 'templates.html', description: 'Management of OPERA Cloud configuration models' },
+      { label: 'Chains', path: 'chains.html', description: 'Management of hotel chains and hotels' },
+      { label: 'Hotels', path: 'hotels.html', description: 'Management of hotels' },
+      { label: 'LOVs', path: 'admin-lovs.html', description: 'Configurable value lists' },
+      { label: 'General Administration', path: 'general-admin.html', description: 'General application settings' }
     ];
   }
 
@@ -63,8 +93,8 @@
     if (!tiles) return;
     tiles.innerHTML = items.map(item => {
       const target = toHtmlRoute(item.path || item.ROUTE_PATH || item.routePath || '#');
-      const label = item.label || item.NAV_LABEL || item.navLabel || '';
-      const description = item.description || item.DESCRIPTION || item.descriptionText || item.ROUTE_PATH || item.routePath || item.path || '';
+      const label = translateHomeText(item.label || item.NAV_LABEL || item.navLabel || '');
+      const description = translateHomeText(item.description || item.DESCRIPTION || item.descriptionText || item.ROUTE_PATH || item.routePath || item.path || '');
       return `
         <a class="dashboard-card${target === '#' ? ' disabled' : ''}" href="${esc(target)}" ${target === '#' ? 'aria-disabled="true"' : ''}>
           <h3>${esc(label)}</h3>
@@ -81,7 +111,7 @@
     try {
       const data = typeof apiFetch === 'function' ? await apiFetch('/api/navigation') : { items: [] };
       const items = (data.items || [])
-        .filter(item => item.IS_HOME_TILE === 'Y' || item.isHomeTile === 'Y')
+        .filter(item => (item.IS_HOME_TILE === 'Y' || item.isHomeTile === 'Y') && !isHiddenHomeItem(item))
         .map(item => ({
           label: item.NAV_LABEL || item.navLabel || item.label,
           path: item.ROUTE_PATH || item.routePath || item.path,

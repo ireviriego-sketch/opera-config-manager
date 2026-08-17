@@ -27,7 +27,7 @@
     state.entityId = params.get('entityId');
 
     if (!state.deploymentId || !state.entityId) {
-      error('Faltan parámetros en la URL (deploymentId, entityId).');
+      error('Missing URL parameters (deploymentId, entityId).');
       return;
     }
 
@@ -60,7 +60,7 @@
       }
 
       if (!state.entity) {
-        error('No se encontró la entidad en la estructura del despliegue.');
+        error('Entity not found in the deployment structure.');
         return;
       }
 
@@ -93,8 +93,8 @@
     counter.innerHTML = `
       <span class="counter-badge ${colorClass}">
         <span class="counter-icon">${imported === total && total > 0 ? '✅' : errors > 0 ? '⚠️' : '⏳'}</span>
-        <span class="counter-text">${imported} / ${total} importados</span>
-        ${errors > 0 ? `<span class="counter-errors">${errors} errores</span>` : ''}
+        <span class="counter-text">${imported} / ${total} imported</span>
+        ${errors > 0 ? `<span class="counter-errors">${errors} errors</span>` : ''}
       </span>
     `;
   }
@@ -106,7 +106,7 @@
       <div class="search-bar">
         <span class="search-icon">🔍</span>
         <input id="searchInput" class="search-input" type="text"
-          placeholder="Buscar en cualquier campo..."
+          placeholder="Search en cualquier campo..."
           value="${escapeHtml(state.searchTerm)}" autocomplete="off" />
         <button id="searchClearBtn" class="search-clear ${state.searchTerm ? '' : 'hidden'}" type="button">✕</button>
       </div>
@@ -151,8 +151,8 @@
 
     if (!records.length) {
       $('recordsContainer').innerHTML = state.searchTerm
-        ? `<p class="muted">No se encontraron registros para "<strong>${escapeHtml(state.searchTerm)}</strong>".</p>`
-        : '<p class="muted">No hay registros para esta entidad. Pulsa Nuevo registro.</p>';
+        ? `<p class="muted">No records found for "<strong>${escapeHtml(state.searchTerm)}</strong>".</p>`
+        : '<p class="muted">No records for this entity. Click New Record.</p>';
       return;
     }
 
@@ -176,7 +176,7 @@
 
       const statusClass = recordStatusClass(record.status);
       const statusBadge = record.status === 'IMPORTED'
-        ? '<span class="record-status-badge badge-imported">✓ Importado</span>'
+        ? '<span class="record-status-badge badge-imported">✓ Imported</span>'
         : record.status === 'ERROR'
         ? '<span class="record-status-badge badge-error">✗ Error</span>'
         : '';
@@ -185,29 +185,29 @@
         ${statusBadge}
         <div class="record-card-fields">${fields}</div>
         <div class="record-card-actions">
-          <button class="secondary small" data-edit-record="${record.deploymentRecordId}">Editar</button>
-          <button class="secondary small danger" data-delete-record="${record.deploymentRecordId}">Borrar</button>
+          <button class="secondary small" data-edit-record="${record.deploymentRecordId}">Edit</button>
+          <button class="secondary small danger" data-delete-record="${record.deploymentRecordId}">Delete</button>
         </div>
       </div>`;
     }).join('');
 
     const totalLabel = state.searchTerm
-      ? `${records.length} resultado${records.length !== 1 ? 's' : ''} · ${state.records.length} totales`
-      : `${state.records.length} registros totales`;
+      ? `${records.length} result${records.length !== 1 ? 's' : ''} · ${state.records.length} total`
+      : `${state.records.length} records total`;
 
     const paginationHtml = totalPages > 1 ? `
       <div class="pagination">
-        <button class="pag-btn" id="pagPrev" ${state.currentPage === 1 ? 'disabled' : ''}>← Anterior</button>
+        <button class="pag-btn" id="pagPrev" ${state.currentPage === 1 ? 'disabled' : ''}>← Previous</button>
         <div class="pag-pages">
           ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
             <button class="pag-btn pag-num ${p === state.currentPage ? 'active' : ''}" data-page="${p}">${p}</button>
           `).join('')}
         </div>
-        <button class="pag-btn" id="pagNext" ${state.currentPage === totalPages ? 'disabled' : ''}>Siguiente →</button>
+        <button class="pag-btn" id="pagNext" ${state.currentPage === totalPages ? 'disabled' : ''}>Next →</button>
       </div>` : '';
 
     $('recordsContainer').innerHTML = `
-      <div class="records-summary">${totalLabel}${totalPages > 1 ? ` · Página ${state.currentPage} de ${totalPages}` : ''}</div>
+      <div class="records-summary">${totalLabel}${totalPages > 1 ? ` · Page ${state.currentPage} of ${totalPages}` : ''}</div>
       <div class="records-grid">${cardsHtml}</div>
       ${paginationHtml}
     `;
@@ -229,16 +229,16 @@
   }
 
   function importToOpera() {
-    message('Próximamente', `
+    message('Coming Soon', `
       <p>La integración con <strong>OPERA Cloud</strong> estará disponible próximamente.</p>
-      <p style="margin-top:8px;color:#6b7280;font-size:13px">Cuando esté lista, este botón enviará los registros directamente a OPERA Cloud y actualizará el estado de cada uno.</p>
+      <p style="margin-top:8px;color:#6b7280;font-size:13px">When ready, this button will send records directly to OPERA Cloud and update each status.</p>
     `);
   }
 
   function newRecord() {
     state.editingRecord = null;
     renderRecordForm({});
-    $('recordModalTitle').textContent = `Nuevo registro — ${state.entity.entityName}`;
+    $('recordModalTitle').textContent = `New Record — ${state.entity.entityName}`;
     openModal('recordModal');
   }
 
@@ -247,7 +247,7 @@
     if (!record) return;
     state.editingRecord = record;
     renderRecordForm(record.record || {});
-    $('recordModalTitle').textContent = `Editar registro — ${state.entity.entityName}`;
+    $('recordModalTitle').textContent = `Edit record — ${state.entity.entityName}`;
     openModal('recordModal');
   }
 
@@ -257,7 +257,7 @@
       return `<label>${escapeHtml(key)}${attr.isRequired === 'Y' ? ' *' : ''}
         <input class="input" data-record-field="${escapeHtml(key)}" value="${escapeHtml(values[key] || attr.defaultValue || '')}" />
       </label>`;
-    }).join('') + '<div class="form-actions"><button class="primary" type="submit">Guardar registro</button></div>';
+    }).join('') + '<div class="form-actions"><button class="primary" type="submit">Save Record</button></div>';
   }
 
   async function saveRecord(event) {
@@ -280,7 +280,7 @@
   }
 
   async function deleteRecord(recordId) {
-    if (!confirm('¿Borrar este registro?')) return;
+    if (!confirm('Delete this record?')) return;
     try {
       await api.deleteRecord(state.deploymentId, recordId);
       state.records = (await api.listRecords(state.deploymentId, state.entityId)).rows || [];

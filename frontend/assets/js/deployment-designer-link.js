@@ -13,7 +13,7 @@
       const link = document.createElement('a');
       link.className = 'secondary small button-link';
       link.href = `deployment-designer.html?id=${encodeURIComponent(deploymentId)}`;
-      link.textContent = 'Abrir designer';
+      link.textContent = 'Open Designer';
       actionsCell.prepend(link);
       row.dataset.designerLinkReady = 'Y';
     });

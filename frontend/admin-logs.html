@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,55 +26,55 @@
     <main class="main-content page-main logs-page">
       <header class="page-header hero-card logs-hero">
         <div>
-          <h1>Logs de aplicación</h1>
-          <p>Configura el nivel de trazas y revisa eventos técnicos, warnings y errores relevantes.</p>
+          <h1>Application Logs</h1>
+          <p>Configure the trace level and review relevant technical events, warnings, and errors.</p>
         </div>
-        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Volver</button>
+        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Back</button>
       </header>
 
       <section class="card page-card logs-config-card">
         <div class="section-header card-header logs-card-header">
           <div>
-            <h2>Nivel de trazas</h2>
-            <p>El nivel controla qué eventos se escriben en consola y en la tabla de logs.</p>
+            <h2>Trace Level</h2>
+            <p>The level controls which events are written to the console and the logs table.</p>
           </div>
         </div>
 
         <div class="log-level-panel">
-          <label class="log-level-selector">Nivel actual
+          <label class="log-level-selector">Current Level
             <select id="logLevelSelect" class="form-control"></select>
           </label>
-          <div id="logLevelHelp" class="log-level-help">Cargando configuración...</div>
-          <button id="saveLogLevelBtn" type="button" class="btn btn-primary logs-save-btn">Guardar nivel</button>
+          <div id="logLevelHelp" class="log-level-help">Loading configuration...</div>
+          <button id="saveLogLevelBtn" type="button" class="btn btn-primary logs-save-btn">Save Level</button>
         </div>
       </section>
 
       <section class="card page-card logs-events-card">
         <div class="section-header card-header logs-card-header">
           <div>
-            <h2>Eventos registrados</h2>
-            <p>Filtra por texto, nivel, origen, código de evento, usuario o fecha.</p>
+            <h2>Logged Events</h2>
+            <p>Filter by text, level, source, event code, user, or date.</p>
           </div>
-          <button id="refreshLogsBtn" type="button" class="btn btn-primary">Actualizar</button>
+          <button id="refreshLogsBtn" type="button" class="btn btn-primary">Refresh</button>
         </div>
 
         <div class="logs-filters">
-          <label>Buscar
-            <input id="logsSearch" class="form-control" type="search" placeholder="Mensaje, source, evento, usuario...">
+          <label>Search
+            <input id="logsSearch" class="form-control" type="search" placeholder="Message, source, evento, user...">
           </label>
-          <label>Nivel
-            <select id="logsLevelFilter" class="form-control"><option value="">Todos</option></select>
+          <label>Level
+            <select id="logsLevelFilter" class="form-control"><option value="">All</option></select>
           </label>
           <label>Source
             <input id="logsSourceFilter" class="form-control" type="text" placeholder="AUTH, APP, DB...">
           </label>
-          <label>Evento
+          <label>Event
             <input id="logsEventFilter" class="form-control" type="text" placeholder="LOGIN_SUCCESS...">
           </label>
-          <label>Desde
+          <label>From
             <input id="logsFromDate" class="form-control" type="date">
           </label>
-          <label>Hasta
+          <label>To
             <input id="logsToDate" class="form-control" type="date">
           </label>
         </div>
@@ -83,17 +83,17 @@
           <table class="table data-table logs-table">
             <thead>
               <tr>
-                <th>Fecha</th>
-                <th>Nivel</th>
+                <th>Date</th>
+                <th>Level</th>
                 <th>Source</th>
-                <th>Evento</th>
-                <th>Mensaje</th>
-                <th>Usuario</th>
-                <th>Detalle</th>
+                <th>Event</th>
+                <th>Message</th>
+                <th>User</th>
+                <th>Detail</th>
               </tr>
             </thead>
             <tbody id="logsBody">
-              <tr><td colspan="7">Cargando logs...</td></tr>
+              <tr><td colspan="7">Loading logs...</td></tr>
             </tbody>
           </table>
         </div>
@@ -104,8 +104,8 @@
   <div id="logDetailModal" class="logs-modal" hidden>
     <div class="logs-modal-card">
       <div class="logs-modal-header">
-        <h2>Detalle de log</h2>
-        <button id="closeLogModalBtn" type="button" class="btn btn-secondary">Cerrar</button>
+        <h2>Log Details</h2>
+        <button id="closeLogModalBtn" type="button" class="btn btn-secondary">Close</button>
       </div>
       <div id="logDetailContent" class="log-detail-content"></div>
     </div>

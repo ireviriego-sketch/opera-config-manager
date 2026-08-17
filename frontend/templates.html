@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plantillas | OPERA Config Manager</title>
+  <title>Templates | OPERA Config Manager</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
   <link rel="stylesheet" href="assets/css/table-unification.css">
@@ -23,28 +23,28 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1>Plantillas</h1>
-        <p>Gestión de modelos de configuración OPERA Cloud</p>
+        <h1>Templates</h1>
+        <p>Management of OPERA Cloud configuration models</p>
       </div>
-      <button id="logoutBtn" class="secondary">Volver</button>
+      <button id="logoutBtn" class="secondary">Back</button>
     </header>
 
     <section class="page-actions">
       <div>
-        <h2>Modelos de configuración</h2>
-        <p>Consulta y crea plantillas base para cadenas y hoteles.</p>
+        <h2>Configuration Models</h2>
+        <p>Review and create base templates for chains and hotels.</p>
       </div>
       <div class="actions-right">
-        <input id="templateSearch" class="search-input" placeholder="Buscar plantilla..." />
-        <button id="btnNewTemplate">+ Nueva plantilla</button>
+        <input id="templateSearch" class="search-input" placeholder="Search plantilla..." />
+        <button id="btnNewTemplate">+ New Template</button>
       </div>
     </section>
 
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Plantillas disponibles</h3>
-          <p id="templateCount">Cargando...</p>
+          <h3>Available Templates</h3>
+          <p id="templateCount">Loading...</p>
         </div>
       </div>
 
@@ -52,11 +52,11 @@
         <table id="templatesTable" class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -64,7 +64,7 @@
       </div>
 
       <div id="emptyState" class="empty-state hidden">
-        No hay plantillas que coincidan con la búsqueda.
+        No templates match the search.
       </div>
     </section>
   </main>
@@ -73,28 +73,28 @@
     <section class="modal">
       <header class="modal-header">
         <div>
-          <h2>Nueva plantilla</h2>
-          <p>Crea un nuevo modelo de configuración OPERA Cloud.</p>
+          <h2>New Template</h2>
+          <p>Create a new OPERA Cloud configuration model.</p>
         </div>
         <button id="closeTemplateModal" class="icon-button">×</button>
       </header>
 
       <div class="modal-body">
-        <label for="code">Código</label>
+        <label for="code">Code</label>
         <input id="code" placeholder="Ej. PMS_STANDARD" />
 
-        <label for="name">Nombre</label>
+        <label for="name">Name</label>
         <input id="name" placeholder="Ej. OPERA PMS Standard Template" />
 
-        <label for="description">Descripción</label>
-        <textarea id="description" rows="3" placeholder="Descripción funcional de la plantilla"></textarea>
+        <label for="description">Description</label>
+        <textarea id="description" rows="3" placeholder="Description funcional de la plantilla"></textarea>
 
         <div id="templateFormMessage" class="message"></div>
       </div>
 
       <footer class="modal-footer">
-        <button id="cancelTemplate" class="secondary">Cancelar</button>
-        <button id="saveTemplate">Guardar plantilla</button>
+        <button id="cancelTemplate" class="secondary">Cancel</button>
+        <button id="saveTemplate">Save Template</button>
       </footer>
     </section>
   </div>

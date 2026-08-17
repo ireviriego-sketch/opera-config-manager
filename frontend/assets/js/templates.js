@@ -33,7 +33,7 @@ function renderTemplates(templates) {
       <td>${t.TEMPLATE_NAME || ''}</td>
       <td>${t.TEMPLATE_DESCRIPTION || ''}</td>
       <td>${templateStatusBadge(t.STATUS)}</td>
-      <td><button class="table-action view-template" data-template-id="${t.TEMPLATE_ID}">Ver</button></td>
+      <td><button class="table-action view-template" data-template-id="${t.TEMPLATE_ID}">View</button></td>
     `;
     tbody.appendChild(row);
   });
@@ -79,7 +79,7 @@ async function saveTemplate() {
   message.textContent = '';
 
   if (!code || !name) {
-    message.textContent = 'Código y nombre son obligatorios.';
+    message.textContent = 'Code and name are required.';
     return;
   }
 
@@ -92,7 +92,7 @@ async function saveTemplate() {
     closeTemplateModal();
     await loadTemplates();
   } catch (error) {
-    message.textContent = error.data?.error || 'No se ha podido guardar la plantilla.';
+    message.textContent = error.data?.error || 'Unable to save template.';
   }
 }
 

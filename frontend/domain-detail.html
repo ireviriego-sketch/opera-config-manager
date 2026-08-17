@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Detalle de dominio | OPERA Config Manager</title>
+  <title>Domain Details | OPERA Config Manager</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
   <link rel="stylesheet" href="assets/css/table-unification.css">
@@ -23,62 +23,62 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="domainTitle">Detalle de dominio</h1>
-        <p id="domainSubtitle">Entidades de configuración del dominio funcional.</p>
+        <h1 id="domainTitle">Domain Details</h1>
+        <p id="domainSubtitle">Configuration entities for the functional domain.</p>
       </div>
       <div class="actions-right">
-        <button id="backToVersion" class="secondary">Volver a la versión</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToVersion" class="secondary">Back to Version</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="page-actions">
       <div>
-        <h2 id="domainCode">Cargando dominio...</h2>
-        <p id="domainDescription">Recuperando información desde Oracle.</p>
+        <h2 id="domainCode">Loading domain...</h2>
+        <p id="domainDescription">Retrieving information from Oracle.</p>
       </div>
     </section>
 
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Entidades</h3>
-          <p id="entitiesCount">Cargando entidades...</p>
+          <h3>Entities</h3>
+          <p id="entitiesCount">Loading entities...</p>
         </div>
-        <button id="btnNewEntity">+ Nueva entidad</button>
+        <button id="btnNewEntity">+ New Entity</button>
       </div>
 
       <div class="table-wrap">
         <table id="entitiesTable" class="data-table">
           <thead>
             <tr>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Sección origen</th>
-              <th>Orden</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Source Section</th>
+              <th>Order</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
 
-      <div id="entitiesEmptyState" class="empty-state hidden">Todavía no hay entidades para este dominio funcional.</div>
+      <div id="entitiesEmptyState" class="empty-state hidden">There are no entities for this functional domain yet.</div>
     </section>
 
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Siguiente nivel</h3>
-          <p>Después de crear entidades, el siguiente paso será definir atributos y relaciones.</p>
+          <h3>Next Level</h3>
+          <p>After creating entities, the next step is to define attributes and relationships.</p>
         </div>
       </div>
       <div class="module-grid">
-        <article class="module-card"><h4>Atributos</h4><p>Campos de cada entidad, tipos de dato y obligatoriedad.</p></article>
-        <article class="module-card"><h4>Relaciones</h4><p>Dependencias entre entidades y atributos.</p></article>
-        <article class="module-card"><h4>Visual Designer</h4><p>Representación visual del modelo con entidades y relaciones.</p></article>
+        <article class="module-card"><h4>Attributes</h4><p>Fields for each entity, data types, and required status.</p></article>
+        <article class="module-card"><h4>Relationships</h4><p>Dependencies between entities and attributes.</p></article>
+        <article class="module-card"><h4>Visual Designer</h4><p>Visual representation of the model with entities and relationships.</p></article>
       </div>
     </section>
   </main>
@@ -87,27 +87,27 @@
     <section class="modal">
       <header class="modal-header">
         <div>
-          <h2>Nueva entidad</h2>
-          <p>Crea una entidad de configuración dentro del dominio funcional.</p>
+          <h2>New Entity</h2>
+          <p>Create a configuration entity within the functional domain.</p>
         </div>
         <button id="closeEntityModal" class="icon-button">×</button>
       </header>
       <div class="modal-body">
-        <label for="entityCode">Código</label>
+        <label for="entityCode">Code</label>
         <input id="entityCode" placeholder="Ej. PMS_RESERVATION_TYPES" />
-        <label for="entityName">Nombre</label>
-        <input id="entityName" placeholder="Ej. Tipos de reserva" />
-        <label for="entityDescription">Descripción</label>
-        <textarea id="entityDescription" rows="3" placeholder="Descripción funcional de la entidad"></textarea>
-        <label for="sourceSectionName">Sección origen Excel</label>
+        <label for="entityName">Name</label>
+        <input id="entityName" placeholder="Ej. Types de reserva" />
+        <label for="entityDescription">Description</label>
+        <textarea id="entityDescription" rows="3" placeholder="Description funcional de la entity"></textarea>
+        <label for="sourceSectionName">Excel Source Section</label>
         <input id="sourceSectionName" placeholder="Ej. Reservation Types" />
-        <label for="entityOrder">Orden</label>
+        <label for="entityOrder">Order</label>
         <input id="entityOrder" type="number" value="0" />
         <div id="entityFormMessage" class="message"></div>
       </div>
       <footer class="modal-footer">
-        <button id="cancelEntity" class="secondary">Cancelar</button>
-        <button id="saveEntity">Guardar entidad</button>
+        <button id="cancelEntity" class="secondary">Cancel</button>
+        <button id="saveEntity">Save Entity</button>
       </footer>
     </section>
   </div>

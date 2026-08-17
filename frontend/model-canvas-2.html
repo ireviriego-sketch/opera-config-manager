@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,27 +26,27 @@
     <header class="topbar canvas2-topbar">
       <div>
         <h1>Model Canvas</h1>
-        <p id="canvasSubtitle">Mapa visual compacto del modelo importado desde el PIW.</p>
+        <p id="canvasSubtitle">Compact visual map of the model imported from the PIW.</p>
       </div>
       <div class="actions-right">
-        <button id="backToTemplate" class="secondary">Volver a la plantilla</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToTemplate" class="secondary">Back to Template</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="canvas2-toolbar">
       <div class="canvas2-version">
-        <strong id="versionTitle">Cargando versión...</strong>
-        <span id="versionStats">Recuperando modelo desde Oracle.</span>
+        <strong id="versionTitle">Loading version...</strong>
+        <span id="versionStats">Retrieving model from Oracle.</span>
       </div>
       <div class="canvas2-controls">
         <select id="domainFilter" class="canvas2-select">
-          <option value="ALL">Todos los dominios</option>
+          <option value="ALL">All Domains</option>
         </select>
-        <input id="canvasSearch" class="canvas2-search" placeholder="Buscar entidad o atributo..." />
-        <button id="btnFit" class="secondary">Reordenar</button>
-        <button id="btnCollapse" class="secondary">Colapsar</button>
-        <button id="btnExpand" class="secondary">Expandir</button>
+        <input id="canvasSearch" class="canvas2-search" placeholder="Search entity o atributo..." />
+        <button id="btnFit" class="secondary">Rearrange</button>
+        <button id="btnCollapse" class="secondary">Collapse</button>
+        <button id="btnExpand" class="secondary">Expand</button>
         <button id="btnReset" class="secondary">Reset</button>
       </div>
     </section>
@@ -60,18 +60,18 @@
       <aside id="inspector" class="inspector-panel">
         <header>
           <div>
-            <h2 id="inspectorTitle">Selecciona una entidad</h2>
-            <p id="inspectorSubtitle">Verás sus atributos y metadatos aquí.</p>
+            <h2 id="inspectorTitle">Select an entity</h2>
+            <p id="inspectorSubtitle">You will see its attributes and metadata here.</p>
           </div>
           <button id="closeInspector" class="icon-button">×</button>
         </header>
         <section id="inspectorBody" class="inspector-body">
-          <div class="empty-state">Haz click en una caja para ver sus atributos. Doble click para abrir el detalle de entidad.</div>
+          <div class="empty-state">Click a box to view its attributes. Double-click to open the entity detail.</div>
         </section>
       </aside>
 
       <div class="canvas2-help">
-        Arrastra cajas. Click: inspector. Click en +/-: expandir contenido. Doble click: detalle de entidad.
+        Drag boxes. Click: inspector. Click +/-: expand content. Double-click: entity detail.
       </div>
     </section>
   </main>

@@ -8,13 +8,13 @@
   const escapeHtml = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char])));
   const badge = status => `<span class="badge ${status}">${status}</span>`;
   const message = (title, html) => { $('messageTitle').textContent = title; $('messageBody').innerHTML = html; openGenericModal('messageModal'); };
-  const error = err => message('Validación', `<ul class="error-list"><li>${escapeHtml(err.message || err)}</li></ul>`);
+  const error = err => message('Validation', `<ul class="error-list"><li>${escapeHtml(err.message || err)}</li></ul>`);
 
   document.addEventListener('DOMContentLoaded', init);
 
   async function init() {
     state.chainId = new URLSearchParams(window.location.search).get('id');
-    if (!state.chainId) { error('Falta el parámetro id en la URL.'); return; }
+    if (!state.chainId) { error('Missing id parameter in the URL.'); return; }
     $('saveChainBtn').onclick = saveChain;
     $('newHotelBtn').onclick = newHotel;
     $('cancelHotelBtn').onclick = () => hide($('hotelForm'));
@@ -106,7 +106,7 @@
   function renderTemplateVersions() {
     const select = $('sourceTemplateVersionInput');
     if (!select) return;
-    select.innerHTML = '<option value="">Sin versión origen</option>' + state.templateVersions.map(v => `<option value="${v.templateVersionId}">${escapeHtml(v.label || ('Version ' + v.templateVersionId))} ${v.status ? '(' + escapeHtml(v.status) + ')' : ''}</option>`).join('');
+    select.innerHTML = '<option value="">No source version</option>' + state.templateVersions.map(v => `<option value="${v.templateVersionId}">${escapeHtml(v.label || ('Version ' + v.templateVersionId))} ${v.status ? '(' + escapeHtml(v.status) + ')' : ''}</option>`).join('');
   }
 
   function renderChain() {
@@ -123,14 +123,14 @@
     try {
       const payload = { chainCode: $('chainCodeInput').value.trim(), chainName: $('chainNameInput').value.trim(), status: $('chainStatusInput').value };
       state.chain = (await api.updateChain(state.chainId, payload)).chain;
-      renderChain(); message('Guardado', '<p>Cadena guardada correctamente.</p>');
+      renderChain(); message('Saved', '<p>Chain saved successfully.</p>');
     } catch (err) { error(err); }
   }
 
   function switchTab(id) { document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id)); document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('hidden', p.id !== id)); }
 
   function renderHotels() {
-    $('hotelsContainer').innerHTML = state.hotels.length ? `<table><thead><tr><th>HOTEL_ID</th><th>HOTEL_CODE</th><th>HOTEL_NAME</th><th>STATUS</th><th></th></tr></thead><tbody>${state.hotels.map(h => `<tr><td>${h.hotelId}</td><td>${escapeHtml(h.hotelCode)}</td><td>${escapeHtml(h.hotelName)}</td><td>${badge(h.status)}</td><td><button class="secondary small" data-edit-hotel="${h.hotelId}">Editar</button></td></tr>`).join('')}</tbody></table>` : '<p class="muted">No hay hoteles para esta cadena.</p>';
+    $('hotelsContainer').innerHTML = state.hotels.length ? `<table><thead><tr><th>HOTEL_ID</th><th>HOTEL_CODE</th><th>HOTEL_NAME</th><th>STATUS</th><th></th></tr></thead><tbody>${state.hotels.map(h => `<tr><td>${h.hotelId}</td><td>${escapeHtml(h.hotelCode)}</td><td>${escapeHtml(h.hotelName)}</td><td>${badge(h.status)}</td><td><button class="secondary small" data-edit-hotel="${h.hotelId}">Edit</button></td></tr>`).join('')}</tbody></table>` : '<p class="muted">No hotels for this chain.</p>';
     document.querySelectorAll('[data-edit-hotel]').forEach(b => b.onclick = () => editHotel(Number(b.dataset.editHotel)));
   }
 
@@ -149,26 +149,26 @@
 
   async function importHotels() {
     try {
-      const value = prompt('ID de cadena en Accenture Hospitality. Déjalo vacío para buscar por nombre:');
+      const value = prompt('Chain ID in Accenture Hospitality. Leave empty to search by name:');
       const payload = value && value.trim() ? { accChainId: Number(value.trim()) } : {};
       const result = await api.importHotels(state.chainId, payload);
       state.hotels = result.hotels || (await api.listHotels(state.chainId)).rows || [];
       renderHotels(); switchTab('hotelsPanel');
-      message('Importación completada', `<p>Origen: ${escapeHtml(result.sourceChainId || 'buscado por nombre')}</p><p>Insertados: ${Number(result.imported || 0)}</p><p>Actualizados: ${Number(result.updated || 0)}</p><p>Omitidos: ${Number(result.skipped || 0)}</p>`);
+      message('Import completed', `<p>Source: ${escapeHtml(result.sourceChainId || 'searched by name')}</p><p>Inserted: ${Number(result.imported || 0)}</p><p>Updated: ${Number(result.updated || 0)}</p><p>Skipped: ${Number(result.skipped || 0)}</p>`);
     } catch (err) { error(err); }
   }
 
   function renderDeployments() {
-    if (!state.deployments.length) { $('deploymentsContainer').innerHTML = '<p class="muted">No hay despliegues OPERA para esta cadena.</p>'; return; }
-    $('deploymentsContainer').innerHTML = `<table><thead><tr><th>CHAIN_DEPLOYMENT_ID</th><th>DEPLOYMENT_NAME</th><th>VERSION ORIGEN</th><th>STATUS</th><th>CREATED_AT</th><th>COMMENTS</th><th></th></tr></thead><tbody>${state.deployments.map(dep => `<tr><td>${dep.deploymentId}</td><td>${escapeHtml(dep.deploymentName)}</td><td>${escapeHtml(dep.sourceTemplateVersionId || '')}</td><td>${badge(dep.status)}</td><td>${escapeHtml(dep.createdAt || '')}</td><td>${escapeHtml(dep.comments || '')}</td><td class="row-actions"><button class="secondary small" data-edit-deployment="${dep.deploymentId}" ${dep.locked ? 'disabled' : ''}>Editar</button><button class="secondary small" data-copy-deployment="${dep.deploymentId}">Copiar</button></td></tr>`).join('')}</tbody></table>`;
+    if (!state.deployments.length) { $('deploymentsContainer').innerHTML = '<p class="muted">No OPERA deployments for this chain.</p>'; return; }
+    $('deploymentsContainer').innerHTML = `<table><thead><tr><th>CHAIN_DEPLOYMENT_ID</th><th>DEPLOYMENT_NAME</th><th>SOURCE VERSION</th><th>STATUS</th><th>CREATED_AT</th><th>COMMENTS</th><th></th></tr></thead><tbody>${state.deployments.map(dep => `<tr><td>${dep.deploymentId}</td><td>${escapeHtml(dep.deploymentName)}</td><td>${escapeHtml(dep.sourceTemplateVersionId || '')}</td><td>${badge(dep.status)}</td><td>${escapeHtml(dep.createdAt || '')}</td><td>${escapeHtml(dep.comments || '')}</td><td class="row-actions"><button class="secondary small" data-edit-deployment="${dep.deploymentId}" ${dep.locked ? 'disabled' : ''}>Edit</button><button class="secondary small" data-copy-deployment="${dep.deploymentId}">Copy</button></td></tr>`).join('')}</tbody></table>`;
     document.querySelectorAll('[data-edit-deployment]').forEach(b => b.onclick = () => editDeployment(Number(b.dataset.editDeployment)));
     document.querySelectorAll('[data-copy-deployment]').forEach(b => b.onclick = () => copyDeployment(Number(b.dataset.copyDeployment)));
   }
 
   function newDeployment() {
-    $('deploymentModalTitle').textContent='Nuevo despliegue OPERA';
+    $('deploymentModalTitle').textContent='New OPERA Deployment';
     $('deploymentIdInput').value='';
-    $('deploymentNameInput').value=`Despliegue OPERA ${state.chain.chainCode}`;
+    $('deploymentNameInput').value=`OPERA Deployment ${state.chain.chainCode}`;
     $('deploymentStatusInput').value='DRAFT';
     $('deploymentStatusInput').disabled=true;
     $('deploymentCommentsInput').value='';
@@ -177,7 +177,7 @@
     $('sourceTemplateVersionInput').value = activeVersion ? activeVersion.templateVersionId : '';
     openGenericModal('deploymentModal');
   }
-  function editDeployment(id) { const dep=state.deployments.find(d => d.deploymentId === id); if (!dep) return; $('deploymentModalTitle').textContent='Editar despliegue OPERA'; $('deploymentIdInput').value=dep.deploymentId; $('deploymentNameInput').value=dep.deploymentName; $('deploymentStatusInput').value=dep.status; $('deploymentStatusInput').disabled=false; $('sourceTemplateVersionInput').value=dep.sourceTemplateVersionId || ''; $('deploymentCommentsInput').value=dep.comments || ''; openGenericModal('deploymentModal'); }
+  function editDeployment(id) { const dep=state.deployments.find(d => d.deploymentId === id); if (!dep) return; $('deploymentModalTitle').textContent='Edit OPERA Deployment'; $('deploymentIdInput').value=dep.deploymentId; $('deploymentNameInput').value=dep.deploymentName; $('deploymentStatusInput').value=dep.status; $('deploymentStatusInput').disabled=false; $('sourceTemplateVersionInput').value=dep.sourceTemplateVersionId || ''; $('deploymentCommentsInput').value=dep.comments || ''; openGenericModal('deploymentModal'); }
 
   async function saveDeployment(event) {
     event.preventDefault();
@@ -189,7 +189,7 @@
     } catch (err) { error(err); }
   }
 
-  async function copyDeployment(id) { try { await deploymentsApi.copy(id); state.deployments = (await deploymentsApi.listByChain(state.chainId)).rows || []; renderDeployments(); message('Copia creada', '<p>Se ha creado una copia editable del despliegue.</p>'); } catch (err) { error(err); } }
+  async function copyDeployment(id) { try { await deploymentsApi.copy(id); state.deployments = (await deploymentsApi.listByChain(state.chainId)).rows || []; renderDeployments(); message('Copy Created', '<p>An editable copy of the deployment has been created.</p>'); } catch (err) { error(err); } }
   async function viewContent(id) { try { const data = await deploymentsApi.getContent(id); state.currentContent = data.content; state.currentContentDeploymentId = id; $('deploymentContentPre').textContent = JSON.stringify(data.content, null, 2); openGenericModal('contentModal'); } catch (err) { error(err); } }
   async function exportJson(id) { try { const data = await deploymentsApi.exportJson(id); downloadJson(data.content, `deployment-${id}.json`); } catch (err) { error(err); } }
   function downloadCurrentContent() { if (!state.currentContent) return; downloadJson(state.currentContent, `deployment-${state.currentContentDeploymentId || 'content'}.json`); }

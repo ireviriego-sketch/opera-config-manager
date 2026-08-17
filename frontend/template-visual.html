@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Plantilla Visual | OPERA Config Manager</title>
+  <title>Visual Template | OPERA Config Manager</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
   <link rel="stylesheet" href="assets/css/canvas-modeling-unification.css">
@@ -24,24 +24,24 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="visualTitle">Plantilla Visual</h1>
-        <p id="visualSubtitle">Mapa navegable de dominios, entidades y atributos importados desde el PIW.</p>
+        <h1 id="visualTitle">Visual Template</h1>
+        <p id="visualSubtitle">Navigable map of domains, entities, and attributes imported from the PIW.</p>
       </div>
       <div class="actions-right">
-        <button id="backToTemplate" class="secondary">Volver a la plantilla</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToTemplate" class="secondary">Back to Template</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="page-actions">
       <div>
-        <h2 id="versionTitle">Cargando versión...</h2>
-        <p id="modelSummary">Recuperando modelo desde Oracle.</p>
+        <h2 id="versionTitle">Loading version...</h2>
+        <p id="modelSummary">Retrieving model from Oracle.</p>
       </div>
       <div class="actions-right">
-        <input id="modelSearch" class="search-input" placeholder="Buscar dominio, entidad o atributo..." />
-        <button id="expandAll" class="secondary">Expandir</button>
-        <button id="collapseAll" class="secondary">Colapsar</button>
+        <input id="modelSearch" class="search-input" placeholder="Search domain, entity o atributo..." />
+        <button id="expandAll" class="secondary">Expand</button>
+        <button id="collapseAll" class="secondary">Collapse</button>
       </div>
     </section>
 
@@ -49,18 +49,18 @@
       <aside class="visual-sidebar-card card">
         <div class="card-header">
           <div>
-            <h3>Resumen</h3>
-            <p>Contadores del modelo cargado.</p>
+            <h3>Summary</h3>
+            <p>Counters for the loaded model.</p>
           </div>
         </div>
         <div class="visual-stats">
-          <div class="detail-item"><span>Dominios</span><strong id="domainCount">-</strong></div>
-          <div class="detail-item"><span>Entidades</span><strong id="entityCount">-</strong></div>
-          <div class="detail-item"><span>Atributos</span><strong id="attributeCount">-</strong></div>
+          <div class="detail-item"><span>Domains</span><strong id="domainCount">-</strong></div>
+          <div class="detail-item"><span>Entities</span><strong id="entityCount">-</strong></div>
+          <div class="detail-item"><span>Attributes</span><strong id="attributeCount">-</strong></div>
         </div>
         <div class="visual-help">
-          <strong>Uso rápido</strong>
-          <p>Abre o cierra dominios, busca elementos y usa los enlaces para navegar al detalle funcional.</p>
+          <strong>Quick Use</strong>
+          <p>Open or close domains, search items, and use links to navigate to the functional detail.</p>
         </div>
       </aside>
 
@@ -68,11 +68,11 @@
         <div class="card-header">
           <div>
             <h3>Model Explorer</h3>
-            <p>Vista jerárquica para validar rápidamente el resultado del script de importación.</p>
+            <p>Hierarchical view to quickly validate the import script result.</p>
           </div>
         </div>
         <div id="modelExplorer" class="model-explorer"></div>
-        <div id="visualEmptyState" class="empty-state hidden">No hay elementos que coincidan con la búsqueda.</div>
+        <div id="visualEmptyState" class="empty-state hidden">No items match the search.</div>
       </section>
     </section>
   </main>

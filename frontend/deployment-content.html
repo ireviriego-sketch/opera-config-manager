@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OPERA CFG - Contenido despliegue</title>
+  <title>OPERA CFG - Deployment Content</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/deployment-content.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
@@ -17,11 +17,11 @@
 
   <main class="main">
     <header class="topbar">
-      <div><h1>Contenido del despliegue</h1><p id="pageSubtitle">Dominios, entidades y registros que se desplegarán.</p></div>
+      <div><h1>Deployment Content</h1><p id="pageSubtitle">Domains, entities, and records to be deployed.</p></div>
       <div class="page-actions">
-        <button id="logoutBtn" class="secondary" type="button">Volver</button>
-        <button id="backBtn" class="secondary" type="button">Volver</button>
-        <button id="refreshBtn" class="secondary" type="button">Actualizar</button>
+        <button id="logoutBtn" class="secondary" type="button">Back</button>
+        <button id="backBtn" class="secondary" type="button">Back</button>
+        <button id="refreshBtn" class="secondary" type="button">Refresh</button>
       </div>
     </header>
 
@@ -36,17 +36,17 @@
   <div id="importModal" class="modal hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="importModalTitle">Importar Excel</h2>
-        <button id="closeImportModalBtn" class="link-button" type="button">Cerrar</button>
+        <h2 id="importModalTitle">Import Excel</h2>
+        <button id="closeImportModalBtn" class="link-button" type="button">Close</button>
       </div>
-      <p class="muted" style="margin:12px 0 8px">Selecciona un archivo Excel (.xlsx). Cada hoja debe tener el nombre de la entidad y las columnas deben coincidir con los atributos definidos.</p>
+      <p class="muted" style="margin:12px 0 8px">Select an Excel file (.xlsx). Each sheet must have the entity name and columns must match the defined attributes.</p>
       <form id="importForm" novalidate>
         <label style="display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:13px;margin-bottom:14px">
-          Archivo Excel (.xlsx)
+          Excel File (.xlsx)
           <input id="importFileInput" type="file" accept=".xlsx" class="input" required />
         </label>
         <div class="form-actions" style="display:flex;gap:10px;align-items:center">
-          <button id="importSubmitBtn" class="primary" type="submit">Importar</button>
+          <button id="importSubmitBtn" class="primary" type="submit">Import</button>
           <span id="importStatus" style="font-size:13px"></span>
         </div>
       </form>
@@ -58,8 +58,8 @@
   <div id="messageModal" class="modal hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="messageTitle">Aviso</h2>
-        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+        <h2 id="messageTitle">Notice</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Close</button>
       </div>
       <div id="messageBody"></div>
     </div>

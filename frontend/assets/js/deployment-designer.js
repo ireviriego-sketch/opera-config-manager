@@ -32,7 +32,7 @@
     $('exportAllBtn').onclick = exportDeploymentJson;
     $('closeDrawerBtn').onclick = () => hide($('entityDrawer'));
     $('newRecordBtn').onclick = newRecord;
-    $('importExcelBtn').onclick = () => message('Importar Excel', '<p>La importación Excel se conectará en el siguiente paso. Esta pantalla ya sabe qué entidad y atributos usar.</p>');
+    $('importExcelBtn').onclick = () => message('Import Excel', '<p>Excel import will be connected in the next step. This screen already knows which entity and attributes to use.</p>');
     $('exportExcelBtn').onclick = exportCurrentEntityCsv;
     $('closeRecordModalBtn').onclick = () => closeModal('recordModal');
     $('closeMessageBtn').onclick = () => closeModal('messageModal');
@@ -60,7 +60,7 @@
   function renderHeader() {
     if (!state.deployment) return;
     $('designerTitle').textContent = state.deployment.deploymentName || `Despliegue ${state.deploymentId}`;
-    $('designerSubtitle').textContent = `${state.deployment.chainName || ''} · Version origen ${state.deployment.sourceTemplateVersionId || 'sin versión'}`;
+    $('designerSubtitle').textContent = `${state.deployment.chainName || ''} · Source Version ${state.deployment.sourceTemplateVersionId || 'no version'}`;
   }
 
   function renderDomains() {
@@ -70,9 +70,9 @@
       const active = Number(domain.deploymentDomainId) === Number(state.selectedDomainId) ? ' active' : '';
       return `<button class="domain-filter-button${active}" data-domain-id="${domain.deploymentDomainId}">
         <strong>${escapeHtml(domain.domainName)}</strong>
-        <small>${entities.length} entidades</small>
+        <small>${entities.length} entities</small>
       </button>`;
-    }).join('') : '<p class="muted">No hay dominios copiados. Edita el despliegue y guarda con una versión origen.</p>';
+    }).join('') : '<p class="muted">No copied domains. Edit the deployment and save with a source version.</p>';
 
     document.querySelectorAll('[data-domain-id]').forEach(btn => btn.onclick = () => {
       state.selectedDomainId = Number(btn.dataset.domainId);
@@ -90,7 +90,7 @@
     const canvas = $('canvas');
     const domains = getVisibleDomains();
     if (!domains.length) {
-      canvas.innerHTML = '<div class="empty-canvas"><p>No hay estructura copiada para este despliegue.</p></div>';
+      canvas.innerHTML = '<div class="empty-canvas"><p>No copied structure for this deployment.</p></div>';
       $('relationshipLayer').innerHTML = '';
       return;
     }
@@ -108,7 +108,7 @@
       const bandH = 88 + rows * (cardH + gapY);
       const bandW = 880;
       html += `<section class="domain-band" style="left:24px; top:${top}px; width:${bandW}px; height:${bandH}px;" data-domain-band="${domain.deploymentDomainId}">
-        <div class="domain-band-title"><span>${escapeHtml(domain.domainName)}</span><small>${entities.length} entidades</small></div>
+        <div class="domain-band-title"><span>${escapeHtml(domain.domainName)}</span><small>${entities.length} entities</small></div>
       </section>`;
 
       entities.forEach((entity, index) => {
@@ -119,7 +119,7 @@
         html += `<article class="entity-card" style="left:${x}px; top:${y}px;" data-entity-id="${entity.deploymentEntityId}" data-domain-id="${domain.deploymentDomainId}">
           <h3>${escapeHtml(entity.entityName)}</h3>
           <div class="entity-meta"><span>${escapeHtml(entity.entityCode || '')}</span><span>${(entity.attributes || []).length} attrs</span></div>
-          <span class="entity-record-chip">${Number(entity.recordCount || 0)} registros</span>
+          <span class="entity-record-chip">${Number(entity.recordCount || 0)} records</span>
         </article>`;
       });
       top += bandH + 36;
@@ -208,7 +208,7 @@
     document.querySelectorAll('.entity-card').forEach(card => card.classList.toggle('selected', Number(card.dataset.entityId) === Number(entityId)));
     $('drawerDomain').textContent = found.domain.domainName;
     $('drawerTitle').textContent = found.entity.entityName;
-    $('drawerSubtitle').textContent = `${found.entity.entityCode || ''} · ${found.entity.recordCount || 0} registros`;
+    $('drawerSubtitle').textContent = `${found.entity.entityCode || ''} · ${found.entity.recordCount || 0} records`;
 
     try {
       state.attributes = (await api.getAttributes(state.deploymentId, entityId)).rows || [];
@@ -225,16 +225,16 @@
 
   function renderAttributes() {
     $('attributeCountBadge').textContent = state.attributes.length;
-    $('attributeList').innerHTML = state.attributes.length ? state.attributes.map(attr => `<span class="attribute-pill" title="${escapeHtml(attr.dataType || '')}">${escapeHtml(attributeKey(attr))}${attr.isRequired === 'Y' ? ' *' : ''}</span>`).join('') : '<p class="muted">Esta entidad no tiene atributos.</p>';
+    $('attributeList').innerHTML = state.attributes.length ? state.attributes.map(attr => `<span class="attribute-pill" title="${escapeHtml(attr.dataType || '')}">${escapeHtml(attributeKey(attr))}${attr.isRequired === 'Y' ? ' *' : ''}</span>`).join('') : '<p class="muted">Esta entity no tiene atributos.</p>';
   }
 
   function renderRecords() {
     if (!state.records.length) {
-      $('recordsContainer').innerHTML = '<p class="muted">No hay registros para esta entidad. Pulsa Nuevo.</p>';
+      $('recordsContainer').innerHTML = '<p class="muted">No records for this entity. Click New.</p>';
       return;
     }
     const columns = state.attributes.map(attributeKey);
-    $('recordsContainer').innerHTML = `<table><thead><tr>${columns.map(col => `<th>${escapeHtml(col)}</th>`).join('')}<th></th></tr></thead><tbody>${state.records.map(record => `<tr>${columns.map(col => `<td>${escapeHtml(record.record?.[col] || '')}</td>`).join('')}<td class="row-actions"><button class="secondary small" data-edit-record="${record.deploymentRecordId}">Editar</button><button class="secondary small" data-delete-record="${record.deploymentRecordId}">Borrar</button></td></tr>`).join('')}</tbody></table>`;
+    $('recordsContainer').innerHTML = `<table><thead><tr>${columns.map(col => `<th>${escapeHtml(col)}</th>`).join('')}<th></th></tr></thead><tbody>${state.records.map(record => `<tr>${columns.map(col => `<td>${escapeHtml(record.record?.[col] || '')}</td>`).join('')}<td class="row-actions"><button class="secondary small" data-edit-record="${record.deploymentRecordId}">Edit</button><button class="secondary small" data-delete-record="${record.deploymentRecordId}">Delete</button></td></tr>`).join('')}</tbody></table>`;
     document.querySelectorAll('[data-edit-record]').forEach(btn => btn.onclick = () => editRecord(Number(btn.dataset.editRecord)));
     document.querySelectorAll('[data-delete-record]').forEach(btn => btn.onclick = () => deleteRecord(Number(btn.dataset.deleteRecord)));
   }
@@ -242,7 +242,7 @@
   function newRecord() {
     if (!state.selectedEntity) return;
     state.editingRecord = null;
-    $('recordModalTitle').textContent = `Nuevo registro - ${state.selectedEntity.entityName}`;
+    $('recordModalTitle').textContent = `New Record - ${state.selectedEntity.entityName}`;
     renderRecordForm({});
     openModal('recordModal');
   }
@@ -251,7 +251,7 @@
     const record = state.records.find(item => Number(item.deploymentRecordId) === Number(recordId));
     if (!record) return;
     state.editingRecord = record;
-    $('recordModalTitle').textContent = `Editar registro - ${state.selectedEntity.entityName}`;
+    $('recordModalTitle').textContent = `Edit record - ${state.selectedEntity.entityName}`;
     renderRecordForm(record.record || {});
     openModal('recordModal');
   }
@@ -260,7 +260,7 @@
     $('recordForm').innerHTML = state.attributes.map(attr => {
       const key = attributeKey(attr);
       return `<label>${escapeHtml(key)}${attr.isRequired === 'Y' ? ' *' : ''}<input class="input" data-record-field="${escapeHtml(key)}" value="${escapeHtml(values[key] || attr.defaultValue || '')}" /></label>`;
-    }).join('') + '<div class="form-actions"><button class="primary" type="submit">Guardar registro</button></div>';
+    }).join('') + '<div class="form-actions"><button class="primary" type="submit">Save Record</button></div>';
   }
 
   async function saveRecord(event) {
@@ -278,7 +278,7 @@
   }
 
   async function deleteRecord(recordId) {
-    if (!confirm('¿Borrar este registro?')) return;
+    if (!confirm('Delete this record?')) return;
     try {
       await api.deleteRecord(state.deploymentId, recordId);
       await openEntity(state.selectedEntity.deploymentEntityId);

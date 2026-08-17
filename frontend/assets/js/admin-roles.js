@@ -8,7 +8,7 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
-  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });
+  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'An error occurred'); });
 
   function normalizeList(payload) {
     if (Array.isArray(payload)) return payload;
@@ -43,7 +43,7 @@
     if (!body) return;
 
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="7">No hay roles para mostrar.</td></tr>';
+      body.innerHTML = '<tr><td colspan="7">No roles to display.</td></tr>';
       return;
     }
 
@@ -81,13 +81,13 @@
 
   async function loadRoles() {
     try {
-      if (body) body.innerHTML = '<tr><td colspan="7">Cargando roles...</td></tr>';
+      if (body) body.innerHTML = '<tr><td colspan="7">Loading roles...</td></tr>';
       const payload = await requestJson('/api/admin/roles');
       roles = normalizeList(payload);
       render(roles);
     } catch (error) {
       console.error('Error cargando roles', error);
-      if (body) body.innerHTML = `<tr><td colspan="7">No se han podido cargar los roles. ${esc(error.message || '')}</td></tr>`;
+      if (body) body.innerHTML = `<tr><td colspan="7">Unable to load roles. ${esc(error.message || '')}</td></tr>`;
     }
   }
 

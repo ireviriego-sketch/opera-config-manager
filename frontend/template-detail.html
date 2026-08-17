@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Detalle de plantilla | OPERA Config Manager</title>
+  <title>Template Details | OPERA Config Manager</title>
   <link rel="stylesheet" href="assets/css/app.css" />
   <link rel="stylesheet" href="assets/css/footer.css">
   <link rel="stylesheet" href="assets/css/table-unification.css">
@@ -23,19 +23,19 @@
   <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="templateTitle">Detalle de plantilla</h1>
-        <p id="templateSubtitle">Información general del modelo de configuración.</p>
+        <h1 id="templateTitle">Template Details</h1>
+        <p id="templateSubtitle">General information for the configuration model.</p>
       </div>
       <div class="actions-right">
-        <button id="backToTemplates" class="secondary">Volver a Plantillas</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToTemplates" class="secondary">Back to Templates</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="page-actions">
       <div>
-        <h2 id="templateCode">Cargando plantilla...</h2>
-        <p id="templateDescription">Recuperando información desde Oracle.</p>
+        <h2 id="templateCode">Loading template...</h2>
+        <p id="templateDescription">Retrieving information from Oracle.</p>
       </div>
       <div id="templateStatus"></div>
     </section>
@@ -43,80 +43,80 @@
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Información general</h3>
-          <p>Datos principales de la plantilla seleccionada.</p>
+          <h3>General Information</h3>
+          <p>Main data for the selected template.</p>
         </div>
       </div>
       <div class="detail-grid">
         <div class="detail-item"><span>ID</span><strong id="detailId">-</strong></div>
-        <div class="detail-item"><span>Código</span><strong id="detailCode">-</strong></div>
-        <div class="detail-item"><span>Nombre</span><strong id="detailName">-</strong></div>
-        <div class="detail-item"><span>Estado</span><strong id="detailStatus">-</strong></div>
+        <div class="detail-item"><span>Code</span><strong id="detailCode">-</strong></div>
+        <div class="detail-item"><span>Name</span><strong id="detailName">-</strong></div>
+        <div class="detail-item"><span>Status</span><strong id="detailStatus">-</strong></div>
       </div>
     </section>
 
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Versiones</h3>
-          <p id="versionsCount">Cargando versiones...</p>
+          <h3>Versions</h3>
+          <p id="versionsCount">Loading versions...</p>
         </div>
-        <button id="btnNewVersion">+ Nueva versión</button>
+        <button id="btnNewVersion">+ New Version</button>
       </div>
       <div class="table-wrap">
         <table id="versionsTable" class="data-table">
           <thead>
             <tr>
-              <th>Versión</th>
-              <th>Etiqueta</th>
-              <th>Estado</th>
-              <th>Activa</th>
-              <th>Creada por</th>
-              <th>Fecha creación</th>
-              <th>Acciones</th>
+              <th>Version</th>
+              <th>Label</th>
+              <th>Status</th>
+              <th>Active</th>
+              <th>Created By</th>
+              <th>Creation Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
-      <div id="versionsEmptyState" class="empty-state hidden">Todavía no hay versiones para esta plantilla.</div>
+      <div id="versionsEmptyState" class="empty-state hidden">There are no versions for this template yet.</div>
     </section>
 
     <section class="card">
       <div class="card-header">
         <div>
-          <h3>Estructura de la plantilla</h3>
-          <p>Próximos módulos funcionales del modelo de configuración.</p>
+          <h3>Template Structure</h3>
+          <p>Upcoming functional modules of the configuration model.</p>
         </div>
       </div>
       <div class="module-grid">
-        <article class="module-card"><h4>Dominios funcionales</h4><p>Agrupaciones lógicas de entidades de configuración.</p></article>
-        <article class="module-card"><h4>Entidades</h4><p>Objetos de configuración, atributos y relaciones.</p></article>
-        <article class="module-card"><h4>Atributos</h4><p>Campos, tipos de dato, obligatoriedad y referencias.</p></article>
-        <article class="module-card"><h4>Despliegues</h4><p>Validaciones, simulaciones y exportación hacia OPERA Cloud.</p></article>
+        <article class="module-card"><h4>Functional Domains</h4><p>Logical groupings of configuration entities.</p></article>
+        <article class="module-card"><h4>Entities</h4><p>Configuration objects, attributes, and relationships.</p></article>
+        <article class="module-card"><h4>Attributes</h4><p>Fields, data types, required status, and references.</p></article>
+        <article class="module-card"><h4>Deployments</h4><p>Validations, simulations, and export to OPERA Cloud.</p></article>
       </div>
     </section>
 
-    <section id="detailError" class="card hidden"><div class="empty-state">No se ha podido cargar el detalle de la plantilla.</div></section>
+    <section id="detailError" class="card hidden"><div class="empty-state">Unable to load template details.</div></section>
   </main>
 
   <div id="versionModal" class="modal-backdrop hidden">
     <section class="modal">
       <header class="modal-header">
         <div>
-          <h2>Nueva versión</h2>
-          <p>Crea un borrador para evolucionar la plantilla.</p>
+          <h2>New Version</h2>
+          <p>Create a draft to evolve the template.</p>
         </div>
         <button id="closeVersionModal" class="icon-button">×</button>
       </header>
       <div class="modal-body">
-        <label for="versionLabel">Etiqueta de versión</label>
+        <label for="versionLabel">Version Label</label>
         <input id="versionLabel" placeholder="Ej. PMS v1.1 Draft" />
         <div id="versionFormMessage" class="message"></div>
       </div>
       <footer class="modal-footer">
-        <button id="cancelVersion" class="secondary">Cancelar</button>
-        <button id="saveVersion">Crear versión</button>
+        <button id="cancelVersion" class="secondary">Cancel</button>
+        <button id="saveVersion">Create Version</button>
       </footer>
     </section>
   </div>

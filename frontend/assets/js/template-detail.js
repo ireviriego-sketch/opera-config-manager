@@ -18,15 +18,15 @@ function templateStatusBadge(status) {
 
 function yesNoBadge(value) {
   return value === 'Y'
-    ? '<span class="badge badge-success">Sí</span>'
+    ? '<span class="badge badge-success">Yes</span>'
     : '<span class="badge badge-muted">No</span>';
 }
 
 function showTemplate(template) {
-  document.getElementById('templateTitle').textContent = template.TEMPLATE_NAME || 'Detalle de plantilla';
+  document.getElementById('templateTitle').textContent = template.TEMPLATE_NAME || 'Template Details';
   document.getElementById('templateSubtitle').textContent = template.TEMPLATE_CODE || '';
   document.getElementById('templateCode').textContent = template.TEMPLATE_CODE || '-';
-  document.getElementById('templateDescription').textContent = template.TEMPLATE_DESCRIPTION || 'Sin descripción';
+  document.getElementById('templateDescription').textContent = template.TEMPLATE_DESCRIPTION || 'No description';
   document.getElementById('templateStatus').innerHTML = templateStatusBadge(template.STATUS);
   document.getElementById('detailId').textContent = template.TEMPLATE_ID || '-';
   document.getElementById('detailCode').textContent = template.TEMPLATE_CODE || '-';
@@ -39,9 +39,9 @@ function renderVersions(versions) {
   const emptyState = document.getElementById('versionsEmptyState');
   const count = document.getElementById('versionsCount');
   tbody.innerHTML = '';
-  if (!versions.length) { emptyState.classList.remove('hidden'); count.textContent = '0 versiones'; return; }
+  if (!versions.length) { emptyState.classList.remove('hidden'); count.textContent = '0 versions'; return; }
   emptyState.classList.add('hidden');
-  count.textContent = `${versions.length} versión${versions.length === 1 ? '' : 'es'}`;
+  count.textContent = `${versions.length} version${versions.length === 1 ? '' : 'es'}`;
 
   versions.forEach(v => {
     const row = document.createElement('tr');
@@ -53,8 +53,8 @@ function renderVersions(versions) {
       <td>${v.CREATED_BY || ''}</td>
       <td>${v.CREATED_AT || ''}</td>
       <td>
-        <button class="table-action view-version" data-version-id="${v.VERSION_ID}">Ver</button>
-        <button class="table-action view-rel-canvas" data-version-id="${v.VERSION_ID}">Relaciones</button>
+        <button class="table-action view-version" data-version-id="${v.VERSION_ID}">View</button>
+        <button class="table-action view-rel-canvas" data-version-id="${v.VERSION_ID}">Relationships</button>
       </td>`;
     tbody.appendChild(row);
   });
@@ -91,7 +91,7 @@ async function saveVersion() {
     document.getElementById('versionLabel').value = '';
     closeVersionModal();
     await loadVersions();
-  } catch (error) { message.textContent = error.data?.error || 'No se ha podido crear la versión.'; }
+  } catch (error) { message.textContent = error.data?.error || 'Unable to create version.'; }
 }
 
 function setupVersionRowActions() {

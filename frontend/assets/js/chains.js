@@ -14,7 +14,7 @@
     show($('messageModal'));
   };
 
-  const error = err => message('Validación', `<p>${escapeHtml(err.message || err)}</p>`);
+  const error = err => message('Validation', `<p>${escapeHtml(err.message || err)}</p>`);
 
   async function loadChainLovs(){if(!window.LovsClient)return;await window.LovsClient.populateSelect('#chainStatusInput','STATUS',{defaultValue:'ACTIVE'});}
 document.addEventListener('DOMContentLoaded', init);
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', init);
     if ($('newChainBtn')) {
       $('newChainBtn').onclick = openNewChain;
       $('newChainBtn').disabled = true;
-      $('newChainBtn').title = 'La creación de cadenas no está permitida desde este rol.';
+      $('newChainBtn').title = 'Creating chains is not allowed from this role.';
     }
     if ($('closeModalBtn')) $('closeModalBtn').onclick = () => hide($('chainModal'));
     if ($('closeMessageBtn')) $('closeMessageBtn').onclick = () => hide($('messageModal'));
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', init);
     if (!rows.length) {
       $('chainsContainer').innerHTML = `
         <div class="empty-state">
-          <strong>No tiene cadenas asignadas.</strong>
-          <p>Solicita a un administrador que asigne una o varias cadenas a tu usuario desde Administración &gt; Usuarios &gt; Cadenas autorizadas.</p>
+          <strong>No chains assigned.</strong>
+          <p>Solicita a un administrador que asigne una o varias chains a tu user desde Administration &gt; Users &gt; Authorized Chains.</p>
         </div>
       `;
       return;
@@ -62,18 +62,18 @@ document.addEventListener('DOMContentLoaded', init);
       <article class="chain-card">
         <h3>${escapeHtml(chain.chainName)}</h3>
         <p>${escapeHtml(chain.chainCode)} · ${badge(chain.status)}</p>
-        <p>Hoteles: ${Number(chain.hotelsCount || 0)}</p>
-        <a class="btn btn-secondary" href="chain-detail.html?id=${encodeURIComponent(chain.chainId)}">Abrir</a>
+        <p>Hotels: ${Number(chain.hotelsCount || 0)}</p>
+        <a class="btn btn-secondary" href="chain-detail.html?id=${encodeURIComponent(chain.chainId)}">Open</a>
       </article>
     `).join('');
   }
 
   function openNewChain() {
-    message('Acceso restringido', '<p>La creación de nuevas cadenas no está permitida desde este rol. Primero debe existir una asignación explícita de cadena.</p>');
+    message('Restricted Access', '<p>Creating new chains is not allowed from this role. An explicit chain assignment must exist first.</p>');
   }
 
   async function saveChain(event) {
     event.preventDefault();
-    message('Acceso restringido', '<p>La creación de nuevas cadenas no está permitida desde este rol.</p>');
+    message('Restricted Access', '<p>Creating new chains is not allowed from this role.</p>');
   }
 })();

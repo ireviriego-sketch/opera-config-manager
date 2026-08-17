@@ -27,8 +27,8 @@ async function loadVersionHeader() {
   const version = (data.versions || []).find(v => String(v.VERSION_ID) === String(currentVersionId));
   if (!version) return;
 
-  document.getElementById('versionTitle').textContent = version.VERSION_LABEL || `Versión ${version.VERSION_NUMBER}`;
-  document.getElementById('visualSubtitle').textContent = `Versión ${version.VERSION_NUMBER} · ${version.VERSION_STATUS}`;
+  document.getElementById('versionTitle').textContent = version.VERSION_LABEL || `Version ${version.VERSION_NUMBER}`;
+  document.getElementById('visualSubtitle').textContent = `Version ${version.VERSION_NUMBER} · ${version.VERSION_STATUS}`;
 }
 
 async function loadModel() {
@@ -69,7 +69,7 @@ function updateStats() {
   document.getElementById('domainCount').textContent = domainCount;
   document.getElementById('entityCount').textContent = entityCount;
   document.getElementById('attributeCount').textContent = attributeCount;
-  document.getElementById('modelSummary').textContent = `${domainCount} dominios · ${entityCount} entidades · ${attributeCount} atributos`;
+  document.getElementById('modelSummary').textContent = `${domainCount} domains · ${entityCount} entities · ${attributeCount} atributos`;
 }
 
 function filteredModel() {
@@ -133,7 +133,7 @@ function renderModel() {
       <button class="explorer-domain-header" data-domain-id="${domain.DOMAIN_ID}">
         <span>${domainExpanded ? '▾' : '▸'}</span>
         <strong>${domain.DOMAIN_NAME || domain.DOMAIN_CODE}</strong>
-        <em>${domain.entities.length} entidades</em>
+        <em>${domain.entities.length} entities</em>
       </button>
       <div class="explorer-domain-body ${domainExpanded ? '' : 'hidden'}"></div>
     `;
@@ -223,7 +223,7 @@ async function setupTemplateVisualPage() {
   currentVersionId = params.versionId;
 
   if (!currentTemplateId || !currentVersionId) {
-    document.getElementById('modelSummary').textContent = 'Faltan parámetros templateId y versionId.';
+    document.getElementById('modelSummary').textContent = 'Missing templateId and versionId parameters.';
     return;
   }
 

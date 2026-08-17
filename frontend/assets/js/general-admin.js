@@ -7,7 +7,7 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
-  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });
+  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'An error occurred'); });
 
   const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
     const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
@@ -44,23 +44,23 @@
   function renderLinkRows() {
     const container = $('footerLinksRows');
     if (!footerLinks.length) {
-      container.innerHTML = '<p>No hay enlaces configurados.</p>';
+      container.innerHTML = '<p>No links configured.</p>';
       renderPreview();
       return;
     }
 
     container.innerHTML = footerLinks.map((link, index) => `
       <div class="footer-link-row" data-footer-link-index="${index}">
-        <label>Texto
+        <label>Text
           <input class="form-control" data-footer-link-field="text" value="${esc(link.text || '')}">
         </label>
         <label>URL
           <input class="form-control" data-footer-link-field="url" value="${esc(link.url || '')}">
         </label>
-        <label>Orden
+        <label>Order
           <input class="form-control" data-footer-link-field="displayOrder" type="number" value="${esc(link.displayOrder || ((index + 1) * 10))}">
         </label>
-        <button type="button" class="btn btn-danger" data-remove-footer-link="${index}">Eliminar</button>
+        <button type="button" class="btn btn-danger" data-remove-footer-link="${index}">Delete</button>
       </div>
     `).join('');
     renderPreview();
@@ -96,7 +96,7 @@
       links: footerLinks
     };
     await requestJson('/api/app-settings/footer', { method: 'PUT', body: JSON.stringify(payload) });
-    $('footerMessage').textContent = 'Footer guardado correctamente.';
+    $('footerMessage').textContent = 'Footer saved successfully.';
     renderPreview();
   }
 
@@ -123,10 +123,10 @@
   });
 
   $('saveFooterBtn')?.addEventListener('click', () => saveFooter().catch(error => {
-    $('footerMessage').textContent = error.message || 'No se ha podido guardar el footer.';
+    $('footerMessage').textContent = error.message || 'Unable to save footer.';
   }));
 
   loadFooter().catch(error => {
-    $('footerMessage').textContent = error.message || 'No se ha podido cargar la configuración del footer.';
+    $('footerMessage').textContent = error.message || 'Unable to load footer configuration.';
   });
 })();

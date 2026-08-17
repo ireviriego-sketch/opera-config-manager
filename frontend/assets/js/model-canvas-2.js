@@ -58,8 +58,8 @@ async function loadVersionHeader() {
   const data = await apiFetch(`/api/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`);
   const version = (data.versions || []).find(v => String(v.VERSION_ID) === String(currentVersionId));
   if (!version) return;
-  document.getElementById('versionTitle').textContent = version.VERSION_LABEL || `Versión ${version.VERSION_NUMBER}`;
-  document.getElementById('canvasSubtitle').textContent = `Versión ${version.VERSION_NUMBER} · ${version.VERSION_STATUS}`;
+  document.getElementById('versionTitle').textContent = version.VERSION_LABEL || `Version ${version.VERSION_NUMBER}`;
+  document.getElementById('canvasSubtitle').textContent = `Version ${version.VERSION_NUMBER} · ${version.VERSION_STATUS}`;
 }
 
 async function loadModel() {
@@ -86,7 +86,7 @@ async function loadModel() {
 
 function populateDomainFilter() {
   const filter = document.getElementById('domainFilter');
-  filter.innerHTML = '<option value="ALL">Todos los dominios</option>';
+  filter.innerHTML = '<option value="ALL">All Domains</option>';
   domains.forEach(domain => {
     const option = document.createElement('option');
     option.value = String(domain.DOMAIN_ID);
@@ -97,7 +97,7 @@ function populateDomainFilter() {
 
 function updateStats() {
   const attributeCount = allEntities.reduce((total, entity) => total + entity.attributes.length, 0);
-  document.getElementById('versionStats').textContent = `${domains.length} dominios · ${allEntities.length} entidades · ${attributeCount} atributos`;
+  document.getElementById('versionStats').textContent = `${domains.length} domains · ${allEntities.length} entities · ${attributeCount} attributes`;
 }
 
 function applyFilters() {
@@ -161,7 +161,7 @@ function renderCanvas() {
         <button class="canvas2-toggle">${collapsed ? '+' : '-'}</button>
       </header>
       <div class="canvas2-card-summary">
-        <span class="canvas2-pill">${entity.attributes.length} atributos</span>
+        <span class="canvas2-pill">${entity.attributes.length} attributes</span>
         <span class="canvas2-pill">${entity.ENTITY_CODE || ''}</span>
       </div>
       <section class="canvas2-card-body">
@@ -219,8 +219,8 @@ function showInspector(entity) {
   const body = document.getElementById('inspectorBody');
   body.innerHTML = `
     <div class="inspector-meta">
-      <div class="detail-item"><span>Entidad</span><strong>${entity.ENTITY_CODE || '-'}</strong></div>
-      <div class="detail-item"><span>Atributos</span><strong>${entity.attributes.length}</strong></div>
+      <div class="detail-item"><span>Entity</span><strong>${entity.ENTITY_CODE || '-'}</strong></div>
+      <div class="detail-item"><span>Attributes</span><strong>${entity.attributes.length}</strong></div>
     </div>
     <div class="inspector-attr-list">
       ${entity.attributes.map(attribute => `
@@ -330,9 +330,9 @@ function setupToolbar() {
   });
   document.getElementById('closeInspector').addEventListener('click', () => {
     selectedEntityId = null;
-    document.getElementById('inspectorTitle').textContent = 'Selecciona una entidad';
-    document.getElementById('inspectorSubtitle').textContent = 'Verás sus atributos y metadatos aquí.';
-    document.getElementById('inspectorBody').innerHTML = '<div class="empty-state">Haz click en una caja para ver sus atributos. Doble click para abrir el detalle de entidad.</div>';
+    document.getElementById('inspectorTitle').textContent = 'Select an entity';
+    document.getElementById('inspectorSubtitle').textContent = 'You will see its attributes and metadata here.';
+    document.getElementById('inspectorBody').innerHTML = '<div class="empty-state">Click a box to view its attributes. Double-click to open the entity detail.</div>';
     renderCanvas();
   });
 }

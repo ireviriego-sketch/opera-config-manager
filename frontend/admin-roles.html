@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,40 +24,40 @@
     <main class="main-content page-main">
       <header class="page-header hero-card">
         <div>
-          <h1>Administración de roles</h1>
-          <p>Roles funcionales de OPERA CFG.</p>
+          <h1>Role Administration</h1>
+          <p>OPERA CFG functional roles.</p>
         </div>
-        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Volver</button>
+        <button id="logoutBtn" type="button" class="btn btn-secondary logout-btn">Back</button>
       </header>
 
       <section class="card page-card">
         <div class="section-header card-header">
           <div>
             <h2>Roles</h2>
-            <p>ADMIN administra la herramienta. CHAIN_MANAGER y HOTEL_MANAGER requieren permisos explícitos por cadena u hotel.</p>
+            <p>ADMIN administers the tool. CHAIN_MANAGER and HOTEL_MANAGER require explicit permissions by chain or hotel.</p>
           </div>
-          <button id="refreshRolesBtn" type="button" class="btn btn-primary">Refrescar</button>
+          <button id="refreshRolesBtn" type="button" class="btn btn-primary">Refresh</button>
         </div>
 
         <div class="toolbar table-toolbar">
-          <input id="roleSearch" class="form-control" type="search" placeholder="Buscar rol">
+          <input id="roleSearch" class="form-control" type="search" placeholder="Search rol">
         </div>
 
         <div class="table-wrapper">
           <table class="table data-table">
             <thead>
               <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Sistema</th>
-                <th>Usuarios</th>
-                <th>Permisos</th>
-                <th>Actualizado</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>System</th>
+                <th>Users</th>
+                <th>Permissions</th>
+                <th>Updated</th>
               </tr>
             </thead>
             <tbody id="rolesBody">
-              <tr><td colspan="7">Cargando roles...</td></tr>
+              <tr><td colspan="7">Loading roles...</td></tr>
             </tbody>
           </table>
         </div>

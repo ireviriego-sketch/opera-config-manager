@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,28 +25,28 @@
     <header class="topbar canvas-topbar">
       <div>
         <h1 id="canvasTitle">Visual Model Canvas</h1>
-        <p id="canvasSubtitle">Cajas movibles para explorar dominios, entidades y atributos importados desde el PIW.</p>
+        <p id="canvasSubtitle">Movable boxes to explore domains, entities, and attributes imported from the PIW.</p>
       </div>
       <div class="actions-right">
-        <button id="backToTemplate" class="secondary">Volver a la plantilla</button>
-        <button id="logoutBtn" class="secondary">Volver</button>
+        <button id="backToTemplate" class="secondary">Back to Template</button>
+        <button id="logoutBtn" class="secondary">Back</button>
       </div>
     </header>
 
     <section class="canvas-toolbar card">
       <div class="toolbar-left">
-        <strong id="canvasVersionTitle">Cargando versión...</strong>
-        <span id="canvasStats">Recuperando modelo desde Oracle.</span>
+        <strong id="canvasVersionTitle">Loading version...</strong>
+        <span id="canvasStats">Retrieving model from Oracle.</span>
       </div>
       <div class="toolbar-right">
         <select id="domainFilter" class="canvas-select">
-          <option value="ALL">Todos los dominios</option>
+          <option value="ALL">All Domains</option>
         </select>
-        <input id="canvasSearch" class="search-input" placeholder="Buscar entidad o atributo..." />
-        <button id="collapseAllBoxes" class="secondary">Colapsar</button>
-        <button id="expandAllBoxes" class="secondary">Expandir</button>
-        <button id="resetLayout" class="secondary">Reiniciar layout</button>
-        <button id="exportCanvasJson" class="secondary">Exportar JSON</button>
+        <input id="canvasSearch" class="search-input" placeholder="Search entity o atributo..." />
+        <button id="collapseAllBoxes" class="secondary">Collapse</button>
+        <button id="expandAllBoxes" class="secondary">Expand</button>
+        <button id="resetLayout" class="secondary">Reset Layout</button>
+        <button id="exportCanvasJson" class="secondary">Export JSON</button>
       </div>
     </section>
 
@@ -54,7 +54,7 @@
       <svg id="canvasLinks" class="canvas-links"></svg>
       <div id="canvasGrid" class="canvas-grid"></div>
       <div id="canvasHint" class="canvas-hint">
-        Arrastra cajas para moverlas. Click en el botón +/- para expandir o colapsar. Doble click en una caja para abrir el detalle de entidad.
+        Drag boxes to move them. Click the +/- button to expand or collapse. Double-click a box to open the entity detail.
       </div>
     </section>
   </main>

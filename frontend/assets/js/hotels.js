@@ -43,10 +43,10 @@
   }
 
   function renderHotels() {
-    $('hotelsSummary').textContent = `${state.hotels.length} hoteles encontrados`;
+    $('hotelsSummary').textContent = `${state.hotels.length} hotels found`;
 
     if (!state.hotels.length) {
-      $('hotelsContainer').innerHTML = '<p class="muted">No hay hoteles que coincidan con el filtro.</p>';
+      $('hotelsContainer').innerHTML = '<p class="muted">No hotels match the filter.</p>';
       return;
     }
 
@@ -72,7 +72,7 @@
               <td>${escapeHtml(hotel.chainCode)}</td>
               <td>${escapeHtml(hotel.chainName)}</td>
               <td>${badge(hotel.status)}</td>
-              <td><a class="secondary small button-link" href="chain-detail.html?id=${encodeURIComponent(hotel.chainId)}">Abrir cadena</a></td>
+              <td><a class="secondary small button-link" href="chain-detail.html?id=${encodeURIComponent(hotel.chainId)}">Open Chain</a></td>
             </tr>
           `).join('')}
         </tbody>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,20 +26,20 @@
     <header class="topbar designer-topbar">
       <div>
         <p class="kicker">Deployment Designer</p>
-        <h1 id="designerTitle">Despliegue OPERA</h1>
-        <p id="designerSubtitle">Copia visual de la plantilla para cargar datos funcionales.</p>
+        <h1 id="designerTitle">OPERA Deployment</h1>
+        <p id="designerSubtitle">Visual copy of the template to load functional data.</p>
       </div>
       <div class="page-actions">
-        <button id="backBtn" class="secondary" type="button">Volver</button>
-        <button id="refreshBtn" class="secondary" type="button">Actualizar</button>
-        <button id="exportAllBtn" class="secondary" type="button">Exportar JSON</button>
+        <button id="backBtn" class="secondary" type="button">Back</button>
+        <button id="refreshBtn" class="secondary" type="button">Refresh</button>
+        <button id="exportAllBtn" class="secondary" type="button">Export JSON</button>
       </div>
     </header>
 
     <section class="designer-layout">
       <aside class="designer-left-panel">
         <div class="panel-title-row">
-          <h2>Dominios</h2>
+          <h2>Domains</h2>
           <span id="domainCountBadge" class="count-badge">0</span>
         </div>
         <div id="domainList" class="domain-list"></div>
@@ -48,11 +48,11 @@
       <section class="designer-canvas-panel">
         <div class="canvas-toolbar">
           <div>
-            <h2 id="canvasTitle">Vista visual</h2>
-            <p id="canvasHint" class="muted">Doble click en una entidad para cargar datos.</p>
+            <h2 id="canvasTitle">Visual View</h2>
+            <p id="canvasHint" class="muted">Double-click an entity to load data.</p>
           </div>
           <div class="page-actions">
-            <button id="fitCanvasBtn" class="secondary small" type="button">Reordenar</button>
+            <button id="fitCanvasBtn" class="secondary small" type="button">Rearrange</button>
           </div>
         </div>
         <div id="canvasWrapper" class="canvas-wrapper">
@@ -66,16 +66,16 @@
   <aside id="entityDrawer" class="entity-drawer hidden">
     <div class="drawer-header">
       <div>
-        <p id="drawerDomain" class="kicker">Dominio</p>
-        <h2 id="drawerTitle">Entidad</h2>
-        <p id="drawerSubtitle" class="muted">Atributos y registros del despliegue.</p>
+        <p id="drawerDomain" class="kicker">Domain</p>
+        <h2 id="drawerTitle">Entity</h2>
+        <p id="drawerSubtitle" class="muted">Deployment attributes and records.</p>
       </div>
-      <button id="closeDrawerBtn" class="link-button" type="button">Cerrar</button>
+      <button id="closeDrawerBtn" class="link-button" type="button">Close</button>
     </div>
 
     <section class="drawer-section">
       <div class="section-title-row">
-        <h3>Atributos</h3>
+        <h3>Attributes</h3>
         <span id="attributeCountBadge" class="count-badge">0</span>
       </div>
       <div id="attributeList" class="attribute-list"></div>
@@ -83,11 +83,11 @@
 
     <section class="drawer-section">
       <div class="section-title-row">
-        <h3>Registros</h3>
+        <h3>Records</h3>
         <div class="page-actions">
-          <button id="newRecordBtn" class="primary small" type="button">Nuevo</button>
-          <button id="importExcelBtn" class="secondary small" type="button">Importar Excel</button>
-          <button id="exportExcelBtn" class="secondary small" type="button">Exportar Excel</button>
+          <button id="newRecordBtn" class="primary small" type="button">New</button>
+          <button id="importExcelBtn" class="secondary small" type="button">Import Excel</button>
+          <button id="exportExcelBtn" class="secondary small" type="button">Export Excel</button>
         </div>
       </div>
       <div id="recordsContainer" class="records-container"></div>
@@ -97,8 +97,8 @@
   <div id="recordModal" class="modal hidden">
     <div class="modal-card modal-card-wide">
       <div class="modal-header">
-        <h2 id="recordModalTitle">Nuevo registro</h2>
-        <button id="closeRecordModalBtn" class="link-button" type="button">Cerrar</button>
+        <h2 id="recordModalTitle">New Record</h2>
+        <button id="closeRecordModalBtn" class="link-button" type="button">Close</button>
       </div>
       <form id="recordForm" class="record-form" novalidate></form>
     </div>
@@ -107,8 +107,8 @@
   <div id="messageModal" class="modal hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h2 id="messageTitle">Aviso</h2>
-        <button id="closeMessageBtn" class="link-button" type="button">Cerrar</button>
+        <h2 id="messageTitle">Notice</h2>
+        <button id="closeMessageBtn" class="link-button" type="button">Close</button>
       </div>
       <div id="messageBody"></div>
     </div>
