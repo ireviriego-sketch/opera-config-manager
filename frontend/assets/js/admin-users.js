@@ -13,6 +13,8 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
+  const showError = window.AppUtils?.showError || (error => { showError(error); });
+
   function pick(row, camel, upper, fallback = '') {
     return row?.[camel] ?? row?.[upper] ?? fallback;
   }

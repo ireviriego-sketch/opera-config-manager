@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-target="frontend/assets/js/admin-audit.js"
+target="frontend/assets/js/admin-users.js"
 api_path="frontend/assets/js/api.js"
 
 if [ ! -f "$target" ]; then
-  echo "No existe frontend/assets/js/admin-audit.js. Ejecuta desde la raiz del repo."
+  echo "No existe frontend/assets/js/admin-users.js. Ejecuta desde la raiz del repo."
   exit 1
 fi
 
@@ -22,7 +22,7 @@ fi
 python3 - <<'PY'
 from pathlib import Path
 import re
-p = Path('frontend/assets/js/admin-audit.js')
+p = Path('frontend/assets/js/admin-users.js')
 text = p.read_text(encoding='utf-8')
 orig = text
 alias = "  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });\n"
@@ -46,12 +46,12 @@ text = re.sub(r"catch\s*\(err\)\s*\{\s*console\.error\(err\);\s*showError\(err\)
 text = re.sub(r"catch\s*\(error\)\s*\{\s*console\.error\(error\);\s*showError\(error\);\s*\}", "catch (error) { showError(error); }", text)
 
 p.write_text(text, encoding='utf-8')
-print('admin-audit.js migrado a AppUtils.showError' if text != orig else 'No se encontraron cambios aplicables en admin-audit.js')
+print('admin-users.js migrado a AppUtils.showError' if text != orig else 'No se encontraron cambios aplicables en admin-users.js')
 PY
 
 if command -v node >/dev/null 2>&1; then
   node --check "$target" >/dev/null
-  echo "node --check OK para admin-audit.js"
+  echo "node --check OK para admin-users.js"
 else
   echo "Node no encontrado. Omitida validacion syntax check."
 fi

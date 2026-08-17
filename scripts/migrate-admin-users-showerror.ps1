@@ -1,11 +1,11 @@
 $ErrorActionPreference = "Stop"
 
 $repoRoot = Get-Location
-$target = Join-Path $repoRoot "frontend\assets\js\admin-audit.js"
+$target = Join-Path $repoRoot "frontend\assets\js\admin-users.js"
 $apiPath = Join-Path $repoRoot "frontend\assets\js\api.js"
 
 if (!(Test-Path $target)) {
-  Write-Host "No existe frontend\assets\js\admin-audit.js. Ejecuta desde la raiz del repo." -ForegroundColor Red
+  Write-Host "No existe frontend\assets\js\admin-users.js. Ejecuta desde la raiz del repo." -ForegroundColor Red
   exit 1
 }
 
@@ -36,7 +36,7 @@ if ($text -notmatch "const\s+showError\s*=\s*window\.AppUtils\?\.showError") {
   }
 }
 
-# Conservative replacements only. Do not touch requestJson or modal logic.
+# Conservative replacements only. Do not touch requestJson, access logic, roles, chains, hotels or modal behavior.
 $text = [regex]::Replace($text, "console\.error\(err\);\s*alert\([^;]*err[^;]*\);", "showError(err);")
 $text = [regex]::Replace($text, "console\.error\(error\);\s*alert\([^;]*error[^;]*\);", "showError(error);")
 $text = [regex]::Replace($text, "alert\(err\.message\s*\|\|\s*err\);", "showError(err);")
@@ -50,14 +50,14 @@ $text = [regex]::Replace($text, "catch\s*\(error\)\s*\{\s*console\.error\(error\
 
 if ($text -ne $original) {
   Set-Content -Path $target -Value $text -NoNewline
-  Write-Host "admin-audit.js migrado a AppUtils.showError" -ForegroundColor Green
+  Write-Host "admin-users.js migrado a AppUtils.showError" -ForegroundColor Green
 } else {
-  Write-Host "No se encontraron cambios aplicables en admin-audit.js" -ForegroundColor Yellow
+  Write-Host "No se encontraron cambios aplicables en admin-users.js" -ForegroundColor Yellow
 }
 
 if (Get-Command node -ErrorAction SilentlyContinue) {
   node --check $target | Out-Null
-  Write-Host "node --check OK para admin-audit.js" -ForegroundColor Green
+  Write-Host "node --check OK para admin-users.js" -ForegroundColor Green
 } else {
   Write-Host "Node no encontrado. Omitida validacion syntax check." -ForegroundColor Yellow
 }
