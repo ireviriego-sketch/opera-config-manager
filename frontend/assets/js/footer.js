@@ -12,12 +12,14 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
-  async function requestJson(url) {
+  const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
     const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
     const response = await fetch(url, {
+      ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {})
       }
     });
     const text = await response.text();
@@ -25,7 +27,7 @@
     try { payload = text ? JSON.parse(text) : null; } catch { payload = { raw: text }; }
     if (!response.ok) throw new Error(payload?.message || payload?.error || text || `HTTP ${response.status}`);
     return payload;
-  }
+  });
 
   async function loadFooterConfig() {
     try {

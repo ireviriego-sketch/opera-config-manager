@@ -29,8 +29,8 @@
     return payload?.item || (key ? payload?.[key] : null) || payload;
   }
 
-  async function requestJson(url, options = {}) {
-    const token = localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
+  const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
+    const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -44,7 +44,7 @@
     try { payload = text ? JSON.parse(text) : null; } catch { payload = { raw: text }; }
     if (!response.ok) throw new Error(payload?.message || payload?.error || text || `HTTP ${response.status}`);
     return payload;
-  }
+  });
 
   function ensureToastContainer() {
     let container = $('appToastContainer');

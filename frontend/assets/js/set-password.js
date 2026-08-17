@@ -6,15 +6,22 @@
   const message = document.getElementById('setPasswordMessage');
   const loginLink = document.getElementById('loginLink');
 
-  async function requestJson(url, options = {}) {
+  const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
+    const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
     const response = await fetch(url, {
       ...options,
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(options.headers || {})
+      }
     });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.message || payload.error || `HTTP ${response.status}`);
+    const text = await response.text();
+    let payload = null;
+    try { payload = text ? JSON.parse(text) : null; } catch { payload = { raw: text }; }
+    if (!response.ok) throw new Error(payload?.message || payload?.error || text || `HTTP ${response.status}`);
     return payload;
-  }
+  });
 
   async function validate() {
     if (!token) throw new Error('El enlace no contiene token.');

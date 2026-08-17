@@ -16,8 +16,8 @@
     return [];
   }
 
-  async function requestJson(url, options = {}) {
-    const token = localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
+  const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
+    const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
     const response = await fetch(url, {
       ...options,
       headers: {
@@ -26,22 +26,12 @@
         ...(options.headers || {})
       }
     });
-
     const text = await response.text();
     let payload = null;
-    try {
-      payload = text ? JSON.parse(text) : null;
-    } catch (error) {
-      payload = { raw: text };
-    }
-
-    if (!response.ok) {
-      const message = payload?.message || payload?.error || text || `HTTP ${response.status}`;
-      throw new Error(message);
-    }
-
+    try { payload = text ? JSON.parse(text) : null; } catch { payload = { raw: text }; }
+    if (!response.ok) throw new Error(payload?.message || payload?.error || text || `HTTP ${response.status}`);
     return payload;
-  }
+  });
 
   function roleValue(role, camel, upper, fallback = '') {
     return role?.[camel] ?? role?.[upper] ?? fallback;
