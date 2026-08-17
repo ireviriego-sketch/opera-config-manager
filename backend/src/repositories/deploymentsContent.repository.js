@@ -12,6 +12,55 @@ async function parseJsonClob(value) {
   return JSON.parse(String(value));
 }
 
+async function getDeploymentForContent(chainDeploymentId) {
+  const result = await execute(
+    `SELECT d.chain_deployment_id,
+            d.chain_id,
+            d.deployment_name,
+            d.status,
+            d.source_template_version_id,
+            d.comments
+       FROM opera_cfg_chain_deployments d
+      WHERE d.chain_deployment_id = :chainDeploymentId`,
+    { chainDeploymentId: Number(chainDeploymentId) }
+  );
+
+  const row = result.rows[0];
+  if (!row) return null;
+
+  return {
+    chainDeploymentId: row.CHAIN_DEPLOYMENT_ID,
+    deploymentName: row.DEPLOYMENT_NAME,
+    status: row.STATUS,
+    sourceTemplateVersionId: row.SOURCE_TEMPLATE_VERSION_ID,
+    comments: row.COMMENTS,
+    chainId: row.CHAIN_ID
+  };
+}
+
+async function getChainForContent(chainId) {
+  const result = await execute(
+    `SELECT chain_id, chain_code, chain_name, status
+       FROM opera_cfg_chains
+      WHERE chain_id = :chainId`,
+    { chainId: Number(chainId) }
+  );
+
+  return result.rows[0] || null;
+}
+
+async function getHotelsForContent(chainId) {
+  const result = await execute(
+    `SELECT hotel_id, hotel_code, hotel_name, status
+       FROM opera_cfg_hotels
+      WHERE chain_id = :chainId
+      ORDER BY UPPER(hotel_name)`,
+    { chainId: Number(chainId) }
+  );
+
+  return result.rows;
+}
+
 async function cleanupCopiedStructure(chainDeploymentId) {
   await execute(
     `DELETE /*+ NO_PARALLEL */ FROM opera_cfg_chain_deployment_records
@@ -260,11 +309,11 @@ async function getCopiedStructure(chainDeploymentId) {
 }
 
 async function buildDeploymentJson(chainDeploymentId) {
-  const deployment = await findById(chainDeploymentId);
+  const deployment = await getDeploymentForContent(chainDeploymentId);
   if (!deployment) return null;
 
-  const chain = await getChain(deployment.chainId);
-  const hotels = await getHotels(deployment.chainId);
+  const chain = await getChainForContent(deployment.chainId);
+  const hotels = await getHotelsForContent(deployment.chainId);
   const templateStructure = await getCopiedStructure(chainDeploymentId);
 
   return {
