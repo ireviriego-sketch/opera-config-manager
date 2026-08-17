@@ -1,5 +1,6 @@
 const relationshipRepository = require('../repositories/relationshipRepository');
 const auditService = require('../services/audit.service');
+const { currentUser: getRequestUser } = require('../utils/requestUser');
 
 function normalizeCode(value) {
   return String(value || '')
@@ -9,9 +10,6 @@ function normalizeCode(value) {
     .slice(0, 80);
 }
 
-function currentUser(req) {
-  return req.user?.username || req.user?.USERNAME || req.headers['x-user'] || req.headers['x-username'] || 'admin';
-}
 
 async function auditSafely(req, entry) {
   try {
@@ -88,7 +86,7 @@ async function create(req, res, next) {
       relationshipCode,
       relationshipName,
       relationshipLabel: safeLabel,
-      createdBy: currentUser(req)
+      createdBy: getRequestUser(req, { fallback: 'admin', includeEmail: false, includeName: false })
     });
 
     const after = await relationshipRepository.findByNaturalKey({
@@ -98,7 +96,7 @@ async function create(req, res, next) {
     });
 
     await auditSafely(req, {
-      username: currentUser(req),
+      username: getRequestUser(req, { fallback: 'admin', includeEmail: false, includeName: false }),
       action: before ? 'UPDATE_RELATIONSHIP' : 'CREATE_RELATIONSHIP',
       actionCode: before ? 'UPDATE_RELATIONSHIP' : 'CREATE_RELATIONSHIP',
       resultStatus: 'SUCCESS',
@@ -134,7 +132,7 @@ async function remove(req, res, next) {
     const before = await relationshipRepository.findById(relationshipId);
     const rowsAffected = await relationshipRepository.deleteRelationship(
       relationshipId,
-      currentUser(req)
+      getRequestUser(req, { fallback: 'admin', includeEmail: false, includeName: false })
     );
 
     if (!rowsAffected) {
@@ -142,7 +140,7 @@ async function remove(req, res, next) {
     }
 
     await auditSafely(req, {
-      username: currentUser(req),
+      username: getRequestUser(req, { fallback: 'admin', includeEmail: false, includeName: false }),
       action: 'DELETE_RELATIONSHIP',
       actionCode: 'DELETE_RELATIONSHIP',
       resultStatus: 'SUCCESS',

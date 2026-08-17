@@ -1,13 +1,6 @@
 const repository = require('../repositories/adminSecurity.repository');
 const auditService = require('../services/audit.service');
-
-function currentUser(req) {
-  return req.user?.username || req.user?.USERNAME || req.headers['x-user'] || req.headers['x-username'] || 'system';
-}
-
-function currentUserId(req) {
-  return req.authzUserId || req.user?.userId || req.user?.USER_ID || null;
-}
+const { currentUser, currentUserId } = require('../utils/requestUser');
 
 function buildBaseUrl(req) {
   const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';

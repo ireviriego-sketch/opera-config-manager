@@ -2,14 +2,7 @@ const chainsService = require('../services/chains.service');
 const chainsRepository = require('../repositories/chains.repository');
 const hotelsRepository = require('../repositories/hotels.repository');
 const auditService = require('../services/audit.service');
-
-function currentUser(req) {
-  return req.user?.username || req.user?.USERNAME || req.user?.email || req.user?.name || req.headers['x-user'] || req.headers['x-username'] || 'system';
-}
-
-function currentUserId(req) {
-  return req.authzUserId || req.user?.userId || req.user?.USER_ID || null;
-}
+const { currentUser, currentUserId } = require('../utils/requestUser');
 
 async function auditSafely(req, entry) {
   try {

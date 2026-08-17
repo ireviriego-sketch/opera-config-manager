@@ -1,10 +1,8 @@
 const lovsRepository = require('../repositories/lovs.repository');
 const auditService = require('../services/audit.service');
 const appLogger = require('../utils/appLogger');
+const { currentUser } = require('../utils/requestUser');
 
-function currentUser(req) {
-  return req.user?.username || req.user?.USERNAME || req.user?.email || req.headers['x-user'] || req.headers['x-username'] || 'system';
-}
 
 async function auditSafely(req, entry) {
   try { await auditService.logFromRequest(req, entry); } catch (error) { console.error('Audit log failed:', error.message); }

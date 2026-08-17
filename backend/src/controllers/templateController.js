@@ -1,9 +1,7 @@
 const templateRepository = require('../repositories/templateRepository');
 const auditService = require('../services/audit.service');
+const { currentUser } = require('../utils/requestUser');
 
-function currentUser(req) {
-  return req.user?.username || req.user?.USERNAME || req.headers['x-user'] || req.headers['x-username'] || 'system';
-}
 
 async function auditSafely(req, entry) {
   try {

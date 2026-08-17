@@ -1,9 +1,7 @@
 const appLogsRepository = require('../repositories/appLogs.repository');
 const appLogger = require('../utils/appLogger');
+const { currentUser } = require('../utils/requestUser');
 
-function currentUser(req) {
-  return req.user?.username || req.user?.USERNAME || req.user?.email || req.headers['x-user'] || req.headers['x-username'] || 'system';
-}
 
 async function listLogs(req, res, next) {
   try {
