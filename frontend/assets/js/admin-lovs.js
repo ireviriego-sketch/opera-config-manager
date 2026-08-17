@@ -13,6 +13,8 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
+  const showError = window.AppUtils?.showError || (error => { showError(error); });
+
   const requestJson = window.AppUtils?.requestJson || (async function requestJson(url, options = {}) {
     const token = localStorage.getItem('operaCfgToken') || localStorage.getItem('token') || localStorage.getItem('authToken') || sessionStorage.getItem('token') || '';
     const response = await fetch(url, {
