@@ -95,3 +95,45 @@ window.AppUtils.requestJson = window.AppUtils.requestJson || (async function req
   if (!response.ok) throw new Error(payload?.message || payload?.error || text || `HTTP ${response.status}`);
   return payload;
 });
+
+/* ==========================================================================
+   JS Refactor Step 4 - Shared Message Utilities
+   Shared lightweight UI messages. This does not replace module-specific modals yet.
+   ========================================================================== */
+window.AppUtils = window.AppUtils || {};
+
+window.AppUtils.showInfo = window.AppUtils.showInfo || function showInfo(message, options = {}) {
+  const text = String(message ?? '');
+  if (window.showToast && typeof window.showToast === 'function') {
+    window.showToast(text, { type: 'info', ...options });
+    return;
+  }
+  if (options.silent !== true) console.info(text);
+};
+
+window.AppUtils.showSuccess = window.AppUtils.showSuccess || function showSuccess(message, options = {}) {
+  const text = String(message ?? '');
+  if (window.showToast && typeof window.showToast === 'function') {
+    window.showToast(text, { type: 'success', ...options });
+    return;
+  }
+  if (options.silent !== true) console.info(text);
+};
+
+window.AppUtils.showError = window.AppUtils.showError || function showError(error, fallbackMessage = 'Se ha producido un error') {
+  const message = error?.message || error?.data?.message || error?.data?.error || error || fallbackMessage;
+  const text = String(message ?? fallbackMessage);
+  if (window.showToast && typeof window.showToast === 'function') {
+    window.showToast(text, { type: 'error' });
+    return;
+  }
+  console.error(text, error);
+  if (window.alert && fallbackMessage !== false) window.alert(text);
+};
+
+window.AppUtils.showMessage = window.AppUtils.showMessage || function showMessage(message, options = {}) {
+  const type = options.type || 'info';
+  if (type === 'error') return window.AppUtils.showError(message, options.fallbackMessage || 'Se ha producido un error');
+  if (type === 'success') return window.AppUtils.showSuccess(message, options);
+  return window.AppUtils.showInfo(message, options);
+};
