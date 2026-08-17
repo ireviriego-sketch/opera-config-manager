@@ -1,15 +1,6 @@
 const service = require('../services/deploymentContent.service');
-const auditService = require('../services/audit.service');
+const { auditSafely } = require('../utils/auditHelper');
 const { currentUser } = require('../utils/requestUser');
-
-
-async function auditSafely(req, entry) {
-  try {
-    await auditService.logFromRequest(req, entry);
-  } catch (error) {
-    console.error('Audit log failed:', error.message);
-  }
-}
 
 function recordName(record, fallbackRecordId, fallbackEntityId) {
   const id = record?.deploymentRecordId || record?.DEPLOYMENT_RECORD_ID || fallbackRecordId || 'registro';

@@ -1,17 +1,8 @@
 const chainsService = require('../services/chains.service');
 const chainsRepository = require('../repositories/chains.repository');
 const hotelsRepository = require('../repositories/hotels.repository');
-const auditService = require('../services/audit.service');
+const { auditSafely } = require('../utils/auditHelper');
 const { currentUser, currentUserId } = require('../utils/requestUser');
-
-async function auditSafely(req, entry) {
-  try {
-    await auditService.logFromRequest(req, entry);
-  } catch (error) {
-    console.error('Audit log failed:', error.message);
-  }
-}
-
 function chainName(chain) {
   return chain?.chainName || chain?.CHAIN_NAME || chain?.chainCode || chain?.CHAIN_CODE || String(chain?.chainId || chain?.CHAIN_ID || 'cadena');
 }

@@ -1,5 +1,5 @@
 const repository = require('../repositories/adminSecurity.repository');
-const auditService = require('../services/audit.service');
+const { auditSafely } = require('../utils/auditHelper');
 const { currentUser, currentUserId } = require('../utils/requestUser');
 
 function buildBaseUrl(req) {
@@ -45,15 +45,6 @@ function userSnapshot(user) {
     hotelPermissions: permissionSnapshot(user, 'HOTEL')
   };
 }
-
-async function auditSafely(req, entry) {
-  try {
-    await auditService.logFromRequest(req, entry);
-  } catch (error) {
-    console.error('Audit log failed:', error.message);
-  }
-}
-
 async function listUsers(req, res, next) {
   try { res.json({ items: await repository.findUsers() }); } catch (error) { next(error); }
 }

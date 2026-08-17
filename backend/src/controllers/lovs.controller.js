@@ -1,12 +1,7 @@
 const lovsRepository = require('../repositories/lovs.repository');
-const auditService = require('../services/audit.service');
+const { auditSafely } = require('../utils/auditHelper');
 const appLogger = require('../utils/appLogger');
 const { currentUser } = require('../utils/requestUser');
-
-
-async function auditSafely(req, entry) {
-  try { await auditService.logFromRequest(req, entry); } catch (error) { console.error('Audit log failed:', error.message); }
-}
 
 async function logBusiness(req, eventCode, message, details) {
   try { await appLogger.business('LOVS', eventCode, message, details, req); } catch (error) { console.error('App log failed:', error.message); }

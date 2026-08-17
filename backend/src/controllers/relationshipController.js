@@ -1,5 +1,5 @@
 const relationshipRepository = require('../repositories/relationshipRepository');
-const auditService = require('../services/audit.service');
+const { auditSafely } = require('../utils/auditHelper');
 const { currentUser: getRequestUser } = require('../utils/requestUser');
 
 function normalizeCode(value) {
@@ -8,15 +8,6 @@ function normalizeCode(value) {
     .replace(/[^A-Z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '')
     .slice(0, 80);
-}
-
-
-async function auditSafely(req, entry) {
-  try {
-    await auditService.logFromRequest(req, entry);
-  } catch (error) {
-    console.error('Audit log failed:', error.message);
-  }
 }
 
 function relationshipDisplayName(relationship) {

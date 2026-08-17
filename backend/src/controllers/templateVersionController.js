@@ -1,16 +1,7 @@
 const templateVersionRepository = require('../repositories/templateVersionRepository');
 const templateRepository = require('../repositories/templateRepository');
-const auditService = require('../services/audit.service');
+const { auditSafely } = require('../utils/auditHelper');
 const { currentUser } = require('../utils/requestUser');
-
-
-async function auditSafely(req, entry) {
-  try {
-    await auditService.logFromRequest(req, entry);
-  } catch (error) {
-    console.error('Audit log failed:', error.message);
-  }
-}
 
 function versionName(version, template) {
   const templateName = template?.TEMPLATE_NAME || `Template ${version?.TEMPLATE_ID || ''}`;
