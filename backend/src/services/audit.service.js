@@ -1,35 +1,13 @@
 const auditRepository = require('../repositories/audit.repository');
+const { currentUser, currentUserId } = require('../utils/requestUser');
+const { getRequestMetadata } = require('../utils/requestMetadata');
+const { computeDiff } = require('../utils/objectDiff');
 
-function getRequestUser(req) {
+function getRequestAuditUser(req) {
   return {
-    userId: req.authzUserId || req.user?.userId || req.user?.USER_ID || null,
-    username: req.user?.username || req.user?.USERNAME || req.user?.email || req.headers['x-user'] || req.headers['x-username'] || 'system'
+    userId: currentUserId(req),
+    username: currentUser(req, { includeName: false })
   };
-}
-
-function getRequestMetadata(req) {
-  return {
-    requestId: req.headers['x-request-id'] || null,
-    ipAddress: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || req.ip || null,
-    userAgent: req.headers['user-agent'] || null
-  };
-}
-
-function computeDiff(oldValues, newValues) {
-  if (!oldValues || !newValues || typeof oldValues !== 'object' || typeof newValues !== 'object') return null;
-
-  const diff = {};
-  const keys = new Set([...Object.keys(oldValues), ...Object.keys(newValues)]);
-
-  for (const key of keys) {
-    const before = oldValues[key];
-    const after = newValues[key];
-    if (JSON.stringify(before) !== JSON.stringify(after)) {
-      diff[key] = { before, after };
-    }
-  }
-
-  return Object.keys(diff).length ? diff : null;
 }
 
 async function logAudit(entry) {
@@ -37,7 +15,7 @@ async function logAudit(entry) {
 }
 
 async function logFromRequest(req, entry) {
-  const user = getRequestUser(req);
+  const user = getRequestAuditUser(req);
   const metadata = getRequestMetadata(req);
 
   return logAudit({
@@ -51,7 +29,7 @@ async function logFromRequest(req, entry) {
 }
 
 async function logFailureFromRequest(req, entry, error) {
-  const user = getRequestUser(req);
+  const user = getRequestAuditUser(req);
   const metadata = getRequestMetadata(req);
 
   return logAudit({
