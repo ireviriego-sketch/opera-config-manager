@@ -2,12 +2,9 @@ const repository = require('../repositories/adminSecurity.repository');
 const { auditSafely } = require('../utils/auditHelper');
 const { currentUser, currentUserId } = require('../utils/requestUser');
 const { roleSnapshot, permissionSnapshot, userSnapshot } = require('../utils/adminSecuritySnapshot');
-
-function buildBaseUrl(req) {
-  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-  const host = req.headers['x-forwarded-host'] || req.get('host');
-  return `${proto}://${host}`;
-}async function listUsers(req, res, next) {
+const { buildBaseUrl } = require('../utils/requestBaseUrl');
+const { generatePasswordReset } = require('./adminSecurityPassword.controller');
+async function listUsers(req, res, next) {
   try { res.json({ items: await repository.findUsers() }); } catch (error) { next(error); }
 }
 
@@ -159,35 +156,6 @@ async function replaceHotelPermissions(req, res, next) {
     res.json({ ok: true });
   } catch (error) { next(error); }
 }
-
-async function generatePasswordReset(req, res, next) {
-  try {
-    const userId = Number(req.params.userId);
-    const item = await repository.findUserById(userId);
-    if (!item) return res.status(404).json({ message: 'Usuario no encontrado' });
-
-    const token = await repository.createPasswordResetToken(userId, currentUser(req));
-    const resetUrl = `${buildBaseUrl(req)}/set-password.html?token=${encodeURIComponent(token)}`;
-
-    await auditSafely(req, {
-      userId: currentUserId(req),
-      username: currentUser(req),
-      action: 'RESET_PASSWORD',
-      actionCode: 'RESET_PASSWORD',
-      resultStatus: 'SUCCESS',
-      entityType: 'USER',
-      entityId: userId,
-      entityName: item.username,
-      summary: `Reset password generado para ${item.username}`,
-      oldValues: null,
-      newValues: null,
-      details: { targetUsername: item.username, resetLinkGenerated: true }
-    });
-
-    res.json({ ok: true, resetUrl });
-  } catch (error) { next(error); }
-}
-
 module.exports = {
   listUsers,
   getUser,
