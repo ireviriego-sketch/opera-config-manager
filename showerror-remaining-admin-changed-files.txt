@@ -1,3 +1,0 @@
-admin-lovs.js
-admin-roles.js
-general-admin.js

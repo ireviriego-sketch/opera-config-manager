@@ -1,9 +1,0 @@
-admin-audit.js
-admin-logs.js
-admin-lovs.js
-admin-roles.js
-admin-users.js
-footer.js
-general-admin.js
-lovs-client.js
-set-password.js

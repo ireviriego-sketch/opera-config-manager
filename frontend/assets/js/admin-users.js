@@ -13,7 +13,7 @@
 
   const esc = window.AppUtils?.escapeHtml || (value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
 
-  const showError = window.AppUtils?.showError || (error => { showError(error); });
+  const showError = window.AppUtils?.showError || (error => { console.error(error); alert(error?.message || error || 'Se ha producido un error'); });
 
   function pick(row, camel, upper, fallback = '') {
     return row?.[camel] ?? row?.[upper] ?? fallback;
@@ -242,10 +242,10 @@
   }
 
   async function saveScope(scopeType, checklistId, roleCode, readOnlyId) {
-    if (scopeType === 'CHAIN' && !hasSelectedRole('CHAIN_MANAGER')) return alert('Marca primero el rol CHAIN_MANAGER.');
-    if (scopeType === 'HOTEL' && !hasSelectedRole('HOTEL_MANAGER')) return alert('Marca primero el rol HOTEL_MANAGER.');
+    if (scopeType === 'CHAIN' && !hasSelectedRole('CHAIN_MANAGER')) { showError('Marca primero el rol CHAIN_MANAGER.'); return; }
+    if (scopeType === 'HOTEL' && !hasSelectedRole('HOTEL_MANAGER')) { showError('Marca primero el rol HOTEL_MANAGER.'); return; }
     const ids = Array.from(document.querySelectorAll(`#${checklistId} input:checked`)).map(input => Number(input.value));
-    const roleId = roleIdByCode(roleCode); if (!roleId) return alert(`No existe el rol ${roleCode}.`);
+    const roleId = roleIdByCode(roleCode); if (!roleId) { showError(`No existe el rol ${roleCode}.`); return; }
     const url = scopeType === 'CHAIN' ? `/api/admin/users/${currentUserId}/permissions/chains` : `/api/admin/users/${currentUserId}/permissions/hotels`;
     const payload = scopeType === 'CHAIN' ? { roleId, chainIds: ids, isReadOnly: $(readOnlyId).checked ? 'Y' : 'N' } : { roleId, hotelIds: ids, isReadOnly: $(readOnlyId).checked ? 'Y' : 'N' };
     await requestJson(url, { method: 'PUT', body: JSON.stringify(payload) });
@@ -296,8 +296,8 @@
   }
 
   document.addEventListener('click', event => {
-    const edit = event.target.closest('[data-edit-user]'); if (edit) openUser(edit.dataset.editUser).catch(error => alert(error.message));
-    const reset = event.target.closest('[data-reset-user]'); if (reset) resetPassword(reset.dataset.resetUser).catch(error => alert(error.message));
+    const edit = event.target.closest('[data-edit-user]'); if (edit) openUser(edit.dataset.editUser).catch(showError);
+    const reset = event.target.closest('[data-reset-user]'); if (reset) resetPassword(reset.dataset.resetUser).catch(showError);
   });
 
   document.querySelectorAll('.tab-button').forEach(button => button.addEventListener('click', () => { if (!button.hidden) activateTab(button.dataset.tab); }));
@@ -305,10 +305,10 @@
   $('chainSearch')?.addEventListener('input', () => renderChains($('chainSearch').value));
   $('hotelSearch')?.addEventListener('input', () => renderHotels($('hotelSearch').value));
   $('closeUserDetailBtn')?.addEventListener('click', () => detailPanel.hidden = true);
-  $('saveRolesBtn')?.addEventListener('click', () => saveRoles().catch(error => alert(error.message)));
-  $('saveChainsBtn')?.addEventListener('click', () => saveScope('CHAIN', 'chainsChecklist', 'CHAIN_MANAGER', 'chainsReadOnly').catch(error => alert(error.message)));
-  $('saveHotelsBtn')?.addEventListener('click', () => saveScope('HOTEL', 'hotelsChecklist', 'HOTEL_MANAGER', 'hotelsReadOnly').catch(error => alert(error.message)));
-  $('newUserBtn')?.addEventListener('click', () => openCreateUser().catch(error => alert(error.message)));
+  $('saveRolesBtn')?.addEventListener('click', () => saveRoles().catch(showError));
+  $('saveChainsBtn')?.addEventListener('click', () => saveScope('CHAIN', 'chainsChecklist', 'CHAIN_MANAGER', 'chainsReadOnly').catch(showError));
+  $('saveHotelsBtn')?.addEventListener('click', () => saveScope('HOTEL', 'hotelsChecklist', 'HOTEL_MANAGER', 'hotelsReadOnly').catch(showError));
+  $('newUserBtn')?.addEventListener('click', () => openCreateUser().catch(showError));
 
   loadUsers().catch(error => { console.error(error); body.innerHTML = `<tr><td colspan="8">No se han podido cargar los usuarios. ${esc(error.message)}</td></tr>`; });
 })();
