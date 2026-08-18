@@ -1,50 +1,39 @@
-/* Canvas Relationships 1.3 UX Fix
-   - Modal always above canvas boxes.
-   - Expanded boxes appear above neighbouring boxes.
-   - Real relationship arrows stay visible above normal boxes.
+/* Canvas Relationships 1.5 Entity-to-Entity Relationship Rendering
+- Existing relationship data remains attribute-to-attribute.
+- The canvas draws saved relationships between entity boxes so collapsed entities still show links.
 */
-
 .modal-backdrop {
   z-index: 5000 !important;
 }
-
 .modal {
   z-index: 5001 !important;
 }
-
 .connection-layer {
   z-index: 60 !important;
   pointer-events: none;
 }
-
 .draft-layer {
   z-index: 90 !important;
   pointer-events: none;
 }
-
 .canvas2-box {
   z-index: 20 !important;
 }
-
 .canvas2-box.expanded {
   z-index: 45 !important;
   box-shadow: 0 24px 70px rgba(15, 23, 42, .24) !important;
 }
-
 .canvas2-box.selected {
   z-index: 55 !important;
 }
-
 .canvas2-box.dragging {
   z-index: 80 !important;
 }
-
 .canvas2-box.expanded .canvas2-card-body {
   display: grid;
   max-height: 260px;
   overflow: auto;
 }
-
 .attribute-port {
   width: 13px;
   height: 13px;
@@ -55,23 +44,19 @@
   cursor: crosshair;
   flex: 0 0 auto;
 }
-
 .attribute-port:hover {
   transform: scale(1.15);
   background: #1d4ed8;
 }
-
 .canvas2-attribute-mini {
   grid-template-columns: 16px minmax(0, 1fr) auto !important;
   cursor: default;
 }
-
 .canvas2-attribute-mini.drop-target,
 .inspector-attr-row.drop-target {
   outline: 2px solid #2563eb;
   background: #eff6ff;
 }
-
 .relationship-path {
   fill: none;
   stroke: #2563eb;
@@ -81,18 +66,15 @@
   pointer-events: stroke;
   filter: drop-shadow(0 1px 3px rgba(37,99,235,.25));
 }
-
 .relationship-path:hover {
   stroke: #1d4ed8;
   stroke-width: 4;
 }
-
 .relationship-path.selected {
   stroke: #ea580c;
   stroke-width: 4.2;
   filter: drop-shadow(0 2px 5px rgba(234,88,12,.32));
 }
-
 .relationship-label {
   font-size: 12px;
   font-weight: 800;
@@ -102,7 +84,6 @@
   stroke-width: 5px;
   pointer-events: none;
 }
-
 .draft-path {
   fill: none;
   stroke: #ea580c;
@@ -111,7 +92,6 @@
   opacity: .95;
   marker-end: url(#arrowhead-draft);
 }
-
 .relationship-inspector .inspector-attr-row,
 .editable-inspector .inspector-attr-row {
   display: grid;
@@ -119,12 +99,10 @@
   gap: 10px;
   align-items: center;
 }
-
 .inspector-attr-row span {
   display: block;
   margin-top: 3px;
 }
-
 .attribute-edit-button {
   padding: 7px 10px;
   background: #eef2ff;
@@ -133,15 +111,12 @@
   font-size: 12px;
   white-space: nowrap;
 }
-
 .attribute-edit-button:hover {
   background: #e0e7ff;
 }
-
 .attribute-edit-modal {
   width: min(680px, calc(100vw - 48px));
 }
-
 .relationship-item {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -150,22 +125,18 @@
   display: grid;
   gap: 6px;
 }
-
 .relationship-item strong {
   display: block;
 }
-
 .relationship-item small {
   color: var(--muted);
 }
-
 .relationship-delete-button {
   padding: 7px 10px;
   background: #fee2e2;
   color: #991b1b;
   border-radius: 10px;
 }
-
 .relationship-modal select,
 .attribute-edit-modal select {
   width: 100%;
@@ -173,4 +144,58 @@
   border-radius: 10px;
   padding: 10px 12px;
   background: white;
+}
+
+.relationship-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 250, 252, .72);
+  backdrop-filter: blur(2px);
+  pointer-events: all;
+}
+.relationship-loading-overlay.hidden {
+  display: none;
+}
+.relationship-loading-card {
+  min-width: 280px;
+  max-width: min(420px, calc(100vw - 48px));
+  padding: 24px 28px;
+  border: 1px solid #dbe3ef;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, .18);
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+  color: #0f172a;
+}
+.relationship-loading-card strong {
+  font-size: 16px;
+  line-height: 1.25;
+}
+.relationship-loading-card span {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.relationship-spinner {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 4px solid #dbeafe;
+  border-top-color: #2563eb;
+  animation: relationship-spin .8s linear infinite;
+}
+button.is-busy,
+button:disabled {
+  opacity: .68;
+  cursor: wait !important;
+}
+@keyframes relationship-spin {
+  to { transform: rotate(360deg); }
 }
