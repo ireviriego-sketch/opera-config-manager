@@ -176,6 +176,14 @@ function updateStats() {
   $('versionStats').textContent = `${domains.length} domains · ${allEntities.length} entities · ${ac} attributes · ${relationships.length} real relationships`;
 }
 
+async function refreshRelationshipsOnly(detail = 'Refreshing relationships from Oracle.') {
+  updateLoading(detail);
+  const rd = await apiFetch(`/api/relationships?versionId=${encodeURIComponent(currentVersionId)}`);
+  relationships = rd.relationships || [];
+  updateStats();
+  drawRelationships();
+}
+
 function applyFilters() {
   const did = $('domainFilter').value;
   const s = $('canvasSearch').value.trim().toLowerCase();
@@ -557,9 +565,8 @@ async function savePendingRelationship() {
         relationshipLabel: $('relationshipLabel').value.trim()
       })
     });
-    updateLoading('Refreshing canvas relationships.');
     hideRelationshipModal();
-    await loadModel();
+    await refreshRelationshipsOnly('Refreshing relationships from Oracle.');
   } catch (e) {
     $('relationshipMessage').textContent = e.data?.error || 'Unable to save the relationship.';
   } finally {
@@ -613,9 +620,8 @@ async function saveManualRelationship() {
         relationshipLabel: $('manualRelationshipLabel').value.trim()
       })
     });
-    updateLoading('Refreshing canvas relationships.');
     hideManualRelationshipModal();
-    await loadModel();
+    await refreshRelationshipsOnly('Refreshing relationships from Oracle.');
   } catch (e) {
     $('manualRelationshipMessage').textContent = e.data?.error || 'Unable to save the relationship.';
   } finally {
@@ -629,8 +635,7 @@ async function deleteRelationship(id) {
   try {
     await apiFetch(`/api/relationships/${encodeURIComponent(id)}`, { method: 'DELETE' });
     selectedRelationshipId = null;
-    updateLoading('Refreshing canvas relationships.');
-    await loadModel();
+    await refreshRelationshipsOnly('Refreshing relationships from Oracle.');
   } finally {
     hideLoading();
   }
