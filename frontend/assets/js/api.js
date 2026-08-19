@@ -1,5 +1,5 @@
 const API_BASE = '';
-const API_PREFIX = '/api';
+const API_PREFIX = '/accenture_hospitality/api';
 
 function apiPath(path = '') {
   return `${API_PREFIX}${path}`;
