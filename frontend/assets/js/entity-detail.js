@@ -67,21 +67,21 @@ function renderAttributes(attributes) {
 }
 
 async function loadEntity() {
-  const data = await apiFetch(`/api/entities?domainId=${encodeURIComponent(currentDomainId)}`);
+  const data = await apiFetch(apiPath(`/entities?domainId=${encodeURIComponent(currentDomainId)}`));
   const entities = data.entities || [];
   currentEntity = entities.find(e => String(e.ENTITY_ID) === String(currentEntityId));
   if (currentEntity) showEntity(currentEntity);
 }
 
 async function loadAttributes() {
-  const data = await apiFetch(`/api/attributes?entityId=${encodeURIComponent(currentEntityId)}`);
+  const data = await apiFetch(apiPath(`/attributes?entityId=${encodeURIComponent(currentEntityId)}`));
   renderAttributes(data.attributes || []);
 }
 
 async function loadDataTypes() {
   const select = document.getElementById('dataTypeCode');
   select.innerHTML = '';
-  const dataTypes = window.LovsClient ? await window.LovsClient.dataTypes() : (await apiFetch('/api/attributes/data-types')).dataTypes || [];
+  const dataTypes = window.LovsClient ? await window.LovsClient.dataTypes() : (await apiFetch(apiPath('/attributes/data-types'))).dataTypes || [];
   dataTypes.forEach(dt => {
     const option = document.createElement('option');
     option.value = dt.DATA_TYPE_CODE;
@@ -143,7 +143,7 @@ async function saveAttribute() {
   }
 
   try {
-    await apiFetch('/api/attributes', {
+    await apiFetch(apiPath('/attributes'), {
       method: 'POST',
       body: JSON.stringify({
         entityId: currentEntityId,

@@ -59,7 +59,14 @@ function createApp() {
   app.use('/api/opera-config/chains', requireAnyRole(['CHAIN_MANAGER']), chainsRoutes);
   app.use('/api/opera-config/hotels', requireAnyRole(['CHAIN_MANAGER', 'HOTEL_MANAGER']), hotelsRoutes);
 
-  app.use(express.static(path.resolve(__dirname, '../../frontend')));
+  const frontendDir = path.resolve(__dirname, '../../frontend');
+
+  app.use(
+    '/accenture_opera_config',
+    express.static(frontendDir)
+  );
+
+
   app.use(notFoundHandler);
   app.use(errorHandler);
 

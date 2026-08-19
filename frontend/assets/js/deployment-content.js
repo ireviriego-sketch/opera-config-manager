@@ -187,7 +187,7 @@
 
   async function deleteEntityRecords(entityId, entityName, silent = false) {
     try {
-      const response = await fetch(`/api/opera-config/deployment-content/${state.deploymentId}/entities/${entityId}/records`, { method: 'DELETE' });
+      const response = await fetch(apiPath(`/opera-config/deployment-content/${state.deploymentId}/entities/${entityId}/records`), { method: 'DELETE' });
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body.ok === false) throw new Error(body.error || `HTTP ${response.status}`);
       if (!silent) {
@@ -217,7 +217,7 @@
     $('importSubmitBtn').disabled = true;
     $('importPreview').innerHTML = '';
     try {
-      const response = await fetch(`/api/opera-config/deployment-content/${state.deploymentId}/domains/${state.importDomainId}/import`, { method: 'POST', body: formData });
+      const response = await fetch(apiPath(`/opera-config/deployment-content/${state.deploymentId}/domains/${state.importDomainId}/import`), { method: 'POST', body: formData });
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body.ok === false) throw new Error(body.error || `HTTP ${response.status}`);
       $('importStatus').innerHTML = `<span style="color:#027a48">✅ ${body.inserted} records inserted, ${body.skipped} skipped.</span>`;

@@ -63,7 +63,7 @@
   }
 
   async function loadConfig() {
-    const config = await requestJson('/api/logs/config');
+    const config = await requestJson(apiPath('/logs/config'));
     populateLevels(config);
   }
 
@@ -104,7 +104,7 @@
   async function loadLogs() {
     try {
       body.innerHTML = '<tr><td colspan="7">Loading logs...</td></tr>';
-      const payload = await requestJson(`/api/logs?${buildQuery()}`);
+      const payload = await requestJson(apiPath(`/logs?${buildQuery()}`));
       logs = Array.isArray(payload?.items) ? payload.items : [];
       render(logs);
     } catch (error) {
@@ -115,7 +115,7 @@
 
   async function saveLogLevel() {
     const level = Number($('logLevelSelect').value);
-    await requestJson('/api/logs/config', { method: 'PUT', body: JSON.stringify({ level }) });
+    await requestJson(apiPath('/logs/config'), { method: 'PUT', body: JSON.stringify({ level }) });
     await loadConfig();
     await loadLogs();
   }

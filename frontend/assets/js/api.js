@@ -1,4 +1,9 @@
 const API_BASE = '';
+const API_PREFIX = '/api';
+
+function apiPath(path = '') {
+  return `${API_PREFIX}${path}`;
+}
 
 function getToken() {
   return localStorage.getItem('operaCfgToken');

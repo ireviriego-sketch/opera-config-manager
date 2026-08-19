@@ -109,7 +109,7 @@
     if (!tiles) return;
 
     try {
-      const data = typeof apiFetch === 'function' ? await apiFetch('/api/navigation') : { items: [] };
+      const data = typeof apiFetch === 'function' ? await apiFetch(apiPath('/navigation')) : { items: [] };
       const items = (data.items || [])
         .filter(item => (item.IS_HOME_TILE === 'Y' || item.isHomeTile === 'Y') && !isHiddenHomeItem(item))
         .map(item => ({

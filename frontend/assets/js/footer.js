@@ -31,7 +31,7 @@
 
   async function loadFooterConfig() {
     try {
-      const payload = await requestJson('/api/app-settings/footer');
+      const payload = await requestJson(apiPath('/app-settings/footer'));
       return payload.footer || DEFAULT_FOOTER;
     } catch (error) {
       console.warn('Using default footer configuration', error);

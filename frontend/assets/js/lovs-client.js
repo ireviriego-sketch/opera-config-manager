@@ -24,7 +24,7 @@ window.LovsClient = (() => {
     const parentLovValueId = options.parentLovValueId ? `&parentLovValueId=${encodeURIComponent(options.parentLovValueId)}` : '';
     const key = `${lovCode}|${includeInactive}|${parentValueCode}|${parentLovValueId}`;
     if (cache.has(key)) return cache.get(key);
-    const payload = await requestJson(`/api/lovs/code/${encodeURIComponent(lovCode)}/values?includeInactive=${includeInactive}${parentValueCode}${parentLovValueId}`);
+    const payload = await requestJson(apiPath(`/lovs/code/${encodeURIComponent(lovCode)}/values?includeInactive=${includeInactive}${parentValueCode}${parentLovValueId}`));
     const items = payload.items || [];
     cache.set(key, items);
     return items;

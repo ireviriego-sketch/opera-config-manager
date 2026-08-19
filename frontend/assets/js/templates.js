@@ -40,7 +40,7 @@ function renderTemplates(templates) {
 }
 
 async function loadTemplates() {
-  const data = await apiFetch('/api/templates');
+  const data = await apiFetch(apiPath('/templates'));
   allTemplates = getTemplatesArray(data);
   applyTemplateFilter();
 }
@@ -84,7 +84,7 @@ async function saveTemplate() {
   }
 
   try {
-    await apiFetch('/api/templates', {
+    await apiFetch(apiPath('/templates'), {
       method: 'POST',
       body: JSON.stringify({ code, name, description })
     });

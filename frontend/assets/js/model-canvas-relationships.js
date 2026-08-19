@@ -102,7 +102,7 @@ function entityMatches(e, s) {
 }
 
 async function loadVersionHeader() {
-  const d = await apiFetch(`/api/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`);
+  const d = await apiFetch(apiPath(`/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`));
   const v = (d.versions || []).find(x => String(x.VERSION_ID) === String(currentVersionId));
   if (v) {
     $('versionTitle').textContent = v.VERSION_LABEL || `Version ${v.VERSION_NUMBER}`;
@@ -113,7 +113,7 @@ async function loadVersionHeader() {
 async function loadDataTypes() {
   if (window.LovsClient) dataTypes = await window.LovsClient.dataTypes();
   else {
-    const d = await apiFetch('/api/attributes/data-types');
+    const d = await apiFetch(apiPath('/attributes/data-types'));
     dataTypes = d.dataTypes || [];
   }
 }
@@ -137,22 +137,22 @@ async function loadRelationshipTypes() {
 
 async function loadModel() {
   updateLoading('Retrieving domains from Oracle.');
-  const dd = await apiFetch(`/api/domains?versionId=${encodeURIComponent(currentVersionId)}`);
+  const dd = await apiFetch(apiPath(`/domains?versionId=${encodeURIComponent(currentVersionId)}`));
   domains = dd.domains || [];
   allEntities = [];
 
   updateLoading('Retrieving entities and attributes from Oracle.');
 
   for (const domain of domains) {
-    const ed = await apiFetch(`/api/entities?domainId=${encodeURIComponent(domain.DOMAIN_ID)}`);
+    const ed = await apiFetch(apiPath(`/entities?domainId=${encodeURIComponent(domain.DOMAIN_ID)}`));
     for (const entity of (ed.entities || [])) {
-      const ad = await apiFetch(`/api/attributes?entityId=${encodeURIComponent(entity.ENTITY_ID)}`);
+      const ad = await apiFetch(apiPath(`/attributes?entityId=${encodeURIComponent(entity.ENTITY_ID)}`));
       allEntities.push({ ...entity, domain, attributes: ad.attributes || [] });
     }
   }
 
   updateLoading('Retrieving relationships from Oracle.');
-  const rd = await apiFetch(`/api/relationships?versionId=${encodeURIComponent(currentVersionId)}`);
+  const rd = await apiFetch(apiPath(`/relationships?versionId=${encodeURIComponent(currentVersionId)}`));
   relationships = rd.relationships || [];
   updateLoading('Rendering relationship canvas.');
   populateDomainFilter();
@@ -178,7 +178,7 @@ function updateStats() {
 
 async function refreshRelationshipsOnly(detail = 'Refreshing relationships from Oracle.') {
   updateLoading(detail);
-  const rd = await apiFetch(`/api/relationships?versionId=${encodeURIComponent(currentVersionId)}`);
+  const rd = await apiFetch(apiPath(`/relationships?versionId=${encodeURIComponent(currentVersionId)}`));
   relationships = rd.relationships || [];
   updateStats();
   drawRelationships();
@@ -459,7 +459,7 @@ async function saveAttributeEdit() {
     return;
   }
   try {
-    await apiFetch(`/api/attributes/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify(payload) });
+    await apiFetch(apiPath(`/attributes/${encodeURIComponent(id)}`), { method: 'PUT', body: JSON.stringify(payload) });
     closeAttributeEdit();
     await loadModel();
     const e = selectedEntity();
@@ -553,7 +553,7 @@ async function savePendingRelationship() {
   showLoading('Saving relationship...', 'Persisting relationship in Oracle.');
   setButtonBusy('saveRelationship', true);
   try {
-    await apiFetch('/api/relationships', {
+    await apiFetch(apiPath('/relationships'), {
       method: 'POST',
       body: JSON.stringify({
         versionId: currentVersionId,
@@ -608,7 +608,7 @@ async function saveManualRelationship() {
   showLoading('Saving relationship...', 'Persisting manual relationship in Oracle.');
   setButtonBusy('saveManualRelationship', true);
   try {
-    await apiFetch('/api/relationships', {
+    await apiFetch(apiPath('/relationships'), {
       method: 'POST',
       body: JSON.stringify({
         versionId: currentVersionId,
@@ -633,7 +633,7 @@ async function saveManualRelationship() {
 async function deleteRelationship(id) {
   showLoading('Deleting relationship...', 'Removing relationship from Oracle.');
   try {
-    await apiFetch(`/api/relationships/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    await apiFetch(apiPath(`/relationships/${encodeURIComponent(id)}`), { method: 'DELETE' });
     selectedRelationshipId = null;
     await refreshRelationshipsOnly('Refreshing relationships from Oracle.');
   } finally {

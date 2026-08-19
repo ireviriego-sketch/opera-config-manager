@@ -127,14 +127,14 @@
 
   async function loadUsers() {
     body.innerHTML = '<tr><td colspan="8">Loading users...</td></tr>';
-    const payload = await requestJson('/api/admin/users');
+    const payload = await requestJson(apiPath('/admin/users'));
     users = list(payload, 'users');
     renderUsers(users);
   }
 
   async function loadCatalogs() {
     const [rolesPayload, chainsPayload, hotelsPayload] = await Promise.all([
-      requestJson('/api/admin/roles'), requestJson('/api/admin/chains'), requestJson('/api/admin/hotels')
+      requestJson(apiPath('/admin/roles')), requestJson(apiPath('/admin/chains')), requestJson(apiPath('/admin/hotels'))
     ]);
     roles = list(rolesPayload, 'roles');
     chains = list(chainsPayload, 'chains');
@@ -225,7 +225,7 @@
 
   async function openUser(userId) {
     currentUserId = Number(userId); await loadCatalogs();
-    const payload = await requestJson(`/api/admin/users/${currentUserId}`); userDetail = item(payload, 'user');
+    const payload = await requestJson(apiPath(`/admin/users/${currentUserId}`)); userDetail = item(payload, 'user');
     $('userDetailTitle').textContent = `Details for ${pick(userDetail, 'username', 'USERNAME')}`;
     $('detailUsername').value = pick(userDetail, 'username', 'USERNAME', '');
     $('detailFullName').value = pick(userDetail, 'fullName', 'FULL_NAME', '');
@@ -237,7 +237,7 @@
 
   async function saveRoles() {
     const roleIds = Array.from(document.querySelectorAll('#rolesChecklist input:checked')).map(input => Number(input.value));
-    await requestJson(`/api/admin/users/${currentUserId}/roles`, { method: 'PUT', body: JSON.stringify({ roleIds }) });
+    await requestJson(apiPath(`/admin/users/${currentUserId}/roles`), { method: 'PUT', body: JSON.stringify({ roleIds }) });
     await loadUsers(); await openUser(currentUserId); showToast('Roles updated successfully');
   }
 
@@ -246,7 +246,7 @@
     if (scopeType === 'HOTEL' && !hasSelectedRole('HOTEL_MANAGER')) { showError('Select the HOTEL_MANAGER role first.'); return; }
     const ids = Array.from(document.querySelectorAll(`#${checklistId} input:checked`)).map(input => Number(input.value));
     const roleId = roleIdByCode(roleCode); if (!roleId) { showError(`Role does not exist ${roleCode}.`); return; }
-    const url = scopeType === 'CHAIN' ? `/api/admin/users/${currentUserId}/permissions/chains` : `/api/admin/users/${currentUserId}/permissions/hotels`;
+    const url = scopeType === 'CHAIN' ? apiPath(`/admin/users/${currentUserId}/permissions/chains`) : apiPath(`/admin/users/${currentUserId}/permissions/hotels`);
     const payload = scopeType === 'CHAIN' ? { roleId, chainIds: ids, isReadOnly: $(readOnlyId).checked ? 'Y' : 'N' } : { roleId, hotelIds: ids, isReadOnly: $(readOnlyId).checked ? 'Y' : 'N' };
     await requestJson(url, { method: 'PUT', body: JSON.stringify(payload) });
     await loadUsers(); await openUser(currentUserId); showToast(scopeType === 'CHAIN' ? 'Authorized chains updated successfully' : 'Authorized hotels updated successfully');
@@ -283,14 +283,14 @@
     event.preventDefault();
     const roleIds = Array.from(document.querySelectorAll('#newUserRolesChecklist input:checked')).map(input => Number(input.value));
     const payload = { username: $('newUsername').value.trim(), fullName: $('newFullName').value.trim(), email: $('newEmail').value.trim(), status: $('newStatus').value, roleIds };
-    const response = await requestJson('/api/admin/users', { method: 'POST', body: JSON.stringify(payload) });
+    const response = await requestJson(apiPath('/admin/users'), { method: 'POST', body: JSON.stringify(payload) });
     $('createUserModal').classList.add('hidden');
     await copyText(response.resetUrl);
     await loadUsers(); showToast('User created. Password link copied to clipboard');
   }
 
   async function resetPassword(userId) {
-    const response = await requestJson(`/api/admin/users/${userId}/password-reset`, { method: 'POST', body: JSON.stringify({}) });
+    const response = await requestJson(apiPath(`/admin/users/${userId}/password-reset`), { method: 'POST', body: JSON.stringify({}) });
     await copyText(response.resetUrl);
     showToast('Reset link copied to clipboard');
   }
