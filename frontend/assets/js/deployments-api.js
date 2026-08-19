@@ -1,5 +1,5 @@
 window.DeploymentsApi = (() => {
-  const base = '/api/opera-config/deployments';
+  const base = apiPath('/opera-config/deployments');
 
   async function http(path = '', options = {}) {
     const response = await fetch(`${base}${path}`, {

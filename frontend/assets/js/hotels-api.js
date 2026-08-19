@@ -1,5 +1,5 @@
 window.HotelsApi = (() => {
-  const base = '/api/opera-config/hotels';
+  const base = apiPath('/opera-config/hotels');
 
   async function http(path = '', options = {}) {
     const response = await fetch(`${base}${path}`, {

@@ -55,23 +55,23 @@ function domainColor(domainCode) {
 }
 
 async function loadVersionHeader() {
-  const data = await apiFetch(`/api/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`);
+  const data = await apiFetch(apiPath(`/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`));
   const version = (data.versions || []).find(v => String(v.VERSION_ID) === String(currentVersionId));
   if (!version) return;
   document.getElementById('canvasVersionTitle').textContent = version.VERSION_LABEL || `Version ${version.VERSION_NUMBER}`;
 }
 
 async function loadModel() {
-  const domainsData = await apiFetch(`/api/domains?versionId=${encodeURIComponent(currentVersionId)}`);
+  const domainsData = await apiFetch(apiPath(`/domains?versionId=${encodeURIComponent(currentVersionId)}`));
   const domains = domainsData.domains || [];
   const allEntities = [];
 
   for (const domain of domains) {
-    const entitiesData = await apiFetch(`/api/entities?domainId=${encodeURIComponent(domain.DOMAIN_ID)}`);
+    const entitiesData = await apiFetch(apiPath(`/entities?domainId=${encodeURIComponent(domain.DOMAIN_ID)}`));
     const domainEntities = entitiesData.entities || [];
 
     for (const entity of domainEntities) {
-      const attrsData = await apiFetch(`/api/attributes?entityId=${encodeURIComponent(entity.ENTITY_ID)}`);
+      const attrsData = await apiFetch(apiPath(`/attributes?entityId=${encodeURIComponent(entity.ENTITY_ID)}`));
       allEntities.push({
         ...entity,
         domain,

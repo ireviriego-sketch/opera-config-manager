@@ -55,14 +55,14 @@ function renderDomains(domains) {
 }
 
 async function loadVersion() {
-  const data = await apiFetch(`/api/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`);
+  const data = await apiFetch(apiPath(`/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`));
   const versions = data.versions || [];
   currentVersion = versions.find(v => String(v.VERSION_ID) === String(currentVersionId));
   if (currentVersion) showVersion(currentVersion);
 }
 
 async function loadDomains() {
-  const data = await apiFetch(`/api/domains?versionId=${encodeURIComponent(currentVersionId)}`);
+  const data = await apiFetch(apiPath(`/domains?versionId=${encodeURIComponent(currentVersionId)}`));
   renderDomains(data.domains || []);
 }
 
@@ -107,7 +107,7 @@ async function saveDomain() {
   }
 
   try {
-    await apiFetch('/api/domains', {
+    await apiFetch(apiPath('/domains'), {
       method: 'POST',
       body: JSON.stringify({
         versionId: currentVersionId,

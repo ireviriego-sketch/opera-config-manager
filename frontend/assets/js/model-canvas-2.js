@@ -55,7 +55,7 @@ function entityMatches(entity, search) {
 }
 
 async function loadVersionHeader() {
-  const data = await apiFetch(`/api/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`);
+  const data = await apiFetch(apiPath(`/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`));
   const version = (data.versions || []).find(v => String(v.VERSION_ID) === String(currentVersionId));
   if (!version) return;
   document.getElementById('versionTitle').textContent = version.VERSION_LABEL || `Version ${version.VERSION_NUMBER}`;
@@ -63,14 +63,14 @@ async function loadVersionHeader() {
 }
 
 async function loadModel() {
-  const domainData = await apiFetch(`/api/domains?versionId=${encodeURIComponent(currentVersionId)}`);
+  const domainData = await apiFetch(apiPath(`/domains?versionId=${encodeURIComponent(currentVersionId)}`));
   domains = domainData.domains || [];
   allEntities = [];
 
   for (const domain of domains) {
-    const entityData = await apiFetch(`/api/entities?domainId=${encodeURIComponent(domain.DOMAIN_ID)}`);
+    const entityData = await apiFetch(apiPath(`/entities?domainId=${encodeURIComponent(domain.DOMAIN_ID)}`));
     for (const entity of (entityData.entities || [])) {
-      const attrData = await apiFetch(`/api/attributes?entityId=${encodeURIComponent(entity.ENTITY_ID)}`);
+      const attrData = await apiFetch(apiPath(`/attributes?entityId=${encodeURIComponent(entity.ENTITY_ID)}`));
       allEntities.push({
         ...entity,
         domain,

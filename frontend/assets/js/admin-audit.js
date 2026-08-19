@@ -81,7 +81,7 @@
   async function loadAudit() {
     try {
       body.innerHTML = '<tr><td colspan="8">Loading audit...</td></tr>';
-      const payload = await requestJson(`/api/audit?${buildQuery()}`);
+      const payload = await requestJson(apiPath(`/audit?${buildQuery()}`));
       auditItems = Array.isArray(payload?.items) ? payload.items : [];
       render(auditItems);
     } catch (error) {

@@ -82,7 +82,7 @@
   async function loadRoles() {
     try {
       if (body) body.innerHTML = '<tr><td colspan="7">Loading roles...</td></tr>';
-      const payload = await requestJson('/api/admin/roles');
+      const payload = await requestJson(apiPath('/admin/roles'));
       roles = normalizeList(payload);
       render(roles);
     } catch (error) {

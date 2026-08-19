@@ -61,7 +61,7 @@ function renderVersions(versions) {
 }
 
 async function loadVersions() {
-  const data = await apiFetch(`/api/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`);
+  const data = await apiFetch(apiPath(`/template-versions?templateId=${encodeURIComponent(currentTemplateId)}`));
   renderVersions(data.versions || []);
 }
 
@@ -69,7 +69,7 @@ async function loadTemplateDetail() {
   currentTemplateId = getTemplateIdFromUrl();
   if (!currentTemplateId) { document.getElementById('detailError').classList.remove('hidden'); return; }
   try {
-    const data = await apiFetch('/api/templates');
+    const data = await apiFetch(apiPath('/templates'));
     const templates = getTemplatesArray(data);
     const template = templates.find(t => String(t.TEMPLATE_ID) === String(currentTemplateId));
     if (!template) { document.getElementById('detailError').classList.remove('hidden'); return; }
@@ -87,7 +87,7 @@ async function saveVersion() {
   const versionLabel = document.getElementById('versionLabel').value.trim();
   message.textContent = '';
   try {
-    await apiFetch('/api/template-versions', { method: 'POST', body: JSON.stringify({ templateId: currentTemplateId, versionLabel }) });
+    await apiFetch(apiPath('/template-versions'), { method: 'POST', body: JSON.stringify({ templateId: currentTemplateId, versionLabel }) });
     document.getElementById('versionLabel').value = '';
     closeVersionModal();
     await loadVersions();

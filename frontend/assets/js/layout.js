@@ -323,7 +323,7 @@
     const menu = document.getElementById('sideMenu');
     if (!menu) return;
     try {
-      const data = await safeApiFetch('/api/navigation');
+      const data = await safeApiFetch(apiPath('/navigation'));
       const tree = buildNavigationTree(data.items || []);
       menu.innerHTML = '';
       (tree.length ? tree : fallbackNavigation()).forEach(item => menu.appendChild(createMenuNode(item, 0)));

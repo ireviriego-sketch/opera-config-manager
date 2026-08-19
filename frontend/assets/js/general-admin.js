@@ -76,7 +76,7 @@
   }
 
   async function loadFooter() {
-    const payload = await requestJson('/api/app-settings/footer');
+    const payload = await requestJson(apiPath('/app-settings/footer'));
     const footer = payload.footer || {};
     copyrightText = footer.copyrightText || copyrightText;
     footerLinks = Array.isArray(footer.links) ? footer.links.map((link, index) => ({
@@ -95,7 +95,7 @@
       copyrightText,
       links: footerLinks
     };
-    await requestJson('/api/app-settings/footer', { method: 'PUT', body: JSON.stringify(payload) });
+    await requestJson(apiPath('/app-settings/footer'), { method: 'PUT', body: JSON.stringify(payload) });
     $('footerMessage').textContent = 'Footer saved successfully.';
     renderPreview();
   }

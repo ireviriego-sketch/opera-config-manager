@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
   try {
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
-    const result = await apiFetch('/api/auth/login', {
+    const result = await apiFetch(apiPath('/auth/login'), {
       method: 'POST',
       body: JSON.stringify({ username, password })
     });

@@ -1,5 +1,5 @@
 window.ChainsApi = (() => {
-  const base = '/api/opera-config/chains';
+  const base = apiPath('/opera-config/chains');
 
   async function http(path = '', options = {}) {
     const response = await fetch(`${base}${path}`, {

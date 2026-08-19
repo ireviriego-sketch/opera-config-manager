@@ -25,7 +25,7 @@
 
   async function validate() {
     if (!token) throw new Error('The link does not contain a token.');
-    const result = await requestJson(`/api/password-reset/validate/${encodeURIComponent(token)}`);
+    const result = await requestJson(apiPath(`/password-reset/validate/${encodeURIComponent(token)}`));
     status.textContent = `Valid link for ${result.user?.username || 'user'}.`;
     form.hidden = false;
   }
@@ -45,7 +45,7 @@
     }
 
     try {
-      await requestJson('/api/password-reset/confirm', {
+      await requestJson(apiPath('/password-reset/confirm'), {
         method: 'POST',
         body: JSON.stringify({ token, password })
       });

@@ -57,14 +57,14 @@ function renderEntities(entities) {
 }
 
 async function loadDomain() {
-  const data = await apiFetch(`/api/domains?versionId=${encodeURIComponent(currentVersionId)}`);
+  const data = await apiFetch(apiPath(`/domains?versionId=${encodeURIComponent(currentVersionId)}`));
   const domains = data.domains || [];
   currentDomain = domains.find(d => String(d.DOMAIN_ID) === String(currentDomainId));
   if (currentDomain) showDomain(currentDomain);
 }
 
 async function loadEntities() {
-  const data = await apiFetch(`/api/entities?domainId=${encodeURIComponent(currentDomainId)}`);
+  const data = await apiFetch(apiPath(`/entities?domainId=${encodeURIComponent(currentDomainId)}`));
   renderEntities(data.entities || []);
 }
 
@@ -112,7 +112,7 @@ async function saveEntity() {
   }
 
   try {
-    await apiFetch('/api/entities', {
+    await apiFetch(apiPath('/entities'), {
       method: 'POST',
       body: JSON.stringify({
         domainId: currentDomainId,

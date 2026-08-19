@@ -97,7 +97,7 @@
   async function loadParentValuesForSelectedLov() {
     parentValues = [];
     if (!selectedLov?.parentLovId) return;
-    const payload = await requestJson(`/api/lovs/${selectedLov.parentLovId}/values?includeInactive=true`);
+    const payload = await requestJson(apiPath(`/lovs/${selectedLov.parentLovId}/values?includeInactive=true`));
     parentValues = payload.items || [];
   }
 
@@ -165,7 +165,7 @@
   }
 
   async function loadLovs(keepSelection = true) {
-    const payload = await requestJson('/api/lovs?includeInactive=true');
+    const payload = await requestJson(apiPath('/lovs?includeInactive=true'));
     lovs = payload.items || [];
     if (keepSelection && selectedLov) selectedLov = lovs.find(lov => lov.lovId === selectedLov.lovId) || null;
     renderLovs();
@@ -180,7 +180,7 @@
     if (!selectedLov) return renderValues();
     await loadParentValuesForSelectedLov();
     populateParentFilter();
-    const payload = await requestJson(`/api/lovs/${selectedLov.lovId}/values?includeInactive=true`);
+    const payload = await requestJson(apiPath(`/lovs/${selectedLov.lovId}/values?includeInactive=true`));
     values = payload.items || [];
     renderValues();
   }
@@ -228,8 +228,8 @@
     }
 
     try {
-      if (editingLov) await requestJson(`/api/lovs/${editingLov.lovId}`, { method: 'PUT', body: JSON.stringify(payload) });
-      else await requestJson('/api/lovs', { method: 'POST', body: JSON.stringify(payload) });
+      if (editingLov) await requestJson(apiPath(`/lovs/${editingLov.lovId}`), { method: 'PUT', body: JSON.stringify(payload) });
+      else await requestJson(apiPath('/lovs'), { method: 'POST', body: JSON.stringify(payload) });
       closeLovModal();
       await loadLovs(true);
       if (selectedLov) await selectLov(selectedLov.lovId);
@@ -288,8 +288,8 @@
     }
 
     try {
-      if (editingValue) await requestJson(`/api/lovs/${selectedLov.lovId}/values/${editingValue.lovValueId}`, { method: 'PUT', body: JSON.stringify(payload) });
-      else await requestJson(`/api/lovs/${selectedLov.lovId}/values`, { method: 'POST', body: JSON.stringify(payload) });
+      if (editingValue) await requestJson(apiPath(`/lovs/${selectedLov.lovId}/values/${editingValue.lovValueId}`), { method: 'PUT', body: JSON.stringify(payload) });
+      else await requestJson(apiPath(`/lovs/${selectedLov.lovId}/values`), { method: 'POST', body: JSON.stringify(payload) });
       closeValueModal();
       await selectLov(selectedLov.lovId);
       await loadLovs(true);
@@ -299,7 +299,7 @@
   }
 
   async function deactivateLov(lovId) {
-    await requestJson(`/api/lovs/${lovId}`, { method: 'DELETE' });
+    await requestJson(apiPath(`/lovs/${lovId}`), { method: 'DELETE' });
     if (selectedLov && selectedLov.lovId === Number(lovId)) {
       selectedLov = null;
       values = [];
@@ -311,7 +311,7 @@
   }
 
   async function deactivateValue(lovValueId) {
-    await requestJson(`/api/lovs/${selectedLov.lovId}/values/${lovValueId}`, { method: 'DELETE' });
+    await requestJson(apiPath(`/lovs/${selectedLov.lovId}/values/${lovValueId}`), { method: 'DELETE' });
     await selectLov(selectedLov.lovId);
     await loadLovs(true);
   }
